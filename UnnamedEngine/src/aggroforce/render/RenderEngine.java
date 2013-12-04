@@ -27,20 +27,6 @@ public class RenderEngine {
 	public static FontRenderer fontRenderer;
 	private static Random rand = new Random(seed);
 	private static NoiseGeneratorPerlin ngp = new NoiseGeneratorPerlin(rand,10);
-	int id;
-	VBO test;
-	public float[] fb = {
-			0f,0f,0f,
-			0.1f,1f,0f,
-			0.2f,0f,1f,
-			0.3f,1f,0f,
-			0.4f,0f,1f,
-			0.5f,1f,1f
-	};
-	public int[] ib ={
-			0,1,2,
-			1,2,3
-	};
 	public RenderEngine(){
 		instance = this;
 		fontRenderer = new FontRenderer();
@@ -61,22 +47,6 @@ public class RenderEngine {
 
 		GL11.glPushMatrix();
 
-//		FloatBuffer fbuf = BufferUtils.createFloatBuffer(16);
-//		GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, fbuf);
-//		fbuf = (FloatBuffer)fbuf.flip().limit(16);
-//		float[] flt = new float[16];
-//		try{
-//		fbuf.get(flt);
-//		}catch(Exception e){
-//
-//		}
-
-//		System.out.print("[");
-//		for(float f : flt){
-//			System.out.print(f+",");
-//		}
-//		System.out.println("]");
-
 		Camera.camTransform();
 
 		if(KeyboardReader.keysts[Keyboard.KEY_UP]){
@@ -92,9 +62,7 @@ public class RenderEngine {
 			dy -= 1d;
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_R]){
-			//			this.regenList();
-			//			GUIRenderer.reloadNoise();
-			//			RenderEngine.fontRenderer.reloadFontTexture();
+
 		}
 
 		lpos.y=1;
@@ -112,8 +80,8 @@ public class RenderEngine {
 		FloatBuffer gamb = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{1f,1f,1f,1f}).flip();
 		FloatBuffer amb = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{1f,1f,1f,1}).flip();
 		FloatBuffer amb2 = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{1f,1f,1f,1f}).flip();
-		FloatBuffer diff = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{0.8f,1f,1f,1}).flip();
-		FloatBuffer diff2 = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{1f,1f,1f,1f}).flip();
+		FloatBuffer diff = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{0.2f,0.2f,0.2f,0.5f}).flip();
+		FloatBuffer diff2 = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{1f,1f,1f,0.5f}).flip();
 		FloatBuffer spec = (FloatBuffer) BufferUtils.createFloatBuffer(4).put(new float[]{0f,0f,0f,0f}).flip();
 		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, (FloatBuffer) pos.flip());
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) pos2.flip());

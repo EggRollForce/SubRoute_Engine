@@ -11,7 +11,7 @@ public class Camera{
 	public static Vector3f veiwVec = new Vector3f();
 	public static Camera instance;
 	private static float mouseSens = 0.1f;
-	private static float sprintMod = 4f;
+	private static float sprintMod = 10f;
 	private static float defMovSpd = 0.005f;
 	private static float movSpd = 0.005f;
 
@@ -74,6 +74,14 @@ public class Camera{
 		GL11.glLoadIdentity();
 		GL11.glRotatef(pitch, 1, 0, 0);
 		GL11.glRotatef(yaw, 0, 1, 0);
+		GL11.glTranslatef(x, y, z);
+	}
+	public static void camUnTransform(){
+		GL11.glRotatef(-pitch, 1, 0, 0);
+		GL11.glRotatef(-yaw, 0, 1, 0);
+		GL11.glTranslatef(-x, -y, -z);
+	}
+	public static void camTranslateOnly(){
 		GL11.glTranslatef(x, y, z);
 	}
 }
