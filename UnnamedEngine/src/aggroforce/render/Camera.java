@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Vector3f;
 import aggroforce.game.Game;
 
 public class Camera{
-	public static float x,y,z;
-	public static float pitch,yaw;
+	public static double x=0,y=0,z=0;
+	public static double pitch,yaw;
 	public static Vector3f veiwVec = new Vector3f();
 	public static Camera instance;
 	private static float mouseSens = 0.1f;
@@ -17,11 +17,14 @@ public class Camera{
 
 	public Camera(){
 		instance = this;
-		x = 0;
-		y = 0;
-		z = 0;
 		pitch = 0;
 		yaw = 0;
+	}
+	public Camera(double x, double y, double z){
+		this();
+		Camera.x = x;
+		Camera.y = y;
+		Camera.z = z;
 	}
 
 	public static void forward(){
@@ -53,7 +56,7 @@ public class Camera{
 		movSpd = defMovSpd;
 	}
 	public static void mouseIn(float dx, float dy){
-		float temp = pitch - dy*mouseSens;
+		double temp = pitch - dy*mouseSens;
 		if(!(temp > -85)){
 			return;
 		}else if(!(temp < 85)){
@@ -72,16 +75,16 @@ public class Camera{
 	public static void camTransform(){
 		updateVeiwVector();
 		GL11.glLoadIdentity();
-		GL11.glRotatef(pitch, 1, 0, 0);
-		GL11.glRotatef(yaw, 0, 1, 0);
-		GL11.glTranslatef(x, y, z);
+		GL11.glRotated(pitch, 1, 0, 0);
+		GL11.glRotated(yaw, 0, 1, 0);
+		GL11.glTranslated(x, y, z);
 	}
 	public static void camUnTransform(){
-		GL11.glRotatef(-pitch, 1, 0, 0);
-		GL11.glRotatef(-yaw, 0, 1, 0);
-		GL11.glTranslatef(-x, -y, -z);
+		GL11.glRotated(-pitch, 1, 0, 0);
+		GL11.glRotated(-yaw, 0, 1, 0);
+		GL11.glTranslated(-x, -y, -z);
 	}
 	public static void camTranslateOnly(){
-		GL11.glTranslatef(x, y, z);
+		GL11.glTranslated(x, y, z);
 	}
 }

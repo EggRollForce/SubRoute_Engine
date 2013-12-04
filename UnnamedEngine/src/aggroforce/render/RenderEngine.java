@@ -33,7 +33,7 @@ public class RenderEngine {
 		textureMap = new TextureMap();
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
-		new Camera();
+		new Camera(0d,-255d,0d);
 	}
 
 	private final Vector3f lpos = new Vector3f(0,0,0);
