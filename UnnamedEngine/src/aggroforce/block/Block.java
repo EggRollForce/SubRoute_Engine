@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import aggroforce.util.Side;
 
-public abstract class Block {
+public class Block {
 
 	public static HashMap<String,Block> blockMap  = new HashMap<String,Block>();
 
@@ -12,5 +12,9 @@ public abstract class Block {
 
 	public boolean shouldRenderSide(int x, int y, int z, Side side) {
 		return false;
+	}
+
+	public boolean isSolidOpaque(){
+		return true;
 	}
 }

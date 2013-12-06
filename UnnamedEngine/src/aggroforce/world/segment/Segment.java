@@ -25,6 +25,13 @@ public class Segment {
 
 	}
 
+	public int getBlockIdAt(int x, int y, int z){
+		int cx = Math.min(x, 15);
+		int cy = Math.min(y, 1023);
+		int cz = Math.min(z, 15);
+		return this.blockStorage[cx][cz][cy];
+	}
+
 	public void setupDisplayList(){
 		this.dlist = GL11.glGenLists(1);
 		GL11.glNewList(dlist, GL11.GL_COMPILE);

@@ -32,7 +32,46 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	@Override
-	public int getBlockAt(int x, int y, int z) {
-		return 0;
+	public int getBlockIdAt(int x, int y, int z) {
+		Segment seg;
+		if(this.getSegmentForCoords(x, z)!=null){
+			seg = this.getSegmentForCoords(x, z).getSegment();
+			seg.getBlockIdAt(x%16, y, z%16);
+		}
+		return -1;
+	}
+
+	public SegmentCoords getSegmentForCoords(int x, int z){
+		int sx = x%16;
+		int sy = x%16;
+		if(!(sx>this.segStorage.length||sy>this.segStorage[0].length)){
+			return new SegmentCoords(sx,sy);
+		}
+		return null;
+	}
+
+	private class SegmentCoords{
+		int x,y;
+
+		public SegmentCoords(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+
+		public int getX(){
+			return x;
+		}
+		public int getY(){
+			return y;
+		}
+		public Segment getSegment(){
+			return segStorage[x][y];
+		}
+		public int worldToSegmentX(int x){
+			return x-this.x*16;
+		}
+		public int worldToSegmentZ(int z){
+			return z-this.y*16;
+		}
 	}
 }

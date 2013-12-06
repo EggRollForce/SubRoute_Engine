@@ -26,8 +26,9 @@ public class RenderEngine {
 	public static TextureMap textureMap;
 	public static FontRenderer fontRenderer;
 	private static Random rand = new Random(seed);
-	private static NoiseGeneratorPerlin ngp = new NoiseGeneratorPerlin(rand,10);
+	private static NoiseGeneratorPerlin ngp = new NoiseGeneratorPerlin(rand,16);
 	public RenderEngine(){
+		this.genTerrainList(0, 0);
 		instance = this;
 		fontRenderer = new FontRenderer();
 		textureMap = new TextureMap();
@@ -57,12 +58,14 @@ public class RenderEngine {
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_LEFT]){
 			dy += 1d;
+			this.regenTerrain();
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_RIGHT]){
 			dy -= 1d;
+			this.regenTerrain();
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_R]){
-
+			this.regenTerrain();
 		}
 
 		lpos.y=1;
@@ -108,6 +111,8 @@ public class RenderEngine {
 		GL11.glVertex3d(0, p3+256, p4);
 		GL11.glEnd();
 
+		this.renderTerrain();
+
 		int r = 3;
 		//		GL11.glEnable(GL11.GL_FOG);
 		GL11.glEnable(GL11.GL_LIGHTING);
@@ -146,26 +151,40 @@ public class RenderEngine {
 		GL11.glNewList(tlist, GL11.GL_COMPILE);
 		GL11.glPushMatrix();
 		//				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		int width = 1000;
-		int height = 1000;
-		double[] grid = ngp.generatePerlinNoise(width, height, 2, 2, dx, dy);
+		int width = 16;
+		int height = 1024;
+		int length = 16;
+		double[] grid = ngp.generatePerlinNoise(null, width, height, length, 2, 2, 2, dy, 0, 0);
 		GL11.glColor4f(1f, 1f, 1f, 1f);
-		GL11.glTranslated(-500, 0, -500);
+//		GL11.glTranslated(-500, 0, -500);
+		GL11.glPointSize(2f);
+		GL11.glColor4f(1f,1f,1f,1f);
+		int max = 0;
+		int min = 0;
 		for(int i = 0; i<width; i++){
-			GL11.glBegin(GL11.GL_QUADS);
-			for(int j = 0; j<height; j++){
-				int k = (int)(grid[(i*width)+j]/4d);
-				if(k<0){
-					k /= 5d;
+			for(int j = 0; j<length; j++){
+				GL11.glPushMatrix();
+//				GL11.glTranslated(0, 0, j*5);
+
+				GL11.glBegin(GL11.GL_POINTS);
+				for(int k = 0; k<height; k++){
+					int d = (int)(grid[((i*width*height)+(j*height)+k)]);
+//					GL11.glColor4f(d/255f, d/255f, d/255f, 1f);
+					if(d<0){
+						GL11.glVertex3f(i, j, k);
+					}
+					if(d>max){
+						max = d;
+					}
+					if(d<min){
+						min = d;
+					}
 				}
-				GL11.glNormal3f(0f, 1f, 0f);
-				GL11.glVertex3d(i+1, k, j+1);
-				GL11.glVertex3d(i, k, j+1);
-				GL11.glVertex3d(i, k, j);
-				GL11.glVertex3d(i+1, k, j);
+				GL11.glEnd();
+				GL11.glPopMatrix();
 			}
-			GL11.glEnd();
 		}
+		System.out.println("Length"+grid.length+" Max:"+max+" Min:"+min);
 		//		grid = null;
 		//		grid = ngp.generatePerlinNoise(width, height, 1.001d, 1.001d, dx+width, dy);
 		//		GL11.glColor4f(1f, 1f, 1f, 0.1f);
