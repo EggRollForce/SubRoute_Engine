@@ -51,25 +51,25 @@ public class Segment {
 						if(this.blockStorage[i][j][k+1]==0){
 							GL11.glColor4f(0f, 0f, 0f, 0f);
 							GL11.glNormal3f(0f, 1f, 0f);
-							GL11.glTexCoord2f(1, 1);
+							GL11.glTexCoord2f(1f/16f, 1f/16f);
 							GL11.glVertex3d(i+1, k, j+1);
-							GL11.glTexCoord2f(0, 1);
+							GL11.glTexCoord2f(0, 1f/16f);
 							GL11.glVertex3d(i, k, j+1);
 							GL11.glTexCoord2f(0, 0);
 							GL11.glVertex3d(i, k, j);
-							GL11.glTexCoord2f(1, 0);
+							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i+1, k, j);
 						}
 						if(!(i==0)&&this.blockStorage[i-1][j][k]==0){
 							GL11.glColor4f(1f, 0f, 0f, 1f);
 							GL11.glNormal3f(1f, 0f, 0f);
-							GL11.glTexCoord2f(1, 0);
+							GL11.glTexCoord2f(2f/16f, 0);
 							GL11.glVertex3d(i, k, j+1);
-							GL11.glTexCoord2f(1, 1);
+							GL11.glTexCoord2f(2f/16f, 1f/16f);
 							GL11.glVertex3d(i, k-1, j+1);
-							GL11.glTexCoord2f(0, 1);
+							GL11.glTexCoord2f(1f/16f, 1f/16f);
 							GL11.glVertex3d(i, k-1, j);
-							GL11.glTexCoord2f(0, 0);
+							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i, k, j);
 						}/*else if(wld.getBlockIdAt((16*segx)+i-1, k, (16*segy)+j)<0){
 							GL11.glColor4f(1f, 0f, 0f, 1f);
@@ -86,37 +86,37 @@ public class Segment {
 						if(!(i>=15)&&this.blockStorage[i+1][j][k]==0){
 							GL11.glColor4f(0f, 1f, 0f, 1f);
 							GL11.glNormal3f(-1f, 0f, 0f);
-							GL11.glTexCoord2f(0, 0);
+							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i+1, k, j+1);
-							GL11.glTexCoord2f(1, 0);
+							GL11.glTexCoord2f(2f/16f, 0);
 							GL11.glVertex3d(i+1, k, j);
-							GL11.glTexCoord2f(1, 1);
+							GL11.glTexCoord2f(2f/16f, 1f/16f);
 							GL11.glVertex3d(i+1, k-1, j);
-							GL11.glTexCoord2f(0, 1);
+							GL11.glTexCoord2f(1f/16f, 1f/16f);
 							GL11.glVertex3d(i+1, k-1, j+1);
 						}else if(i>=15){}
 						if(!(j==0)&&this.blockStorage[i][j-1][k]==0){
 							GL11.glColor4f(0f, 0f, 0f, 0f);
 							GL11.glNormal3f(0f, 0f, -1f);
-							GL11.glTexCoord2f(1, 1);
+							GL11.glTexCoord2f(2f/16f, 1f/16f);
 							GL11.glVertex3d(i, k-1, j);
-							GL11.glTexCoord2f(0, 1);
+							GL11.glTexCoord2f(1f/16f, 1f/16f);
 							GL11.glVertex3d(i+1, k-1, j);
-							GL11.glTexCoord2f(0, 0);
+							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i+1, k, j);
-							GL11.glTexCoord2f(1, 0);
+							GL11.glTexCoord2f(2f/16f, 0);
 							GL11.glVertex3d(i, k, j);
 						}else if(j==0){};
 						if(!(j>=15)&&this.blockStorage[i][j+1][k]==0){
 							GL11.glColor4f(0f, 0f, 0f, 0f);
 							GL11.glNormal3f(0f, 0f, 1f);
-							GL11.glTexCoord2f(0, 0);
+							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i+1, k, j+1);
-							GL11.glTexCoord2f(0, 1);
+							GL11.glTexCoord2f(1f/16f, 1f/16f);
 							GL11.glVertex3d(i+1, k-1, j+1);
-							GL11.glTexCoord2f(1, 1);
+							GL11.glTexCoord2f(2f/16f, 1f/16f);
 							GL11.glVertex3d(i, k-1, j+1);
-							GL11.glTexCoord2f(1, 0);
+							GL11.glTexCoord2f(2f/16f, 0);
 							GL11.glVertex3d(i, k, j+1);
 						}else if(j>=15){};
 					}
