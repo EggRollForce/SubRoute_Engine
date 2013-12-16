@@ -1,7 +1,6 @@
 package aggroforce.world.storage;
 
 import java.nio.IntBuffer;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -21,6 +20,12 @@ public class WorldStorage implements IWorldAccess{
 		for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
 			for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
 				segStorage[i][j] = wl.generateSegment(startx+i, starty+j);
+			}
+		}
+
+		for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
+			for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
+				segStorage[i][j].setupDisplayList(this);
 				ibuf.put(segStorage[i][j].getDisplayListID());
 			}
 		}
@@ -42,9 +47,9 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	public SegmentCoords getSegmentForCoords(int x, int z){
-		int sx = x%16;
-		int sy = x%16;
-		if(!(sx>this.segStorage.length||sy>this.segStorage[0].length)){
+		int sx = (x)%16;
+		int sy = (z)%16;
+		if(sx>=0&&sx<this.segStorage.length&&sy>=0&&sy<this.segStorage[0].length){
 			return new SegmentCoords(sx,sy);
 		}
 		return null;
@@ -65,7 +70,11 @@ public class WorldStorage implements IWorldAccess{
 			return y;
 		}
 		public Segment getSegment(){
-			return segStorage[x][y];
+			if(x>=0&&x<segStorage.length&&y>=0&&y<segStorage[0].length){
+				return segStorage[x][y];
+			}else{
+				return null;
+			}
 		}
 		public int worldToSegmentX(int x){
 			return x-this.x*16;

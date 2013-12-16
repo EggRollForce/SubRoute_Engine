@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector3f;
 import aggroforce.game.Game;
 import aggroforce.gen.noise.NoiseGeneratorPerlin;
 import aggroforce.input.KeyboardReader;
-import aggroforce.texture.TextureMap;
+import aggroforce.texture.TextureRegistry;
 import aggroforce.world.World;
 import aggroforce.world.WorldLoader;
 import aggroforce.world.storage.WorldStorage;
@@ -23,15 +23,14 @@ public class RenderEngine {
 	double dx = 0;
 	double dy = 0;
 	public static RenderEngine instance;
-	public static TextureMap textureMap;
+	public static TextureRegistry textureMap;
 	public static FontRenderer fontRenderer;
 	private static Random rand = new Random(seed);
 	private static NoiseGeneratorPerlin ngp = new NoiseGeneratorPerlin(rand,16);
 	public RenderEngine(){
-		this.genTerrainList(0, 0);
 		instance = this;
 		fontRenderer = new FontRenderer();
-		textureMap = new TextureMap();
+		textureMap = new TextureRegistry();
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
 		new Camera(0d,-255d,0d);
@@ -58,14 +57,11 @@ public class RenderEngine {
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_LEFT]){
 			dy += 1d;
-			this.regenTerrain();
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_RIGHT]){
 			dy -= 1d;
-			this.regenTerrain();
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_R]){
-			this.regenTerrain();
 		}
 
 		lpos.y=1;
@@ -110,8 +106,6 @@ public class RenderEngine {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		GL11.glVertex3d(0, p3+256, p4);
 		GL11.glEnd();
-
-		this.renderTerrain();
 
 		int r = 3;
 		//		GL11.glEnable(GL11.GL_FOG);
