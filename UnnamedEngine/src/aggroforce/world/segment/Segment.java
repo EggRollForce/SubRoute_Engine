@@ -71,7 +71,7 @@ public class Segment {
 							GL11.glVertex3d(i, k-1, j);
 							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i, k, j);
-						}/*else if(wld.getBlockIdAt((16*segx)+i-1, k, (16*segy)+j)<0){
+						}else if(wld.getBlockIdAt((16*segx)+i-1, k, (16*segy)+j)<0){
 							GL11.glColor4f(1f, 0f, 0f, 1f);
 							GL11.glNormal3f(1f, 0f, 0f);
 							GL11.glTexCoord2f(1, 0);
@@ -82,7 +82,7 @@ public class Segment {
 							GL11.glVertex3d(i, k-1, j);
 							GL11.glTexCoord2f(0, 0);
 							GL11.glVertex3d(i, k, j);
-						}*/
+						}
 						if(!(i>=15)&&this.blockStorage[i+1][j][k]==0){
 							GL11.glColor4f(0f, 1f, 0f, 1f);
 							GL11.glNormal3f(-1f, 0f, 0f);

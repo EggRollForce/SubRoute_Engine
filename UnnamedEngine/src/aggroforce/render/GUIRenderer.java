@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -25,7 +24,8 @@ public class GUIRenderer {
 		GL11.glPushMatrix();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(-Display.getWidth(), Display.getWidth(), Display.getHeight(), -Display.getHeight(), -1, 1);
+//		GL11.glOrtho(-100, 100, 100, -100, -1, 10);
+		GLU.gluPerspective(45.0f,((float)Game.instance().getScreenWidth()/(float)Game.instance().getScreenHeight()),-1F, 100f);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 
@@ -33,7 +33,7 @@ public class GUIRenderer {
 		long max = Runtime.getRuntime().maxMemory();
 		long free = Runtime.getRuntime().freeMemory();
 		long total = Runtime.getRuntime().totalMemory();
-		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), -800, -800, 5f);
+		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), -1, -1, 5f);
 		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(int)(max/1024d/1024d))+"MB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(int)(total/1024d/1024d)+"MB", -800, -700, 5f);
 
 		//		GL11.glEnable(GL11.GL_TEXTURE_2D);

@@ -2,6 +2,8 @@ package aggroforce.game;
 
 
 
+import java.util.logging.Logger;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;
@@ -17,6 +19,7 @@ import aggroforce.input.Input;
 public class Game {
 
 	private static final String version = "0.0.0.01";
+	public static final Logger log = Logger.getGlobal();
 
 	private static Game instance;
 	private static final int scrW = 800;

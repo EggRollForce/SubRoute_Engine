@@ -33,7 +33,7 @@ public class RenderEngine {
 		textureMap = new TextureRegistry();
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
-		new Camera(0d,-255d,0d);
+		new Camera(0d,0d,0d);
 	}
 
 	private final Vector3f lpos = new Vector3f(0,0,0);
@@ -136,6 +136,24 @@ public class RenderEngine {
 		GUIRenderer.renderGUI();
 		GL11.glPopMatrix();
 
+	}
+
+	public void testParticles(){
+		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		GL11.glNormal3f(0,0,1);
+		GL11.glVertex2f(  0.5f, 0.5f);
+		GL11.glNormal3f(0,0,1);
+		GL11.glVertex2f( -0.5f,  0.5f);
+		GL11.glNormal3f(0,0,1);
+		GL11.glVertex2f( -0.5f, -0.5f);
+		GL11.glNormal3f(0,0,1);
+		GL11.glVertex2f( 0.5f, -0.5f);
+		GL11.glEnd();
+		GL11.glPopMatrix();
 	}
 
 	int dlist;
