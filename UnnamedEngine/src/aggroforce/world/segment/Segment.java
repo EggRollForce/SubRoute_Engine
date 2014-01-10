@@ -3,10 +3,13 @@ package aggroforce.world.segment;
 import java.io.File;
 import org.lwjgl.opengl.GL11;
 
+import aggroforce.block.Block;
 import aggroforce.texture.Texture;
+import aggroforce.util.Side;
+import aggroforce.world.storage.ISegmentAccess;
 import aggroforce.world.storage.IWorldAccess;
 
-public class Segment {
+public class Segment implements ISegmentAccess{
 
 	public int segx;
 	public int segy;
@@ -24,11 +27,11 @@ public class Segment {
 		this.generateBlocks(heightData);
 	}
 
+	@Override
 	public int getBlockIdAt(int x, int y, int z){
-		int cx = Math.min(x, 15);
-		int cy = Math.min(y, 1023);
-		int cz = Math.min(z, 15);
-		return this.blockStorage[cx][cz][cy];
+		int dx = Math.signum(x)==-1?(x%16)+15:(x%16);
+		int dz = Math.signum(z)==-1?(z%16)+15:(z%16);
+		return this.blockStorage[dx][dz][y];
 	}
 
 	public void setupDisplayList(IWorldAccess wld){
@@ -44,11 +47,13 @@ public class Segment {
 //		GL11.glBindTexture(GL11.GL_TEXTURE_2D, Segment.side.getGLTexID());
 		for(int i=0;i<16;i++){
 			for(int j=0;j<16;j++){
-				int m = 0;
 				GL11.glBegin(GL11.GL_QUADS);
 				for(int k=0;k<1024;k++){
-					if(this.blockStorage[i][j][k]==1){
-						if(this.blockStorage[i][j][k+1]==0){
+					Block blk = Block.blocks[this.blockStorage[i][j][k]];
+					if(blk.renderType()!=-1){
+						int x = i+(int)(16*segx*Math.signum(segx));
+						int z = j+(int)(16*segy*Math.signum(segy));
+						if(blk.shouldRenderSide(this, x, k, z, Side.UP)){
 							GL11.glColor4f(0f, 0f, 0f, 0f);
 							GL11.glNormal3f(0f, 1f, 0f);
 							GL11.glTexCoord2f(1f/16f, 1f/16f);
@@ -60,7 +65,7 @@ public class Segment {
 							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i+1, k, j);
 						}
-						if(!(i==0)&&this.blockStorage[i-1][j][k]==0){
+						if(blk.shouldRenderSide(this, x, k, z, Side.SOUTH)){
 							GL11.glColor4f(1f, 0f, 0f, 1f);
 							GL11.glNormal3f(1f, 0f, 0f);
 							GL11.glTexCoord2f(2f/16f, 0);
@@ -71,19 +76,8 @@ public class Segment {
 							GL11.glVertex3d(i, k-1, j);
 							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i, k, j);
-						}else if(wld.getBlockIdAt((16*segx)+i-1, k, (16*segy)+j)<0){
-							GL11.glColor4f(1f, 0f, 0f, 1f);
-							GL11.glNormal3f(1f, 0f, 0f);
-							GL11.glTexCoord2f(1, 0);
-							GL11.glVertex3d(i, k, j+1);
-							GL11.glTexCoord2f(1, 1);
-							GL11.glVertex3d(i, k-1, j+1);
-							GL11.glTexCoord2f(0, 1);
-							GL11.glVertex3d(i, k-1, j);
-							GL11.glTexCoord2f(0, 0);
-							GL11.glVertex3d(i, k, j);
 						}
-						if(!(i>=15)&&this.blockStorage[i+1][j][k]==0){
+						if(blk.shouldRenderSide(this, x, k, z, Side.NORTH)){
 							GL11.glColor4f(0f, 1f, 0f, 1f);
 							GL11.glNormal3f(-1f, 0f, 0f);
 							GL11.glTexCoord2f(1f/16f, 0);
@@ -94,8 +88,8 @@ public class Segment {
 							GL11.glVertex3d(i+1, k-1, j);
 							GL11.glTexCoord2f(1f/16f, 1f/16f);
 							GL11.glVertex3d(i+1, k-1, j+1);
-						}else if(i>=15){}
-						if(!(j==0)&&this.blockStorage[i][j-1][k]==0){
+						}
+						if(blk.shouldRenderSide(this, x, k, z, Side.WEST)){
 							GL11.glColor4f(0f, 0f, 0f, 0f);
 							GL11.glNormal3f(0f, 0f, -1f);
 							GL11.glTexCoord2f(2f/16f, 1f/16f);
@@ -106,8 +100,8 @@ public class Segment {
 							GL11.glVertex3d(i+1, k, j);
 							GL11.glTexCoord2f(2f/16f, 0);
 							GL11.glVertex3d(i, k, j);
-						}else if(j==0){};
-						if(!(j>=15)&&this.blockStorage[i][j+1][k]==0){
+						}
+						if(blk.shouldRenderSide(this, x, k, z, Side.EAST)){
 							GL11.glColor4f(0f, 0f, 0f, 0f);
 							GL11.glNormal3f(0f, 0f, 1f);
 							GL11.glTexCoord2f(1f/16f, 0);
@@ -118,7 +112,7 @@ public class Segment {
 							GL11.glVertex3d(i, k-1, j+1);
 							GL11.glTexCoord2f(2f/16f, 0);
 							GL11.glVertex3d(i, k, j+1);
-						}else if(j>=15){};
+						}
 					}
 				}
 				GL11.glEnd();

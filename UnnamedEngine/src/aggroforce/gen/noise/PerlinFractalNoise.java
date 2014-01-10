@@ -86,7 +86,7 @@ public class PerlinFractalNoise extends NoiseGenerator {
 	public double[] generateNoiseGrid(int xSize, int ySize, int zSize, double xScale, double yScale, double zScale, double xOffset, double yOffset, double zOffset, double noiseDensity){
 		return generateNoiseGrid(null,xSize,ySize,xScale,yScale,xOffset,yOffset,noiseDensity);
 	}
-	public void generateNoiseGrid(double[] ngrid, int xSize, int ySize, int zSize, double xScale, double yScale, double zScale, double xOffset, double yOffset, double zOffset, double noiseDensity){
+	public double[] generateNoiseGrid(double[] ngrid, int xSize, int ySize, int zSize, double xScale, double yScale, double zScale, double xOffset, double yOffset, double zOffset, double noiseDensity){
 		if(ngrid == null){
 			ngrid = new double[xSize*ySize*zSize];
 		}
@@ -156,6 +156,7 @@ public class PerlinFractalNoise extends NoiseGenerator {
                 }
             }
         }
+        return ngrid;
 	}
 
 	private double interpolate(double a, double v1, double v2){

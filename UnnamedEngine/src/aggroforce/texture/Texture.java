@@ -1,6 +1,7 @@
 package aggroforce.texture;
 
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;

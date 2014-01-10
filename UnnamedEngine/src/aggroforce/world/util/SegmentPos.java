@@ -17,4 +17,10 @@ public class SegmentPos {
 			return false;
 		}
 	}
+
+	@Override
+	public int hashCode(){
+		return this.x + (this.y >> 8);
+	}
+
 }

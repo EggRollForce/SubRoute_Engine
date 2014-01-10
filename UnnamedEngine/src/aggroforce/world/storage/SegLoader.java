@@ -1,7 +1,6 @@
 package aggroforce.world.storage;
 
 import java.util.HashMap;
-
 import aggroforce.world.segment.Segment;
 import aggroforce.world.util.SegmentPos;
 
@@ -13,17 +12,23 @@ public class SegLoader {
 	}
 
 	public boolean addSegment(int x, int y, Segment seg){
-		if(!loadedSegs.containsKey(new SegmentPos(x,y))){
-			loadedSegs.put(new SegmentPos(x,y), seg);
+		SegmentPos segpos = new SegmentPos(x,y);
+		if(!loadedSegs.containsKey(segpos)){
+			loadedSegs.put(segpos, seg);
 			return true;
 		}else{
 			return false;
 		}
 	}
 	public boolean isSegmentLoadedAt(int x, int y){
-		return loadedSegs.containsKey(new SegmentPos(x,y));
+		SegmentPos pos = new SegmentPos(x,y);
+		return loadedSegs.containsKey(pos);
 	}
 	public Segment getSegmentAt(int x, int y){
-		return this.isSegmentLoadedAt(x, y)?loadedSegs.get(new SegmentPos(x,y)):null;
+		if(this.isSegmentLoadedAt(x, y)){
+			return loadedSegs.get(new SegmentPos(x,y));
+		}else{
+			return null;
+		}
 	}
 }

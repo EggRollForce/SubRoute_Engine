@@ -14,6 +14,7 @@ import org.lwjgl.util.glu.GLU;
 
 import aggroforce.render.RenderEngine;
 import aggroforce.audio.AudioEngine;
+import aggroforce.block.Block;
 import aggroforce.input.Input;
 
 public class Game {
@@ -46,6 +47,7 @@ public class Game {
 			e.printStackTrace();
 			System.exit(0);
 		}
+		new Block();
 		new RenderEngine();
 		new Input();
 		new AudioEngine();

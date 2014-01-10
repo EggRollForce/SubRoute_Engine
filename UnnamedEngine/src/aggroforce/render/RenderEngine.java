@@ -27,6 +27,7 @@ public class RenderEngine {
 	public static FontRenderer fontRenderer;
 	private static Random rand = new Random(seed);
 	private static NoiseGeneratorPerlin ngp = new NoiseGeneratorPerlin(rand,16);
+	private static NoiseGeneratorPerlin ngp2 = new NoiseGeneratorPerlin(rand,16);
 	public RenderEngine(){
 		instance = this;
 		fontRenderer = new FontRenderer();
@@ -34,11 +35,12 @@ public class RenderEngine {
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
 		new Camera(0d,0d,0d);
+		this.genTerrainList(0, 0);
 	}
 
 	private final Vector3f lpos = new Vector3f(0,0,0);
 	float time;
-	WorldStorage wldstor = new WorldStorage(new WorldLoader(0L));
+	WorldStorage wldstor = new WorldStorage(new WorldLoader(1456899709L));
 	public void renderLoop(){
 
 
@@ -62,6 +64,7 @@ public class RenderEngine {
 			dy -= 1d;
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_R]){
+//			this.regenTerrain();
 		}
 
 		lpos.y=1;
@@ -124,6 +127,7 @@ public class RenderEngine {
 		GL11.glPushMatrix();
 		//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		//		GL11.glTranslated(0, -1024D, 0);
+//		this.renderTerrain();
 		wldstor.render();
 		//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		GL11.glPopMatrix();
@@ -164,9 +168,9 @@ public class RenderEngine {
 		GL11.glPushMatrix();
 		//				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		int width = 16;
-		int height = 1024;
+		int height = 256;
 		int length = 16;
-		double[] grid = ngp.generatePerlinNoise(null, width, height, length, 2, 2, 2, dy, 0, 0);
+		double[] grid = ngp2.generatePerlinNoise(null, width, height, length,100, 100, 100, dy, 0, 0);
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 //		GL11.glTranslated(-500, 0, -500);
 		GL11.glPointSize(2f);
