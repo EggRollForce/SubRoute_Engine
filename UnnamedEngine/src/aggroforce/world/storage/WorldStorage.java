@@ -4,12 +4,13 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import aggroforce.render.RenderEngine;
 import aggroforce.world.WorldLoader;
 import aggroforce.world.segment.Segment;
 
 public class WorldStorage implements IWorldAccess{
 
-	private int MAX_SEGMENTS_RADIUS = 2;
+	private int MAX_SEGMENTS_RADIUS = 15;
 	private Segment[][] segStorage = new Segment[this.MAX_SEGMENTS_RADIUS*2][this.MAX_SEGMENTS_RADIUS*2];
 	private SegLoader segLoad = new SegLoader();
 	private int startx, starty;
@@ -27,7 +28,7 @@ public class WorldStorage implements IWorldAccess{
 			for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
 				Segment seg = segLoad.getSegmentAt(startx+i, starty+j);
 				if(seg != null){
-					seg.setupDisplayList(this);
+					seg.setupDisplayList(RenderEngine.renderBlocks);
 					ibuf.put(seg.getDisplayListID());
 					System.out.println("Sucessfully loaded segment at x:"+(startx+i)+" y:"+(starty+j));
 				}else{

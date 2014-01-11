@@ -1,13 +1,14 @@
 package aggroforce.world.segment;
 
 import java.io.File;
+
 import org.lwjgl.opengl.GL11;
 
 import aggroforce.block.Block;
+import aggroforce.render.RenderBlocks;
 import aggroforce.texture.Texture;
 import aggroforce.util.Side;
 import aggroforce.world.storage.ISegmentAccess;
-import aggroforce.world.storage.IWorldAccess;
 
 public class Segment implements ISegmentAccess{
 
@@ -34,7 +35,7 @@ public class Segment implements ISegmentAccess{
 		return this.blockStorage[dx][dz][y];
 	}
 
-	public void setupDisplayList(IWorldAccess wld){
+	public void setupDisplayList(RenderBlocks rb){
 		this.dlist = GL11.glGenLists(1);
 		GL11.glNewList(dlist, GL11.GL_COMPILE);
 		GL11.glPushMatrix();
@@ -64,6 +65,10 @@ public class Segment implements ISegmentAccess{
 							GL11.glVertex3d(i, k, j);
 							GL11.glTexCoord2f(1f/16f, 0);
 							GL11.glVertex3d(i+1, k, j);
+//							rb.addVTN(i+1+(16*segx), k, j+1+(16*segy), 1f/16f, 1f/16f, 0, 1f, 0);
+//							rb.addVTN(i+(16*segx), k, j+1+(16*segy), 0, 1f/16f, 0, 1f, 0);
+//							rb.addVTN(i+(16*segx), k, j+(16*segy), 0, 0, 0, 1f, 0);
+//							rb.addVTN(i+1+(16*segx), k, j+(16*segy), 1f/16f, 0, 0, 1f, 0);
 						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.SOUTH)){
 							GL11.glColor4f(1f, 0f, 0f, 1f);

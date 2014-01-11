@@ -54,7 +54,7 @@ public class VBO {
 					GL11.glVertexPointer(3, GL11.GL_FLOAT, 3 << 2, 0L);
 					break;
 				case DATA_COLOR:
-					
+
 					break;
 				case DATA_INDEX:
 					break;
@@ -66,7 +66,7 @@ public class VBO {
 		ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, id);
 //		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
-		GL11.glDisable(GL11.GL_VERTEX_ARRAY);
+		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 	}
 }

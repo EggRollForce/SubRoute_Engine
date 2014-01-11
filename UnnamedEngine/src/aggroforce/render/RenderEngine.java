@@ -28,6 +28,7 @@ public class RenderEngine {
 	private static Random rand = new Random(seed);
 	private static NoiseGeneratorPerlin ngp = new NoiseGeneratorPerlin(rand,16);
 	private static NoiseGeneratorPerlin ngp2 = new NoiseGeneratorPerlin(rand,16);
+	public static RenderBlocks renderBlocks = new RenderBlocks();
 	public RenderEngine(){
 		instance = this;
 		fontRenderer = new FontRenderer();
@@ -64,7 +65,7 @@ public class RenderEngine {
 			dy -= 1d;
 		}
 		if(KeyboardReader.keysts[Keyboard.KEY_R]){
-//			this.regenTerrain();
+			this.renderBlocks.upload();
 		}
 
 		lpos.y=1;
@@ -129,6 +130,7 @@ public class RenderEngine {
 		//		GL11.glTranslated(0, -1024D, 0);
 //		this.renderTerrain();
 		wldstor.render();
+		renderBlocks.render();
 		//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		GL11.glPopMatrix();
 
