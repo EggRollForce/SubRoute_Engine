@@ -28,14 +28,14 @@ public class WorldLoader {
 	}
 	public Segment generateSegment(int x, int y){
 		double[] ngrid = this.nGen1.generatePerlinNoise(16, 16, 5, 5, x*16, y*16);
-		int[][] hmap = new int[16][16];
+		short[][] hmap = new short[16][16];
 		for(int i = 0; i<16; i++){
 			for(int j = 0; j<16; j++){
 				double k = ngrid[(i*16)+j]/32d;
 				if(k<0){
 					k /= 5d;
 				}
-				hmap[i][j] = (int)(256+k);
+				hmap[i][j] = (short)(256+k);
 			}
 		}
 		return new Segment(x,y,hmap);

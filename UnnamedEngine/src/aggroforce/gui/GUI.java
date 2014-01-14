@@ -1,9 +1,9 @@
 package aggroforce.gui;
 
-public class GUI {
+public class GUI extends GUIComponent{
 
-	public void renderGui(){}
-	public void renderGuiBackground(){}
+	public GUI() {
+		super(null);
+	}
 
-	protected final void addComponent(GUIComponent comp){};
 }

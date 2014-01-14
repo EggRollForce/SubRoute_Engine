@@ -115,32 +115,4 @@ public class FontRenderer {
 			xoffset=xoffset+this.renderChar(s.charAt(i), (int) (x+xoffset), y, size)*size;
 		}
 	}
-	//	private class CharRect{
-	//
-	//		int x,y,w,h;
-	//
-	//		public CharRect(char c){
-	//			if(charmap.indexOf(c)!=-1){
-	//				int id = charmap.indexOf(c);
-	//				x = (int) ((id-Math.floor(id/14d)*14)*adv);
-	//				y = (int) ((Math.floor(id/14d)*asc));
-	//				w = adv;
-	//				h = asc;
-	//			}
-	//		}
-	//		public void renderRect(int xpos, int ypos){
-	//			useFontTexture();
-	//			GL11.glBegin(GL11.GL_QUADS);
-	//				GL11.glColor4f(1f, 1f, 1f, 1f);
-	//				GL11.glTexCoord2f(x/128f, y/128f);
-	//				GL11.glVertex2d(xpos, ypos);
-	//				GL11.glTexCoord2f((x+w)/128f, y/128f);
-	//				GL11.glVertex2d(xpos+w*10, ypos);
-	//				GL11.glTexCoord2f((x+w)/128f, (y+h)/128f);
-	//				GL11.glVertex2d(xpos+w*10,ypos+h*10);
-	//				GL11.glTexCoord2f(x/128f, (y+h)/128f);
-	//				GL11.glVertex2d(xpos,ypos+h*10);
-	//			GL11.glEnd();
-	//		}
-	//	}
 }

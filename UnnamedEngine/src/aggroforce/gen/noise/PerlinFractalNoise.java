@@ -23,7 +23,7 @@ public class PerlinFractalNoise extends NoiseGenerator {
 	}
 
 	private void populatePerms(Random rand){
-		for(int i = 0; i < 256; System.out.println(perms[i] = i++)){}
+		for(int i = 0; i < 256; perms[i] = i++){}
 		for(int i = 0; i < 256; i++){
 			int j = rand.nextInt(256-i)+i;
 			int k = perms[i];
@@ -31,9 +31,6 @@ public class PerlinFractalNoise extends NoiseGenerator {
 			perms[j]=k;
 			perms[i+256]=perms[i];
 		}
-//		for(int i : perms){
-//			System.out.println(i);
-//		}
 	}
 
 
