@@ -1,5 +1,7 @@
 package aggroforce.render;
 
+import java.text.DecimalFormat;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -22,7 +24,7 @@ public class GUIRenderer {
 		long free = Runtime.getRuntime().freeMemory();
 		long total = Runtime.getRuntime().totalMemory();
 		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), 10, 10, 5f);
-		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(int)(max/1024d/1024d))+"MB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(int)(total/1024d/1024d)+"MB", 10, 80, 5f);
+		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(new DecimalFormat("#.###")).format((max/1024d/1024d/1024d)))+"GB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(new DecimalFormat("#.#####")).format((total/1024d/1024d/1024d))+"GB", 10, 80, 5f);
 		GL11.glPopMatrix();
 
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
