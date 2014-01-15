@@ -1,5 +1,7 @@
 package aggroforce.menu;
 
-public class MainMenu {
+import aggroforce.gui.GUI;
+
+public class MainMenu extends GUI{
 
 }
