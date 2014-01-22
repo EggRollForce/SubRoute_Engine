@@ -6,7 +6,7 @@ import aggroforce.world.segment.Segment;
 
 public class WorldStorage implements IWorldAccess{
 
-	private int MAX_SEGMENTS_RADIUS = 15;
+	private int MAX_SEGMENTS_RADIUS = 3;
 	private Segment[][] segStorage = new Segment[this.MAX_SEGMENTS_RADIUS*2][this.MAX_SEGMENTS_RADIUS*2];
 	private SegLoader segLoad = new SegLoader();
 	private int startx, starty;
@@ -16,7 +16,7 @@ public class WorldStorage implements IWorldAccess{
 		starty = -this.MAX_SEGMENTS_RADIUS;
 		for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
 			for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
-				segLoad.addSegment(startx+i, starty+j, wl.generateSegment(startx+i, starty+j));
+				segLoad.addSegment(wl.generateSegment(startx+i, starty+j).setWorld(this));
 			}
 		}
 		for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
@@ -38,12 +38,31 @@ public class WorldStorage implements IWorldAccess{
 
 	@Override
 	public int getBlockIdAt(int x, int y, int z) {
-		int sx = x%16;
-		int sy = z%16;
-		if(segLoad.isSegmentLoadedAt(sx, sy)){
-			Segment seg = segLoad.getSegmentAt(sx, sy);
+		int sx = (int)Math.floor((x)/16d);
+		int sy = (int)Math.floor((z)/16d);
+		Segment seg = segLoad.getSegmentAt(sx, sy);
+		if(seg!=null){
+			this.segmentDebug(sx, sy);
 			return seg.getBlockIdAt(x, y, z);
 		}
-		return 0;
+//			System.out.println("No block for segment "+sx+", "+sy);
+		return 1;
+	}
+	int tx = 0;
+	int ty = 0;
+	boolean change = false;
+	private void segmentDebug(int x, int y){
+		if(tx!=x){
+			tx = x;
+			if(!change){change=true;}
+		}
+		if(ty!=y){
+			ty = y;
+			if(!change){change=true;}
+		}
+		if(change){
+			System.out.println("Segment Accessed: "+tx+" ,"+ty);
+			change = false;
+		}
 	}
 }

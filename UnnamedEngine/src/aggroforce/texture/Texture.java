@@ -51,6 +51,10 @@ public class Texture {
 		return name;
 	}
 
+	public void setFilter(){
+
+	}
+
 	public static Texture loadTextureFromFile(String name, File file){
 		BufferedImage img;
 		try{

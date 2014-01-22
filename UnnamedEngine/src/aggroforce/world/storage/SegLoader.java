@@ -1,34 +1,32 @@
 package aggroforce.world.storage;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import aggroforce.world.segment.Segment;
-import aggroforce.world.util.SegmentPos;
 
 public class SegLoader {
 
-	private HashMap<SegmentPos,Segment> loadedSegs = new HashMap<SegmentPos, Segment>();
+	private ArrayList<Segment> loadedSegs = new ArrayList<Segment>();
 	public SegLoader(){
 
 	}
 
-	public boolean addSegment(int x, int y, Segment seg){
-		SegmentPos segpos = new SegmentPos(x,y);
-		if(!loadedSegs.containsKey(segpos)){
-			loadedSegs.put(segpos, seg);
+	public boolean addSegment(Segment seg){
+		if(!loadedSegs.contains(seg)){
+			loadedSegs.add(seg);
 			return true;
 		}else{
 			return false;
 		}
 	}
-	public boolean isSegmentLoadedAt(int x, int y){
-		SegmentPos pos = new SegmentPos(x,y);
-		return loadedSegs.containsKey(pos);
+	public boolean isSegmentLoadedAt(Segment seg){;
+		return loadedSegs.contains(seg);
 	}
 	public Segment getSegmentAt(int x, int y){
-		if(this.isSegmentLoadedAt(x, y)){
-			return loadedSegs.get(new SegmentPos(x,y));
-		}else{
-			return null;
+		for(Segment seg : this.loadedSegs){
+			if(x==seg.segx&&y==seg.segy){
+				return seg;
+			}
 		}
+		return null;
 	}
 }

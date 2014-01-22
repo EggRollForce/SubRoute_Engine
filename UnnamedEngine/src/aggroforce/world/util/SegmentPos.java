@@ -20,7 +20,7 @@ public class SegmentPos {
 
 	@Override
 	public int hashCode(){
-		return this.x + (this.y >> 8);
+		return (this.x<<16)|this.y;
 	}
 
 }

@@ -1,14 +1,20 @@
 package aggroforce.gui.event;
 
+import aggroforce.event.MouseEvent;
+
 public class ComponentClicked extends ComponentEvent{
 
-	public int x,y,button;
+	public int x,y;
+	public boolean[] states;
 
-	public ComponentClicked(int x, int y, int button) {
+	public ComponentClicked(int x, int y, boolean[] states) {
 		super("Clicked");
 		this.x = x;
 		this.y = y;
-		this.button = button;
+		this.states = states;
+	}
+	public ComponentClicked(MouseEvent e){
+		this(e.x,e.y,e.states);
 	}
 
 }

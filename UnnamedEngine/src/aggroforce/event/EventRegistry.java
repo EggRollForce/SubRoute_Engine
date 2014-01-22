@@ -7,6 +7,8 @@ import aggroforce.event.listener.IMouseListener;
 
 public class EventRegistry {
 
+	public static final EventRegistry EVENT_BUS = new EventRegistry();
+
 	private ArrayList<IEventListener> listeners = new ArrayList<IEventListener>();
 
 	public void registerListener(IEventListener listener, String... types){
@@ -25,7 +27,9 @@ public class EventRegistry {
 	private void fireEvent(Event e){
 		for(IEventListener listener : listeners){
 			if(listener instanceof IMouseListener){
-				((IMouseListener)listener).onEvent(e);
+				if(e instanceof MouseEvent){
+					((IMouseListener) listener).onMouseEvent((MouseEvent) e);
+				}
 			}
 		}
 	}

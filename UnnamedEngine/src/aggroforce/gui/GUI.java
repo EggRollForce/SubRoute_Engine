@@ -12,7 +12,7 @@ public class GUI extends GUIComponent{
 	protected void onScreenClicked(MouseEvent evt){
 		for(GUIComponent child : this.getChildren()){
 			if(child.isWithinComponent(evt.x, evt.y)){
-				child.onEvent(new ComponentClicked(evt.x,evt.y,evt.id));
+				child.onEvent(new ComponentClicked(evt.x,evt.y,evt.states));
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package aggroforce.game;
 
 
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.lwjgl.LWJGLException;
@@ -82,7 +83,20 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
+		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+"\\"+Game.getOSName());
 		new Game(args);
+	}
+
+	public static String getOSName(){
+		String name = System.getProperty("os.name","generic").toLowerCase();
+		if(name.indexOf("win") >= 0){
+			return "windows";
+		}else if(name.indexOf("mac") >= 0){
+			return "mac";
+		}else if(name.indexOf("nux") >= 0){
+			return "linux";
+		}
+		return "unknown";
 	}
 
 	private void updateDelta() {
