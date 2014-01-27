@@ -89,7 +89,6 @@ public abstract class GUIComponent{
 		GL11.glVertex2f(x+w, y+h);
 		GL11.glVertex2f(x, y+h);
 		GL11.glEnd();
-
 	}
 
 	public void updateLayout(){

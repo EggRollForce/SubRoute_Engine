@@ -14,7 +14,6 @@ public class OBJReader {
 			BufferedReader br = new BufferedReader(new FileReader(read));
 			String str;
 			while((str = br.readLine())!=null){
-
 			}
 		} catch (Exception e) {
 		}

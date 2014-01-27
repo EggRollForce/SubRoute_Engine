@@ -41,7 +41,7 @@ public class Game {
 		try {
 			Display.setDisplayMode(screen);
 			Display.create();
-			Display.setTitle("UnnamedEngine");
+			Display.setTitle("SubRoute");
 			Display.setResizable(true);
 			//			Display.setVSyncEnabled(true);
 		} catch (LWJGLException e) {
@@ -83,7 +83,8 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
-		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+"\\"+Game.getOSName());
+		System.loadLibrary("jawt");
+		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
 		new Game(args);
 	}
 
@@ -92,7 +93,7 @@ public class Game {
 		if(name.indexOf("win") >= 0){
 			return "windows";
 		}else if(name.indexOf("mac") >= 0){
-			return "mac";
+			return "macosx";
 		}else if(name.indexOf("nux") >= 0){
 			return "linux";
 		}

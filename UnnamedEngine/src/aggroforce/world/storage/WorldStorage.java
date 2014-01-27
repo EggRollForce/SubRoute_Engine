@@ -6,8 +6,7 @@ import aggroforce.world.segment.Segment;
 
 public class WorldStorage implements IWorldAccess{
 
-	private int MAX_SEGMENTS_RADIUS = 3;
-	private Segment[][] segStorage = new Segment[this.MAX_SEGMENTS_RADIUS*2][this.MAX_SEGMENTS_RADIUS*2];
+	private int MAX_SEGMENTS_RADIUS = 15;
 	private SegLoader segLoad = new SegLoader();
 	private int startx, starty;
 
@@ -42,7 +41,7 @@ public class WorldStorage implements IWorldAccess{
 		int sy = (int)Math.floor((z)/16d);
 		Segment seg = segLoad.getSegmentAt(sx, sy);
 		if(seg!=null){
-			this.segmentDebug(sx, sy);
+//			this.segmentDebug(sx, sy);
 			return seg.getBlockIdAt(x, y, z);
 		}
 //			System.out.println("No block for segment "+sx+", "+sy);

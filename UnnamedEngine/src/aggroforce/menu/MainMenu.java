@@ -14,6 +14,7 @@ public class MainMenu extends GUI implements IMouseListener{
 		EventRegistry.EVENT_BUS.registerListener(this);
 		GUIRenderer.setCurrentGUI(this);
 		this.addChild(new Button(this,100,100,100,20));
+		this.addChild(new Button(this,100,200,100,20));
 	}
 
 	@Override

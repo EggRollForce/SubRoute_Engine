@@ -14,8 +14,12 @@ public class Texture {
 
 	private final int texId;
 	private String name;
+	private int w,h;
 
 	private Texture(String name, BufferedImage img){
+		//Get image info
+		w = img.getWidth();
+		h = img.getHeight();
 		//Get the pixel color data
 		int[] rgba = new int[img.getWidth()*img.getHeight()];
 		img.getRGB(0, 0, img.getWidth(), img.getHeight(), rgba, 0, img.getWidth());
@@ -34,12 +38,15 @@ public class Texture {
 		//Finalize the texture
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.texId);
 
+		//Clamp texture
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
+		//Turn filtering off
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
+		//Upload data to OpenGL
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, img.getWidth(), img.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, idat);
 	}
 
@@ -51,8 +58,11 @@ public class Texture {
 		return name;
 	}
 
-	public void setFilter(){
-
+	public int getWidth(){
+		return w;
+	}
+	public int getHeight(){
+		return h;
 	}
 
 	public static Texture loadTextureFromFile(String name, File file){

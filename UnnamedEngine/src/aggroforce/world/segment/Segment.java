@@ -13,7 +13,7 @@ public class Segment implements ISegmentAccess{
 
 	public short[][][] blockStorage = new short[16][16][1024];
 
-	public float guard = 0.0001f;
+	private static final float guard = 0.0001f;
 
 	public IWorldAccess world;
 
@@ -34,17 +34,15 @@ public class Segment implements ISegmentAccess{
 		int sx = (int)Math.floor((x)/16d);
 		int sy = (int)Math.floor((z)/16d);
 		if(sx==this.segx&&sy==this.segy){
-			int dx = Math.signum(x)==-1?(x%16)+16:(x%16);
-			int dz = Math.signum(z)==-1?(z%16)+16:(z%16);
+			int dx = Math.signum(x)==-1?((x+1)%16)+15:(x%16);
+			int dz = Math.signum(z)==-1?((z+1)%16)+15:(z%16);
 			return this.blockStorage[dx][dz][y];
 		}else{
-			return -1;// this.world.getBlockIdAt(x, y, z);
+			return this.world.getBlockIdAt(x, y, z);
 		}
 	}
 
 	public boolean checkInBounds(int x, int y){
-		boolean xsign = Math.signum(x)!=-1;
-		boolean ysign = Math.signum(y)!=-1;
 		boolean xin = x>=(segx*16)&&x<(segx*16)+(16);
 		boolean yin = y>=(segy*16)&&y<(segy*16)+(16);
 		return yin&&xin;
@@ -54,8 +52,8 @@ public class Segment implements ISegmentAccess{
 		for(int i=0;i<16;i++){
 			for(int j=0;j<16;j++){
 				for(int k=0;k<1024;k++){
-					int x = i+(int)(16*segx*Math.signum(segx));
-					int z = j+(int)(16*segy*Math.signum(segy));
+					int x = i+16*segx;
+					int z = j+16*segy;
 					Block blk = Block.blocks[this.blockStorage[i][j][k]];
 					if(blk.renderType()!=-1){
 						if(blk.shouldRenderSide(this, x, k, z, Side.UP)){

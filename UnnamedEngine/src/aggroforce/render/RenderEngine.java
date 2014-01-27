@@ -25,7 +25,7 @@ public class RenderEngine {
 		textureMap = new TextureRegistry();
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
-		new Camera(0d,0d,0d);
+		new Camera(0d,-500d,0d);
 		this.initLighting();
 		GUIRenderer.setCurrentGUI(new MainMenu());
 	}

@@ -9,7 +9,7 @@ public class GUI extends GUIComponent{
 		super(null);
 	}
 
-	protected void onScreenClicked(MouseEvent evt){
+	private void onScreenClicked(MouseEvent evt){
 		for(GUIComponent child : this.getChildren()){
 			if(child.isWithinComponent(evt.x, evt.y)){
 				child.onEvent(new ComponentClicked(evt.x,evt.y,evt.states));

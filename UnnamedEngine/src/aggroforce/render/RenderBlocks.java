@@ -11,7 +11,7 @@ import aggroforce.texture.Texture;
 
 public class RenderBlocks {
 
-	private FloatBuffer data = BufferUtils.createFloatBuffer(80000000);
+	private static FloatBuffer data = BufferUtils.createFloatBuffer(80000000);
 
 	private int bid;
 	private int verts = 0;
