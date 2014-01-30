@@ -4,7 +4,7 @@ import org.lwjgl.input.Mouse;
 
 import aggroforce.event.EventRegistry;
 import aggroforce.event.MouseEvent;
-import aggroforce.render.Camera;
+import aggroforce.render.camera.Camera;
 
 public class MouseReader {
 	private static boolean[] buttons = new boolean[Mouse.getButtonCount()];

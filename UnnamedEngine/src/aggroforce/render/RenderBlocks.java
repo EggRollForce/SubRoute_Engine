@@ -7,11 +7,14 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 
+import aggroforce.render.camera.BlockTarget;
+import aggroforce.render.camera.Camera;
 import aggroforce.texture.Texture;
+import aggroforce.world.storage.WorldStorage;
 
 public class RenderBlocks {
 
-	private static FloatBuffer data = BufferUtils.createFloatBuffer(80000000);
+	private static FloatBuffer data;
 
 	private int bid;
 	private int verts = 0;
@@ -21,25 +24,16 @@ public class RenderBlocks {
 
 	public RenderBlocks(){
 		bid = ARBVertexBufferObject.glGenBuffersARB();
-	}
-
-	public void addVertexUV(float x, float y, float z, float u, float v){
-		verts++;
-		if(data.remaining()<8){
-		}else{
-			data.put(new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]});
+		if(data==null){
+			data = BufferUtils.createFloatBuffer(80000000);
 		}
 	}
 
-	public void setColor(float r, float g, float b, float a){
-		this.color = new float[] {r,g,b,a};
-	}
-
-	public void setNormal(float x, float y, float z){
-		this.normal = new float[] {x,y,z};
-	}
-
 	public void upload(){
+		for(Renderer render: WorldStorage.getRenderers()){
+			data.put(render.getData());
+			verts+=render.getVerts();
+		}
 		ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, bid);
 		ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, (FloatBuffer)data.flip(), ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
 	    GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
@@ -67,5 +61,25 @@ public class RenderBlocks {
 		GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_LIGHTING);
+	}
+
+	public void renderBlockOutline(){
+		BlockTarget t = Camera.instance.getLookTargetBlock();
+		System.out.println("Returning "+t);
+		if(t!=null){
+			GL11.glBegin(GL11.GL_LINE_LOOP);
+			GL11.glColor3f(1f, 1f, 1f);
+			GL11.glVertex3f(t.x, t.y, t.z);
+			GL11.glVertex3f(t.x, t.y+1, t.z);
+			GL11.glVertex3f(t.x, t.y+1, t.z+1);
+			GL11.glVertex3f(t.x, t.y, t.z+1);
+			GL11.glEnd();
+			GL11.glBegin(GL11.GL_LINE_LOOP);
+			GL11.glVertex3f(t.x+1, t.y, t.z+1);
+			GL11.glVertex3f(t.x+1, t.y+1, t.z+1);
+			GL11.glVertex3f(t.x+1, t.y+1, t.z);
+			GL11.glVertex3f(t.x+1, t.y, t.z);
+			GL11.glEnd();
+		}
 	}
 }

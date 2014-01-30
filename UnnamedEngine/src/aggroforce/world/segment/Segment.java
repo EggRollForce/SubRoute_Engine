@@ -1,7 +1,7 @@
 package aggroforce.world.segment;
 
 import aggroforce.block.Block;
-import aggroforce.render.RenderBlocks;
+import aggroforce.render.Renderer;
 import aggroforce.util.Side;
 import aggroforce.world.storage.ISegmentAccess;
 import aggroforce.world.storage.IWorldAccess;
@@ -11,11 +11,13 @@ public class Segment implements ISegmentAccess{
 	public int segx;
 	public int segy;
 
+	private Renderer render;
+
 	public short[][][] blockStorage = new short[16][16][1024];
 
 	private static final float guard = 0.0001f;
 
-	public IWorldAccess world;
+	private IWorldAccess world;
 
 
 	public Segment(int x, int y, short[][] heightData){
@@ -48,7 +50,8 @@ public class Segment implements ISegmentAccess{
 		return yin&&xin;
 	}
 
-	public void setupDisplayList(RenderBlocks rb){
+	public void renderBlocks(Renderer rb){
+		this.render = rb;
 		for(int i=0;i<16;i++){
 			for(int j=0;j<16;j++){
 				for(int k=0;k<1024;k++){

@@ -1,16 +1,21 @@
 package aggroforce.world.storage;
 
-import aggroforce.render.RenderEngine;
+import java.util.ArrayList;
+
+import aggroforce.render.Renderer;
 import aggroforce.world.WorldLoader;
 import aggroforce.world.segment.Segment;
 
 public class WorldStorage implements IWorldAccess{
 
-	private int MAX_SEGMENTS_RADIUS = 15;
+	private static ArrayList<Renderer> rnders = new ArrayList<Renderer>();
+	private int MAX_SEGMENTS_RADIUS = 8;
 	private SegLoader segLoad = new SegLoader();
 	private int startx, starty;
+	private static WorldStorage instance;
 
 	public WorldStorage(WorldLoader wl){
+		instance = this;
 		startx = -this.MAX_SEGMENTS_RADIUS;
 		starty = -this.MAX_SEGMENTS_RADIUS;
 		for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
@@ -22,7 +27,9 @@ public class WorldStorage implements IWorldAccess{
 			for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
 				Segment seg = segLoad.getSegmentAt(startx+i, starty+j);
 				if(seg != null){
-					seg.setupDisplayList(RenderEngine.renderBlocks);
+					Renderer render = new Renderer();
+					seg.renderBlocks(render);
+					rnders.add(render);
 					System.out.println("Sucessfully loaded segment at x:"+(startx+i)+" y:"+(starty+j));
 				}else{
 					this.printSegErr(startx+i, starty+j);
@@ -41,27 +48,16 @@ public class WorldStorage implements IWorldAccess{
 		int sy = (int)Math.floor((z)/16d);
 		Segment seg = segLoad.getSegmentAt(sx, sy);
 		if(seg!=null){
-//			this.segmentDebug(sx, sy);
 			return seg.getBlockIdAt(x, y, z);
 		}
-//			System.out.println("No block for segment "+sx+", "+sy);
-		return 1;
+		return 0;
 	}
-	int tx = 0;
-	int ty = 0;
-	boolean change = false;
-	private void segmentDebug(int x, int y){
-		if(tx!=x){
-			tx = x;
-			if(!change){change=true;}
-		}
-		if(ty!=y){
-			ty = y;
-			if(!change){change=true;}
-		}
-		if(change){
-			System.out.println("Segment Accessed: "+tx+" ,"+ty);
-			change = false;
-		}
+
+	public static ArrayList<Renderer> getRenderers(){
+		return rnders;
+	}
+
+	public static WorldStorage getInstance(){
+		return instance;
 	}
 }

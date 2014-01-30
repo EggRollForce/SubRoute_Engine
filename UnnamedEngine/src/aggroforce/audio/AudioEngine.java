@@ -24,4 +24,7 @@ public class AudioEngine {
 	}
 	public void playSound(){
 	}
+	public void loadSound(){
+
+	}
 }

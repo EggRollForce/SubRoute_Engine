@@ -1,7 +1,8 @@
 package aggroforce.input;
 
 import org.lwjgl.input.Keyboard;
-import aggroforce.render.Camera;
+
+import aggroforce.render.camera.Camera;
 
 public class KeyboardReader {
 	public static KeyboardReader instance;

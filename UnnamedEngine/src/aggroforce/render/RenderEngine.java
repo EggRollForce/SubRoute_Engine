@@ -10,6 +10,7 @@ import aggroforce.game.Game;
 import aggroforce.gui.GUIRenderer;
 import aggroforce.input.KeyboardReader;
 import aggroforce.menu.MainMenu;
+import aggroforce.render.camera.Camera;
 import aggroforce.texture.TextureRegistry;
 import aggroforce.world.WorldLoader;
 import aggroforce.world.storage.WorldStorage;
@@ -43,12 +44,13 @@ public class RenderEngine {
 
 		if(wldstor!=null){
 			Camera.camTransform();
+			Camera.thirdPersonOff();
 
 			if(KeyboardReader.keysts[Keyboard.KEY_UP]){
-			time += 0.1d*Game.instance().getDelta();
+				time += 0.1d*Game.instance().getDelta();
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_DOWN]){
-				time -= Game.instance().getDelta();
+				time -= 0.1d*Game.instance().getDelta();
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_LEFT]){
 			}
@@ -101,9 +103,7 @@ public class RenderEngine {
 
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			GL11.glPushMatrix();
-		//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-				renderBlocks.render();
-		//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+			renderBlocks.render();
 			GL11.glPopMatrix();
 
 			GL11.glFrontFace(GL11.GL_CCW);
@@ -111,6 +111,7 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_LIGHT1);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_FOG);
+			renderBlocks.renderBlockOutline();
 			this.renderDebugAxis();
 		}
 		GUIRenderer.renderGUI();

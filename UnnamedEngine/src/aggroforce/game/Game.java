@@ -83,7 +83,6 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
-		System.loadLibrary("jawt");
 		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
 		new Game(args);
 	}

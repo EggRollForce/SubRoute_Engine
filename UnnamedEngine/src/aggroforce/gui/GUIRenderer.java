@@ -1,5 +1,7 @@
 package aggroforce.gui;
 
+import java.text.DecimalFormat;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -20,12 +22,17 @@ public class GUIRenderer {
 		GL11.glLoadIdentity();
 
 		GL11.glPushMatrix();
-		GL11.glTranslatef(0, 0, -5);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		GL11.glPointSize(10f);
+		GL11.glBegin(GL11.GL_POINTS);
+		GL11.glVertex2d(Game.instance().getScreenWidth()/2d, Game.instance().getScreenHeight()/2d);
+		GL11.glEnd();
+		GL11.glTranslatef(0, 0, -1);
 		long max = Runtime.getRuntime().maxMemory();
 		long free = Runtime.getRuntime().freeMemory();
 		long total = Runtime.getRuntime().totalMemory();
-		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), 2, Game.instance().getScreenHeight()-20, 2f);
-		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(int)(max/1024d/1024d))+"MB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(int)(total/1024d/1024d)+"MB", 2, Game.instance().getScreenHeight()-40, 2f);
+		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), 1, 0, 1f);
+		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(new DecimalFormat("#.###")).format((max/1024d/1024d/1024d)))+"GB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(new DecimalFormat("#.#####")).format((total/1024d/1024d/1024d))+"GB", 1, 10, 1f);
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0, 0, -5);
