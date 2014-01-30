@@ -60,11 +60,11 @@ public class Camera{
 	public static void mouseIn(float dx, float dy){
 		double temp = pitch - dy*mouseSens;
 		yaw += dx*mouseSens;
-		if(!(temp > -85)){
+		if(!(temp > -90)){
 			return;
-		}else if(!(temp < 85)){
+		}else if(!(temp < 90)){
 			return;
-		}else if(temp > -85 && temp < 85){
+		}else if(temp > -90 && temp < 90){
 			pitch = temp;
 		}
 	}
@@ -104,14 +104,17 @@ public class Camera{
 	public static void camTranslateOnly(){
 		GL11.glTranslated(x, y, z);
 	}
-	private int r = 100;
+	private int r = 10;
 	public BlockTarget getLookTargetBlock(){
 		int x = 0,y = 0,z = 0,id = 0;
 		float mul = 0;
 		boolean first = true;
 		do{
 			mul+=0.01f;
-			int x2 = (int)((veiwVec.x*mul)-Camera.x), y2 =(int)((veiwVec.y*mul)-Camera.y+1), z2 = -(int)((veiwVec.z*mul)+Camera.z);
+			double temp = Camera.z+(veiwVec.z*mul);
+			int x2 = -(int)Math.floor(Camera.x-(veiwVec.x*mul)+1);
+			int y2 =(int)((veiwVec.y*mul)-Camera.y)+1;
+			int z2 = -(int)(temp+(Math.signum(temp)!=1?0:1));
 			if(x2!=x||y2!=y||z2!=z||first){
 				first = false;
 				x=x2;y=y2;z=z2;
@@ -119,7 +122,7 @@ public class Camera{
 			}
 		}while(id==0&&!(mul>=r));
 		if(!(mul>=r)){
-			return new BlockTarget(x, y, z,id);
+			return new BlockTarget(x, y-1, z,id);
 		}
 		return null;
 	}

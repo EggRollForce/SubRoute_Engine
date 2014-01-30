@@ -63,22 +63,33 @@ public class RenderBlocks {
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 
+	float off = 0.001f;
 	public void renderBlockOutline(){
 		BlockTarget t = Camera.instance.getLookTargetBlock();
-		System.out.println("Returning "+t);
 		if(t!=null){
+			GL11.glColor4f(0f, 0f, 0f, 0.5f);
+			GL11.glLineWidth(2f);
 			GL11.glBegin(GL11.GL_LINE_LOOP);
-			GL11.glColor3f(1f, 1f, 1f);
-			GL11.glVertex3f(t.x, t.y, t.z);
-			GL11.glVertex3f(t.x, t.y+1, t.z);
-			GL11.glVertex3f(t.x, t.y+1, t.z+1);
-			GL11.glVertex3f(t.x, t.y, t.z+1);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z+1+off);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z+1+off);
 			GL11.glEnd();
 			GL11.glBegin(GL11.GL_LINE_LOOP);
-			GL11.glVertex3f(t.x+1, t.y, t.z+1);
-			GL11.glVertex3f(t.x+1, t.y+1, t.z+1);
-			GL11.glVertex3f(t.x+1, t.y+1, t.z);
-			GL11.glVertex3f(t.x+1, t.y, t.z);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z-off);
+			GL11.glEnd();
+			GL11.glBegin(GL11.GL_LINES);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z+1+off);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
 			GL11.glEnd();
 		}
 	}

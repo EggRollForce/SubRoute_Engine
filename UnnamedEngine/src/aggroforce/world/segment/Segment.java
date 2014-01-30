@@ -1,4 +1,4 @@
-package aggroforce.world.segment;
+ package aggroforce.world.segment;
 
 import aggroforce.block.Block;
 import aggroforce.render.Renderer;
