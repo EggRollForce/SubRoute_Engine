@@ -34,6 +34,7 @@ public class RenderEngine {
 	private final Vector3f lpos = new Vector3f(0,0,0);
 	float time;
 	WorldStorage wldstor;
+	public boolean bool = false;
 	public void renderLoop(){
 
 
@@ -56,8 +57,9 @@ public class RenderEngine {
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_RIGHT]){
 			}
-			if(KeyboardReader.keysts[Keyboard.KEY_R]){
-				System.gc();
+			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool){
+				bool=KeyboardReader.keysts[Keyboard.KEY_R];
+				renderBlocks.upload();
 			}
 
 			lpos.y=1;
@@ -112,7 +114,6 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_FOG);
 			renderBlocks.renderBlockOutline();
-			this.renderDebugAxis();
 		}
 		GUIRenderer.renderGUI();
 		GL11.glPopMatrix();

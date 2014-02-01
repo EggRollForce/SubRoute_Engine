@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import aggroforce.render.camera.BlockTarget;
 import aggroforce.render.camera.Camera;
 import aggroforce.texture.Texture;
+import aggroforce.texture.TextureMap;
 import aggroforce.world.storage.WorldStorage;
 
 public class RenderBlocks {
@@ -29,17 +30,24 @@ public class RenderBlocks {
 		}
 	}
 
+	public boolean firstup = true;
 	public void upload(){
+		verts=0;
 		for(Renderer render: WorldStorage.getRenderers()){
-			data.put(render.getData());
+			data.put(render.getData().duplicate());
 			verts+=render.getVerts();
 		}
 		ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, bid);
-		ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, (FloatBuffer)data.flip(), ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
-	    GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
+		if(firstup){
+			firstup = false;
+			ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, (FloatBuffer)data.flip(), ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
+		}else{
+			ARBVertexBufferObject.glBufferSubDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0L, (FloatBuffer)data.flip());
+		}
+		GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
 	    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
 	    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
-	    data = null;
+	    data.rewind();
 	}
 
 	public static Texture test = Texture.loadTextureFromFile("Stone", new File("resource/textures/blocks/terrain.png"));
@@ -50,7 +58,7 @@ public class RenderBlocks {
 		}
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, test.getGLTexID());
+		TextureMap.blockMap.bindTextureMap();
 		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);

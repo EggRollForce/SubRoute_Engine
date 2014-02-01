@@ -47,6 +47,21 @@ public class GUIRenderer {
 		}
 		GL11.glPopMatrix();
 
+//		GL11.glPushMatrix();
+//		TextureMap.blockMap.bindTextureMap();
+//		GL11.glEnable(GL11.GL_TEXTURE_2D);
+//		GL11.glBegin(GL11.GL_QUADS);
+//		GL11.glTexCoord2f(0, 1);
+//		GL11.glVertex2f(0, 0);
+//		GL11.glTexCoord2f(0, 0);
+//		GL11.glVertex2f(0, 400);
+//		GL11.glTexCoord2f(1, 0);
+//		GL11.glVertex2f(400, 400);
+//		GL11.glTexCoord2f(1, 1);
+//		GL11.glVertex2f(400, 0);
+//		GL11.glEnd();
+
+		GL11.glPopMatrix();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 		GLU.gluPerspective(45.0f,((float)Game.instance().getScreenWidth()/(float)Game.instance().getScreenHeight()),0.1f,10000.0f);

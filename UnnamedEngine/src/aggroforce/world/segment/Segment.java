@@ -2,6 +2,7 @@
 
 import aggroforce.block.Block;
 import aggroforce.render.Renderer;
+import aggroforce.texture.Icon;
 import aggroforce.util.Side;
 import aggroforce.world.storage.ISegmentAccess;
 import aggroforce.world.storage.IWorldAccess;
@@ -33,6 +34,9 @@ public class Segment implements ISegmentAccess{
 
 	@Override
 	public int getBlockIdAt(int x, int y, int z){
+		if(Math.signum(y)==-1){
+			return 0;
+		}
 		int sx = (int)Math.floor((x)/16d);
 		int sy = (int)Math.floor((z)/16d);
 		if(sx==this.segx&&sy==this.segy){
@@ -58,42 +62,55 @@ public class Segment implements ISegmentAccess{
 					int x = i+16*segx;
 					int z = j+16*segy;
 					Block blk = Block.blocks[this.blockStorage[i][j][k]];
-					if(blk.renderType()!=-1){
+					if(blk!=null&&blk.renderType()!=-1){
 						if(blk.shouldRenderSide(this, x, k, z, Side.UP)){
+							Icon icon = blk.getIconForSide(this, x, k, z, Side.UP);
 							rb.setNormal(0, 1f, 0);
-							rb.addVertexUV(i+1+(16*segx), k, j+1+(16*segy), 1f/16f - guard, 1f/16f - guard);
-							rb.addVertexUV(i+(16*segx), k, j+1+(16*segy), 0 + guard, 1f/16f - guard);
-							rb.addVertexUV(i+(16*segx), k, j+(16*segy), 0 + guard, 0 + guard);
-							rb.addVertexUV(i+1+(16*segx), k, j+(16*segy), 1f/16f - guard, 0 + guard);
+							rb.addVertexUV(i+1+(16*segx), k, j+1+(16*segy), icon.getEndU(), icon.getEndV());
+							rb.addVertexUV(i+(16*segx), k, j+1+(16*segy), icon.getStartU(), icon.getEndV());
+							rb.addVertexUV(i+(16*segx), k, j+(16*segy), icon.getStartU(), icon.getStartV());
+							rb.addVertexUV(i+1+(16*segx), k, j+(16*segy), icon.getEndU(), icon.getStartV());
 						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.SOUTH)){
+							Icon icon = blk.getIconForSide(this, x, k, z, Side.SOUTH);
 							rb.setNormal(1f, 0, 0);
-							rb.addVertexUV(i+(16*segx), k, j+1+(16*segy), 2f/16f - guard, 0 + guard);
-							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), 2f/16f - guard, 1f/16f - guard);
-							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), 1f/16f + guard, 1f/16f - guard);
-							rb.addVertexUV(i+(16*segx), k, j+(16*segy), 1f/16f + guard, 0 + guard);
+							rb.addVertexUV(i+(16*segx), k, j+1+(16*segy), icon.getEndU(), icon.getStartV());
+							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), icon.getEndU(), icon.getEndV());
+							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), icon.getStartU(), icon.getEndV());
+							rb.addVertexUV(i+(16*segx), k, j+(16*segy), icon.getStartU(), icon.getStartV());
 
 						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.NORTH)){
+							Icon icon = blk.getIconForSide(this, x, k, z, Side.NORTH);
 							rb.setNormal(-1f, 0f, 0f);
-							rb.addVertexUV(i+1+(16*segx), k, j+1+(16*segy), 1f/16f + guard, 0 + guard);
-							rb.addVertexUV(i+1+(16*segx), k, j+(16*segy), 2f/16f - guard, 0 + guard);
-							rb.addVertexUV(i+1+(16*segx), k-1, j+(16*segy), 2f/16f - guard, 1f/16f - guard);
-							rb.addVertexUV(i+1+(16*segx), k-1, j+1+(16*segy), 1f/16f + guard, 1f/16f - guard);
+							rb.addVertexUV(i+1+(16*segx), k, j+1+(16*segy), icon.getStartU(), icon.getStartV());
+							rb.addVertexUV(i+1+(16*segx), k, j+(16*segy), icon.getEndU(), icon.getStartV());
+							rb.addVertexUV(i+1+(16*segx), k-1, j+(16*segy), icon.getEndU(), icon.getEndV());
+							rb.addVertexUV(i+1+(16*segx), k-1, j+1+(16*segy), icon.getStartU(), icon.getEndV());
 						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.WEST)){
+							Icon icon = blk.getIconForSide(this, x, k, z, Side.WEST);
 							rb.setNormal(0f, 0f, -1f);
-							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), 2f/16f - guard, 1f/16f - guard);
-							rb.addVertexUV(i+1+(16*segx), k-1, j+(16*segy), 1f/16f + guard, 1f/16f - guard);
-							rb.addVertexUV(i+1+(16*segx), k, j+(16*segy), 1f/16F + guard, 0f + guard);
-							rb.addVertexUV(i+(16*segx), k, j+(16*segy), 2f/16f - guard, 0f + guard);
+							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), icon.getEndU(), icon.getEndV());
+							rb.addVertexUV(i+1+(16*segx), k-1, j+(16*segy), icon.getStartU(), icon.getEndV());
+							rb.addVertexUV(i+1+(16*segx), k, j+(16*segy), icon.getStartU(), icon.getStartV());
+							rb.addVertexUV(i+(16*segx), k, j+(16*segy), icon.getEndU(), icon.getStartV());
 						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.EAST)){
+							Icon icon = blk.getIconForSide(this, x, k, z, Side.EAST);
 							rb.setNormal(0f, 0f, 1f);
-							rb.addVertexUV(i+1+(16*segx), k, j+1+(16*segy), 1f/16f + guard, 0 + guard);
-							rb.addVertexUV(i+1+(16*segx), k-1, j+1+(16*segy), 1f/16f + guard, 1f/16f - guard);
-							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), 2f/16f - guard, 1f/16f - guard);
-							rb.addVertexUV(i+(16*segx), k, j+1+(16*segy), 2f/16f - guard, 0 + guard);
+							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), icon.getStartU(), icon.getEndV());
+							rb.addVertexUV(i+(16*segx), k, j+1+(16*segy), icon.getStartU(), icon.getStartV());
+							rb.addVertexUV(i+1+(16*segx), k, j+1+(16*segy), icon.getEndU(), icon.getStartV());
+							rb.addVertexUV(i+1+(16*segx), k-1, j+1+(16*segy), icon.getEndU(), icon.getEndV());
+						}
+						if(blk.shouldRenderSide(this, x, k, z, Side.DOWN)){
+							Icon icon = blk.getIconForSide(this, x, k, z, Side.DOWN);
+							rb.setNormal(0, -1f, 0);
+							rb.addVertexUV(i+1+(16*segx), k-1, j+1+(16*segy), icon.getStartU(), icon.getEndV());
+							rb.addVertexUV(i+1+(16*segx), k-1, j+(16*segy), icon.getStartU(), icon.getStartV());
+							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), icon.getEndU(), icon.getStartV());
+							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), icon.getEndU(), icon.getEndV());
 						}
 					}
 				}
@@ -106,7 +123,11 @@ public class Segment implements ISegmentAccess{
 				int h = heightData[i][j];
 				for(int k = 0; k<1024; k++){
 					if(k<h){
-						this.blockStorage[i][j][k] = 1;
+						if(k<(h-2)){
+							this.blockStorage[i][j][k] = 2;
+						}else{
+							this.blockStorage[i][j][k] = 1;
+						}
 					}else{
 						this.blockStorage[i][j][k] = 0;
 					}

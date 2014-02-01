@@ -110,7 +110,7 @@ public class Camera{
 		float mul = 0;
 		boolean first = true;
 		do{
-			mul+=0.01f;
+			mul+=0.001f;
 			double temp = Camera.z+(veiwVec.z*mul);
 			int x2 = -(int)Math.floor(Camera.x-(veiwVec.x*mul)+1);
 			int y2 =(int)((veiwVec.y*mul)-Camera.y)+1;

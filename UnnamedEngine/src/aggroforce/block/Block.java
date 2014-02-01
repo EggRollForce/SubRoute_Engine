@@ -1,9 +1,11 @@
 package aggroforce.block;
 
+import aggroforce.texture.Icon;
+import aggroforce.texture.TileRegister;
 import aggroforce.util.Side;
 import aggroforce.world.storage.IWorldAccess;
 
-public class Block {
+public abstract class Block {
 
 	public static Block[] blocks = new Block[256];
 
@@ -38,7 +40,7 @@ public class Block {
 	public String getName(){
 		return this.toString();
 	}
-	public Block(int id) {
+	protected Block(int id) {
 		if(id<blocks.length&&blocks[id]==null){
 			blocks[id]=this;
 		}else{
@@ -46,8 +48,20 @@ public class Block {
 		}
 	}
 
-	public Block(){
+	public abstract void registerTexTiles(TileRegister reg);
+
+	public abstract Icon getIconForSide(IWorldAccess wld, int x, int y, int z, Side side);
+
+	public static void setupBlocks(){
 		new Air();
+		new Grass();
 		new Stone();
+		new Scrap();
+
+		for(Block blk : blocks){
+			if(blk!=null){
+				blk.registerTexTiles(new TileRegister());
+			}
+		}
 	}
 }

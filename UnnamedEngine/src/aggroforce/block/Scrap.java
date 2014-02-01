@@ -5,30 +5,21 @@ import aggroforce.texture.TileRegister;
 import aggroforce.util.Side;
 import aggroforce.world.storage.IWorldAccess;
 
-public class Air extends Block {
+public class Scrap extends Block {
 
-	public Air() {
-		super(0);
-	}
-
-	@Override
-	public boolean isSolidOpaque(){
-		return false;
-	}
-
-	@Override
-	public int renderType(){
-		return -1;
+	Icon icon;
+	protected Scrap() {
+		super(3);
 	}
 
 	@Override
 	public void registerTexTiles(TileRegister reg) {
-
+		icon = reg.loadNewIcon("resource/textures/blocks/refined_metal.png");
 	}
 
 	@Override
 	public Icon getIconForSide(IWorldAccess wld, int x, int y, int z, Side side) {
-		return null;
+		return icon;
 	}
 
 }

@@ -48,7 +48,7 @@ public class Game {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		new Block();
+		Block.setupBlocks();
 		new RenderEngine();
 		new Input();
 		new AudioEngine();
