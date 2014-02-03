@@ -18,6 +18,9 @@ public class SegLoader {
 			return false;
 		}
 	}
+	public ArrayList<Segment> getLoadedSegments(){
+		return this.loadedSegs;
+	}
 	public boolean isSegmentLoadedAt(Segment seg){;
 		return loadedSegs.contains(seg);
 	}
@@ -28,5 +31,16 @@ public class SegLoader {
 			}
 		}
 		return null;
+	}
+	public boolean updateNeeded;
+	public boolean checkForUpdate(){
+		updateNeeded = false;
+		for(Segment s : loadedSegs){
+			if(s.getIsUpdateNeeded()){
+				updateNeeded = true;
+				s.renderUpdate();
+			}
+		}
+		return updateNeeded;
 	}
 }

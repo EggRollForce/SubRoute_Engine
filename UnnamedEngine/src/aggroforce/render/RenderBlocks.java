@@ -1,15 +1,14 @@
 package aggroforce.render;
 
-import java.io.File;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
 
 import aggroforce.render.camera.BlockTarget;
 import aggroforce.render.camera.Camera;
-import aggroforce.texture.Texture;
 import aggroforce.texture.TextureMap;
 import aggroforce.world.storage.WorldStorage;
 
@@ -20,8 +19,6 @@ public class RenderBlocks {
 	private int bid;
 	private int verts = 0;
 	private boolean uploaded=false;
-	private float[] color = {0f,0f,0f,1f};
-	private float[] normal = {0f,0f,0f};
 
 	public RenderBlocks(){
 		bid = ARBVertexBufferObject.glGenBuffersARB();
@@ -33,26 +30,32 @@ public class RenderBlocks {
 	public boolean firstup = true;
 	public void upload(){
 		verts=0;
-		for(Renderer render: WorldStorage.getRenderers()){
-			data.put(render.getData().duplicate());
-			verts+=render.getVerts();
-		}
 		ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, bid);
 		if(firstup){
 			firstup = false;
-			ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, (FloatBuffer)data.flip(), ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
+	    	for(Renderer render: WorldStorage.getRenderers()){
+				data.put(render.getData());
+				verts+=render.getVerts();
+			}
+	    	data.position(data.capacity());
+	    	data.flip();
+			ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, data, ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
+			GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
+		    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
+		    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
 		}else{
-			ARBVertexBufferObject.glBufferSubDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0L, (FloatBuffer)data.flip());
+			long offset = 0;
+			for(Renderer render : WorldStorage.getRenderers()){
+				long stride = (render.getVerts()*8);
+				ARBVertexBufferObject.glBufferSubDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, offset<<2, render.getData());
+				offset+=stride;
+				verts+=render.getVerts();
+			}
 		}
-		GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
-	    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
-	    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
-	    data.rewind();
 	}
 
-	public static Texture test = Texture.loadTextureFromFile("Stone", new File("resource/textures/blocks/terrain.png"));
 	public void render(){
-		if(!uploaded){
+		if(!uploaded||WorldStorage.getInstance().getIsUpdateNeeded()){
 			this.upload();
 			this.uploaded = true;
 		}
@@ -72,6 +75,7 @@ public class RenderBlocks {
 	}
 
 	float off = 0.001f;
+	boolean bstate = false;
 	public void renderBlockOutline(){
 		BlockTarget t = Camera.instance.getLookTargetBlock();
 		if(t!=null){
@@ -99,6 +103,10 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x-off, t.y-off, t.z+1+off);
 			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
 			GL11.glEnd();
+			if(!bstate&&Mouse.isButtonDown(1)){
+				WorldStorage.getInstance().setBlockAt(t.x, t.y+2, t.z, 4);
+			}
+			bstate = Mouse.isButtonDown(1);
 		}
 	}
 }

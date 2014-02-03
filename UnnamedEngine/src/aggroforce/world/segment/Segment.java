@@ -16,7 +16,7 @@ public class Segment implements ISegmentAccess{
 
 	public short[][][] blockStorage = new short[16][16][1024];
 
-	private static final float guard = 0.0001f;
+	private boolean update = false;
 
 	private IWorldAccess world;
 
@@ -34,7 +34,7 @@ public class Segment implements ISegmentAccess{
 
 	@Override
 	public int getBlockIdAt(int x, int y, int z){
-		if(Math.signum(y)==-1){
+		if(y<0||y>=1024){
 			return 0;
 		}
 		int sx = (int)Math.floor((x)/16d);
@@ -54,8 +54,15 @@ public class Segment implements ISegmentAccess{
 		return yin&&xin;
 	}
 
+	public void renderUpdate(){
+		this.renderBlocks(render);
+		System.out.println("Updated segment");
+	}
+
 	public void renderBlocks(Renderer rb){
+		this.update = false;
 		this.render = rb;
+		rb.reset();
 		for(int i=0;i<16;i++){
 			for(int j=0;j<16;j++){
 				for(int k=0;k<1024;k++){
@@ -134,5 +141,38 @@ public class Segment implements ISegmentAccess{
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean setBlockAt(int x, int y, int z, int id) {
+		this.updateNeeded();
+		this.world.updateNeeded();
+		if(Math.signum(y)==-1){
+			return false;
+		}
+		int sx = (int)Math.floor((x)/16d);
+		int sy = (int)Math.floor((z)/16d);
+		if(sx==this.segx&&sy==this.segy){
+			int dx = Math.signum(x)==-1?((x+1)%16)+15:(x%16);
+			int dz = Math.signum(z)==-1?((z+1)%16)+15:(z%16);
+			this.blockStorage[dx][dz][y] = (short) id;
+			System.out.println("Set block at x:"+x+" y:"+y+" z:"+z+" to id:"+id );
+			return true;
+		}else{
+			return this.world.setBlockAt(x, y, z, id);
+		}
+	}
+	public Renderer getRenderer(){
+		return this.render;
+	}
+
+	@Override
+	public void updateNeeded() {
+		update = true;
+	}
+
+	@Override
+	public boolean getIsUpdateNeeded() {
+		return update;
 	}
 }

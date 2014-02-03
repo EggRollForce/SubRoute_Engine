@@ -83,9 +83,9 @@ public class RenderEngine {
 			GL11.glFogi(GL11.GL_FOG_END, 90);
 			GL11.glFogi(GL11.GL_FOG_START, 80);
 			GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
-			GL11.glPointSize(10f);
+			GL11.glPointSize(100f);
 			GL11.glBegin(GL11.GL_POINTS);
-			GL11.glColor4f(0f, 0f, 0f, 1f);
+			GL11.glColor4f(1f, 1f, 0f, 1f);
 			GL11.glVertex3d(0, p+256, p2);
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			GL11.glVertex3d(0, p3+256, p4);
@@ -151,6 +151,6 @@ public class RenderEngine {
 		GL11.glEnd();
 	}
 	public void loadWorld(){
-		wldstor = new WorldStorage(new WorldLoader(1456899709L));
+		wldstor = new WorldStorage(new WorldLoader());
 	}
 }

@@ -14,6 +14,10 @@ public class WorldLoader {
 	public WorldLoader(File world){
 	}
 
+	public WorldLoader(){
+		this(new Random());
+	}
+
 	public WorldLoader(Long seed){
 		this(new Random(seed));
 	}

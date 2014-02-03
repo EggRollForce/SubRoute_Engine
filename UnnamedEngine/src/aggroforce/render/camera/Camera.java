@@ -104,7 +104,7 @@ public class Camera{
 	public static void camTranslateOnly(){
 		GL11.glTranslated(x, y, z);
 	}
-	private int r = 10;
+	private int r = 100;
 	public BlockTarget getLookTargetBlock(){
 		int x = 0,y = 0,z = 0,id = 0;
 		float mul = 0;
