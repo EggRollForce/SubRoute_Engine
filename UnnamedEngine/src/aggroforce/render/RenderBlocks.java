@@ -108,7 +108,7 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
 			GL11.glEnd();
 			if(!bstate&&Mouse.isButtonDown(1)){
-				WorldStorage.getInstance().setBlockAt(t.x, t.y+1, t.z, 3);
+				WorldStorage.getInstance().setBlockAt(t.x, t.y+2, t.z, 3);
 			}
 			bstate = Mouse.isButtonDown(1);
 		}

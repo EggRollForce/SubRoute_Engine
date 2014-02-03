@@ -44,6 +44,9 @@ public class RenderEngine {
 		GL11.glPushMatrix();
 
 		if(wldstor!=null){
+			if(!this.wldstor.isLoaded()){
+				this.wldstor.loadNextRenderer();
+			}
 			Camera.camTransform();
 			Camera.thirdPersonOff();
 

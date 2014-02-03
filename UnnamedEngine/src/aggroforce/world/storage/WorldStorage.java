@@ -13,6 +13,7 @@ public class WorldStorage implements IWorldAccess{
 	private SegLoader segLoad = new SegLoader();
 	private int startx, starty;
 	private boolean needsUpdate = false;
+	private boolean loaded = false;
 	private static WorldStorage instance;
 
 	public WorldStorage(WorldLoader wl){
@@ -25,29 +26,32 @@ public class WorldStorage implements IWorldAccess{
 					segLoad.addSegment(wl.generateSegment(startx+i, starty+j).setWorld(this));
 				}
 			}
-			for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
-				for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
-				}
-			}
 		}
 	}
 
 	int nextx,nexty;
 
+	public boolean isLoaded(){
+		return loaded;
+	}
 	public void loadNextRenderer(){
 		Segment seg = segLoad.getSegmentAt(startx+nextx, starty+nexty);
 		if(seg != null){
 			Renderer render = new Renderer();
 			seg.renderBlocks(render);
 			rnders.add(render);
+			render.setUpdated(true);
 			System.out.println("Sucessfully loaded segment at x:"+(startx+nextx)+" y:"+(starty+nexty));
 		}else{
 			this.printSegErr(startx+nextx, starty+nexty);
 		}
 		nexty++;
-		if(!(nexty<0*this.MAX_SEGMENTS_RADIUS)){
+		if(!(nexty<2*this.MAX_SEGMENTS_RADIUS)){
 			nexty=0;
 			nextx++;
+		}
+		if(!(nextx<2*this.MAX_SEGMENTS_RADIUS)){
+			this.loaded = true;
 		}
 	}
 	private void printSegErr(int x, int y){
