@@ -122,7 +122,7 @@ public class Camera{
 			}
 		}while(id==0&&!(mul>=r));
 		if(!(mul>=r)){
-			return new BlockTarget(x, y-1, z,id);
+			return new BlockTarget(x, y, z,id);
 		}
 		return null;
 	}
