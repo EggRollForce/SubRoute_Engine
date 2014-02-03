@@ -58,6 +58,9 @@ public abstract class Block {
 		new Stone();
 		new Scrap();
 		new RefinedMetal();
+		new Log();
+		new Leaves();
+		new Sand();
 
 		for(Block blk : blocks){
 			if(blk!=null){
