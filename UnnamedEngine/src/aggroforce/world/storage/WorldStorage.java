@@ -27,20 +27,29 @@ public class WorldStorage implements IWorldAccess{
 			}
 			for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
 				for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
-					Segment seg = segLoad.getSegmentAt(startx+i, starty+j);
-					if(seg != null){
-						Renderer render = new Renderer();
-						seg.renderBlocks(render);
-						rnders.add(render);
-						System.out.println("Sucessfully loaded segment at x:"+(startx+i)+" y:"+(starty+j));
-					}else{
-						this.printSegErr(startx+i, starty+j);
-					}
 				}
 			}
 		}
 	}
 
+	int nextx,nexty;
+
+	public void loadNextRenderer(){
+		Segment seg = segLoad.getSegmentAt(startx+nextx, starty+nexty);
+		if(seg != null){
+			Renderer render = new Renderer();
+			seg.renderBlocks(render);
+			rnders.add(render);
+			System.out.println("Sucessfully loaded segment at x:"+(startx+nextx)+" y:"+(starty+nexty));
+		}else{
+			this.printSegErr(startx+nextx, starty+nexty);
+		}
+		nexty++;
+		if(!(nexty<0*this.MAX_SEGMENTS_RADIUS)){
+			nexty=0;
+			nextx++;
+		}
+	}
 	private void printSegErr(int x, int y){
 		System.out.println("Could not get Segment at x:"+x+" y:"+y);
 	}
@@ -62,6 +71,10 @@ public class WorldStorage implements IWorldAccess{
 			System.out.println("All renderers updated");
 		}
 		return rnders;
+	}
+
+	public static ArrayList<Renderer> getUpdateRenderers(){
+		return null;
 	}
 
 	public static WorldStorage getInstance(){

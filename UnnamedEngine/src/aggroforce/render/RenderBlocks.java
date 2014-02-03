@@ -4,8 +4,8 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
 
 import aggroforce.render.camera.BlockTarget;
 import aggroforce.render.camera.Camera;
@@ -21,7 +21,7 @@ public class RenderBlocks {
 	private boolean uploaded=false;
 
 	public RenderBlocks(){
-		bid = ARBVertexBufferObject.glGenBuffersARB();
+		bid = GL15.glGenBuffers();
 		if(data==null){
 			data = BufferUtils.createFloatBuffer(80000000);
 		}
@@ -30,7 +30,7 @@ public class RenderBlocks {
 	public boolean firstup = true;
 	public void upload(){
 		verts=0;
-		ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, bid);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bid);
 		if(firstup){
 			firstup = false;
 	    	for(Renderer render: WorldStorage.getRenderers()){
@@ -39,15 +39,19 @@ public class RenderBlocks {
 			}
 	    	data.position(data.capacity());
 	    	data.flip();
-			ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, data, ARBVertexBufferObject.GL_STREAM_DRAW_ARB);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STREAM_DRAW);
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
 		    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
 		    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
 		}else{
 			long offset = 0;
+			boolean update = false;
 			for(Renderer render : WorldStorage.getRenderers()){
 				long stride = (render.getVerts()*8);
-				ARBVertexBufferObject.glBufferSubDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, offset<<2, render.getData());
+				if(update||(update=render.isUpdated())){
+					render.setUpdated(false);
+					GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset<<2, render.getData());
+				}
 				offset+=stride;
 				verts+=render.getVerts();
 			}
@@ -65,7 +69,7 @@ public class RenderBlocks {
 		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-		ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, bid);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bid);
 		GL11.glDrawArrays(GL11.GL_QUADS, 0, verts);
 		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
@@ -104,7 +108,7 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
 			GL11.glEnd();
 			if(!bstate&&Mouse.isButtonDown(1)){
-				WorldStorage.getInstance().setBlockAt(t.x, t.y+2, t.z, 4);
+				WorldStorage.getInstance().setBlockAt(t.x, t.y+1, t.z, 3);
 			}
 			bstate = Mouse.isButtonDown(1);
 		}
