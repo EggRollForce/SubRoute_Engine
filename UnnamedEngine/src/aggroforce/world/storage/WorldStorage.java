@@ -9,7 +9,7 @@ import aggroforce.world.segment.Segment;
 public class WorldStorage implements IWorldAccess{
 
 	private static ArrayList<Renderer> rnders = new ArrayList<Renderer>();
-	private int MAX_SEGMENTS_RADIUS = 5;
+	private int MAX_SEGMENTS_RADIUS = 7;
 	private SegLoader segLoad = new SegLoader();
 	private int startx, starty;
 	private boolean needsUpdate = false;
@@ -35,6 +35,7 @@ public class WorldStorage implements IWorldAccess{
 		return loaded;
 	}
 	public void loadNextRenderer(){
+		this.needsUpdate = true;
 		Segment seg = segLoad.getSegmentAt(startx+nextx, starty+nexty);
 		if(seg != null){
 			Renderer render = new Renderer();
