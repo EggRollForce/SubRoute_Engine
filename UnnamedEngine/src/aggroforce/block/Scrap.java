@@ -14,7 +14,7 @@ public class Scrap extends Block {
 
 	@Override
 	public void registerTexTiles(TileRegister reg) {
-		icon = reg.loadNewIcon("resource/textures/blocks/refined_metal.png");
+		icon = reg.loadNewIcon("resource/textures/blocks/scrap_metal.png");
 	}
 
 	@Override

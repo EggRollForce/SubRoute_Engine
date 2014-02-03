@@ -43,7 +43,7 @@ public class Game {
 			Display.create();
 			Display.setTitle("SubRoute");
 			Display.setResizable(true);
-			//			Display.setVSyncEnabled(true);
+//			Display.setVSyncEnabled(true);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);

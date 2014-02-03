@@ -28,7 +28,7 @@ public class Renderer {
 		if(!this.isDone){
 			compile();
 		}
-		return this.data;
+		return this.data.asReadOnlyBuffer();
 	}
 
 	public int getVerts(){
@@ -36,7 +36,12 @@ public class Renderer {
 	}
 	public void compile(){
 		this.isDone = true;
-		data.limit(data.capacity()-data.remaining());
-		data.rewind();
+		data.flip();
+	}
+	public void reset(){
+		verts = 0;
+		this.isDone = false;
+		data.flip();
+		data.clear();
 	}
 }
