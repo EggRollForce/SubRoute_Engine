@@ -7,6 +7,7 @@ public class Renderer {
 	private FloatBuffer data;
 
 	private boolean isDone = false;
+	private boolean updated = false;
 	private int verts=0;
 	private float[] normal = {0f,0f,0f};
 
@@ -43,5 +44,11 @@ public class Renderer {
 		this.isDone = false;
 		data.flip();
 		data.clear();
+	}
+	public boolean isUpdated(){
+		return this.updated;
+	}
+	public void setUpdated(boolean updated){
+		this.updated = updated;
 	}
 }

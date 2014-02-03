@@ -55,6 +55,7 @@ public class Segment implements ISegmentAccess{
 	}
 
 	public void renderUpdate(){
+		render.setUpdated(true);
 		this.renderBlocks(render);
 		System.out.println("Updated segment");
 	}
