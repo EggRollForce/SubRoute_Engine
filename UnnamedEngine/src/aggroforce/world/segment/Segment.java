@@ -148,7 +148,7 @@ public class Segment implements ISegmentAccess{
 	public boolean setBlockAt(int x, int y, int z, int id) {
 		this.updateNeeded();
 		this.world.updateNeeded();
-		if(Math.signum(y)==-1){
+		if(Math.signum(y)==-1||y>=1024){
 			return false;
 		}
 		int sx = (int)Math.floor((x)/16d);

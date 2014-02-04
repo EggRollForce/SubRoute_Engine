@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import aggroforce.game.Game;
+import aggroforce.util.Side;
 import aggroforce.world.storage.WorldStorage;
 
 public class Camera{
@@ -107,22 +108,50 @@ public class Camera{
 	private int r = 100;
 	public BlockTarget getLookTargetBlock(){
 		int x = 0,y = 0,z = 0,id = 0;
+		double[] prevpos = new double[3];
 		float mul = 0;
 		boolean first = true;
 		do{
+			double[] pos = new double[3];
 			mul+=0.001f;
 			double temp = Camera.z+(veiwVec.z*mul);
-			int x2 = -(int)Math.floor(Camera.x-(veiwVec.x*mul)+1);
-			int y2 =(int)((veiwVec.y*mul)-Camera.y)+1;
-			int z2 = -(int)(temp+(Math.signum(temp)!=1?0:1));
-			if(x2!=x||y2!=y||z2!=z||first){
+			pos[0] = -(Camera.x-(veiwVec.x*mul));
+			pos[1] =((veiwVec.y*mul)-Camera.y)+1;
+			pos[2] = -(temp+(Math.signum(temp)!=1?0:1));
+			if((int)Math.floor(pos[0])!=x||(int)pos[1]!=y||(int)pos[2]!=z||first){
 				first = false;
-				x=x2;y=y2;z=z2;
-				id = WorldStorage.getInstance().getBlockIdAt(x, y,z);
+				x=(int)Math.floor(pos[0]);y=(int)pos[1];z=(int)pos[2];
+				id = WorldStorage.getInstance().getBlockIdAt(x,y,z);
+				if(id!=0){
+					break;
+				}
 			}
-		}while(id==0&&!(mul>=r));
+			prevpos = pos;
+
+		}while(!(mul>=r));
 		if(!(mul>=r)){
-			return new BlockTarget(x, y, z,id);
+			return new BlockTarget(x, y, z, id, this.getSideForHit(x, y, z, prevpos));
+		}
+		return null;
+	}
+
+	public Side getSideForHit(int x, int y, int z, double[] pos){
+		pos[0] -= x;
+		pos[1] -= y;
+		pos[2] -= z;
+
+		if(pos[0]<0){
+			return Side.SOUTH;
+		}else if(pos[0]>1){
+			return Side.NORTH;
+		}else if(pos[1]<0){
+			return Side.DOWN;
+		}else if(pos[1]>1){
+			return Side.UP;
+		}else if(pos[2]<0){
+			return Side.WEST;
+		}else if(pos[2]>1){
+			return Side.EAST;
 		}
 		return null;
 	}
