@@ -142,15 +142,15 @@ public class Camera{
 
 		if(pos[0]<0){
 			return Side.SOUTH;
-		}else if(pos[0]>1){
+		}else if(pos[0]>=1){
 			return Side.NORTH;
-		}else if(pos[1]<0){
+		}else if(pos[1]<=0){
 			return Side.DOWN;
-		}else if(pos[1]>1){
+		}else if(pos[1]>=1){
 			return Side.UP;
-		}else if(pos[2]<0){
+		}else if(pos[2]<=0){
 			return Side.WEST;
-		}else if(pos[2]>1){
+		}else if(pos[2]>=1){
 			return Side.EAST;
 		}
 		return null;

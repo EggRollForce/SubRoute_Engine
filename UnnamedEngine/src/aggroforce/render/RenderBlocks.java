@@ -79,7 +79,9 @@ public class RenderBlocks {
 	}
 
 	float off = 0.001f;
-	boolean bstate = false;
+	boolean b1state = false;
+	boolean b2state = false;
+
 	public void renderBlockOutline(){
 		BlockTarget t = Camera.instance.getLookTargetBlock();
 		if(t!=null){
@@ -107,10 +109,14 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x-off, t.y+off, t.z+1+off);
 			GL11.glVertex3f(t.x+1+off, t.y+off, t.z+1+off);
 			GL11.glEnd();
-			if(/*!bstate&&*/Mouse.isButtonDown(1)){
+			if(!b1state&&Mouse.isButtonDown(1)){
 				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), 7);
 			}
-			bstate = Mouse.isButtonDown(1);
+			b1state = Mouse.isButtonDown(1);
+			if(!b2state&&Mouse.isButtonDown(0)){
+				WorldStorage.getInstance().setBlockAt(t.x, t.y, t.z, 0);
+			}
+			b2state = Mouse.isButtonDown(0);
 		}
 	}
 }
