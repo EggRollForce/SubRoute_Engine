@@ -1,4 +1,4 @@
-BlockGameThing_Engine
+SubRoute_Engine
 =====================
 
-This is the public repo for the yet to be named Block Game Thing.
+This is the public repo for SubRoute, a Minecraft-like space survival game!
