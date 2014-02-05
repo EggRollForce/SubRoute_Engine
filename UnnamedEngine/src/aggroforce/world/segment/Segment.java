@@ -55,9 +55,13 @@ public class Segment implements ISegmentAccess{
 	}
 
 	public void renderUpdate(){
-		render.setUpdated(true);
-		this.renderBlocks(render);
-		System.out.println("Updated segment");
+		if(this.render!=null){
+			render.setUpdated(true);
+			this.renderBlocks(render);
+			System.out.println("Updated segment");
+		}else{
+			System.out.println("Renderer not initialized!");
+		}
 	}
 
 	public void renderBlocks(Renderer rb){

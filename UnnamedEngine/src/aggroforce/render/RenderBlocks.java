@@ -65,6 +65,8 @@ public class RenderBlocks {
 		}
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		TextureMap.blockMap.bindTextureMap();
 		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
@@ -74,8 +76,18 @@ public class RenderBlocks {
 		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_LIGHTING);
+	}
+	int lastx=0,lasty=0;
+	public void checkForSegGen(){
+		if(-Math.round(Camera.x/16d)!=lastx||-Math.round(Camera.z/16d)!=lasty){
+			lastx = (int) -Math.round(Camera.x/16d);
+			lasty = (int) -Math.round(Camera.z/16d);
+			WorldStorage.getInstance().needCheck(lastx, lasty);
+		}
+		WorldStorage.getInstance().checkGenRadius();
 	}
 
 	float off = 0.001f;
@@ -110,7 +122,7 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x+1+off, t.y+off, t.z+1+off);
 			GL11.glEnd();
 			if(!b1state&&Mouse.isButtonDown(1)){
-				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), 7);
+				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), 6);
 			}
 			b1state = Mouse.isButtonDown(1);
 			if(!b2state&&Mouse.isButtonDown(0)){

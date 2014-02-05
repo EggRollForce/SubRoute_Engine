@@ -11,6 +11,8 @@ public abstract class Block {
 
 	public int id;
 
+	private static int nextId = 0;
+
 	public boolean shouldRenderSide(IWorldAccess wld, int x, int y, int z, Side side) {
 		switch(side.getOrdinal()){
 			case 1:
@@ -40,14 +42,21 @@ public abstract class Block {
 	public String getName(){
 		return this.toString();
 	}
+	protected Block(){
+		this(Block.getNextId());
+	}
 	protected Block(int id) {
 		if(id<blocks.length&&blocks[id]==null){
 			blocks[id]=this;
+			nextId = id+1;
 		}else{
 			System.err.println("Block id "+id+" is already occupied by "+this.getName());
 		}
 	}
 
+	protected static int getNextId(){
+		return nextId++;
+	}
 	public abstract void registerTexTiles(TileRegister reg);
 
 	public abstract Icon getIconForSide(IWorldAccess wld, int x, int y, int z, Side side);
@@ -61,6 +70,7 @@ public abstract class Block {
 		new Log();
 		new Leaves();
 		new Sand();
+		new Glass();
 
 		for(Block blk : blocks){
 			if(blk!=null){

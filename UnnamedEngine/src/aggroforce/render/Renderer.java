@@ -13,7 +13,7 @@ public class Renderer {
 
 	public Renderer(){
 		if(data == null){
-			data = BufferUtils.createFloatBuffer(800000);
+			data = BufferUtils.createFloatBuffer(1600000);
 		}
 	}
 	public void addVertexUV(float x, float y, float z, float u, float v){

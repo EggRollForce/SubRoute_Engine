@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import aggroforce.gui.event.GUIEvent;
+import aggroforce.texture.Texture;
 
 public abstract class GUIComponent{
 
@@ -89,6 +90,25 @@ public abstract class GUIComponent{
 		GL11.glVertex2f(x+w, y+h);
 		GL11.glVertex2f(x, y+h);
 		GL11.glEnd();
+	}
+
+	protected void drawTexRect(Texture tex, int x, int y, int w, int h){
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getGLTexID());
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2f(0, 1);
+		GL11.glVertex2f(x, y);
+		GL11.glTexCoord2f(1, 1);
+		GL11.glVertex2f(x+w, y);
+		GL11.glTexCoord2f(1, 0);
+		GL11.glVertex2f(x+w, y+h);
+		GL11.glTexCoord2f(0, 0);
+		GL11.glVertex2f(x, y+h);
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 	}
 
 	public void updateLayout(){

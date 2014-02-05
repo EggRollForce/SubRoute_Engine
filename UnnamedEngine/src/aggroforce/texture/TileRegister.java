@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 public class TileRegister {
 
 	public Icon loadNewIcon(String path){
-		System.out.println("Attempting Icon load");
+		System.out.println("Loading icon "+path.substring(path.lastIndexOf('/')+1));
 		File f = new File(path);
 		if(f.exists()){
 			try{
