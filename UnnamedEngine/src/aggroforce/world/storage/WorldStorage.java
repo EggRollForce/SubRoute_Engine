@@ -117,6 +117,7 @@ public class WorldStorage implements IWorldAccess{
 		check = false;
 	}
 	Segment lastSeg;
+	ArrayList<Segment> segs = new ArrayList<Segment>();
 	public void checkGenRadius(){
 		if(!check){
 		check = false;
@@ -125,6 +126,7 @@ public class WorldStorage implements IWorldAccess{
 			inc = 0;
 			check = true;
 			lastSeg=null;
+			this.addNewRenderers();
 			return;
 		}
 		int x = -1,y = -1;
@@ -144,17 +146,21 @@ public class WorldStorage implements IWorldAccess{
 		if((s=segLoad.getSegmentAt(x+cx, y+cy))==null){
 			Segment seg;
 			segLoad.addSegment(seg = WorldStorage.loader.generateSegment(x+cx, y+cy).setWorld(this));
+			this.segs.add(seg);
+		}else{
+			s.renderUpdate();
+		}
+		}
+	}
+
+	public void addNewRenderers(){
+		for(Segment seg : segs){
 			Renderer render = new Renderer();
 			seg.renderBlocks(render);
 			rnders.add(render);
 			render.setUpdated(true);
-			if(lastSeg!=null){
-				lastSeg.renderUpdate();
-			}
-		}else{
-			lastSeg = s;
 		}
-		}
+		segs.clear();
 	}
 
 	@Override
