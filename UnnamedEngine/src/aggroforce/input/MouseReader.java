@@ -27,12 +27,17 @@ public class MouseReader {
 		if(Mouse.isGrabbed()){
 			Camera.mouseIn(Mouse.getDX(), Mouse.getDY());
 		}
+		boolean changed = false;
 		while(Mouse.next()){
 			int b = Mouse.getEventButton();
 			if(b!=-1){
-				buttons[b] = Mouse.getEventButtonState();
+				boolean temp;
+				if(buttons[b] != (temp=Mouse.getEventButtonState())){
+					changed = true;
+					buttons[b] = temp;
+				}
 			}
-			EventRegistry.EVENT_BUS.postEvent(new MouseEvent(Mouse.getEventX(),Mouse.getEventY(),buttons));
+			EventRegistry.EVENT_BUS.postEvent(new MouseEvent(Mouse.getEventX(),Mouse.getEventY(),buttons,changed));
 		}
 	}
 

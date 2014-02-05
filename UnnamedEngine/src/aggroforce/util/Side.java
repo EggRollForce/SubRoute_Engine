@@ -6,7 +6,8 @@ public enum Side{
 	NORTH(2,1,0,0),
 	SOUTH(3,-1,0,0),
 	EAST(4,0,0,1),
-	WEST(5,0,0,-1);
+	WEST(5,0,0,-1),
+	NONE(-1,0,0,0);
 
 	private int ordinal;
 	private int[] pos;

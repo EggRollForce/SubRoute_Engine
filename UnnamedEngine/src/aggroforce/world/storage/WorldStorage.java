@@ -9,54 +9,66 @@ import aggroforce.world.segment.Segment;
 public class WorldStorage implements IWorldAccess{
 
 	private static ArrayList<Renderer> rnders = new ArrayList<Renderer>();
-	private int MAX_SEGMENTS_RADIUS = 10;
+	private int MAX_SEGMENTS_RADIUS = 5;
 	private SegLoader segLoad = new SegLoader();
-	private int startx, starty;
 	private boolean needsUpdate = false;
 	private boolean loaded = false;
 	private static WorldStorage instance;
+	private static WorldLoader loader;
 
 	public WorldStorage(WorldLoader wl){
+		loader = wl;
 		if(instance == null){
 			instance = this;
-			startx = -this.MAX_SEGMENTS_RADIUS;
-			starty = -this.MAX_SEGMENTS_RADIUS;
-			for(int i = 0; i < this.MAX_SEGMENTS_RADIUS*2; i++){
-				for(int j = 0; j < this.MAX_SEGMENTS_RADIUS*2; j++){
-					segLoad.addSegment(wl.generateSegment(startx+i, starty+j).setWorld(this));
-				}
+			int lastx=-1,lasty=-1;
+			for(double i = 0; i <= this.MAX_SEGMENTS_RADIUS*360; i+=0.5){
+					int x = (int)(Math.sin(Math.toRadians(i))*(int)(i/360));
+					int y = (int)(Math.cos(Math.toRadians(i))*(int)(i/360));
+					if(x==lastx&&y==lasty){
+						continue;
+					}else{
+						lastx = x;
+						lasty = y;
+					}
+					segLoad.addSegment(wl.generateSegment(x,y).setWorld(this));
 			}
 		}
 	}
 
-	int nextx,nexty;
+	int nextx,nexty,lastx=-1,lasty=-1;
 
 	public boolean isLoaded(){
 		return loaded;
 	}
+	double inc;
 	public void loadNextRenderer(){
 		this.needsUpdate = true;
-		Segment seg = segLoad.getSegmentAt(startx+nextx, starty+nexty);
-		if(seg != null){
+		int x = -1,y = -1;
+		while(true){
+			x = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360));
+			y = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360));
+			inc+=0.5;
+			if(x==lastx&&y==lasty){
+				continue;
+			}else{
+				lastx = x;
+				lasty = y;
+				break;
+			}
+		}
+		if(inc > this.MAX_SEGMENTS_RADIUS*360){
+			inc = 0;
+			this.loaded = true;
+			return;
+		}
+		Segment seg = segLoad.getSegmentAt(x, y);
+		if(seg != null&&seg.getRenderer()==null){
 			Renderer render = new Renderer();
 			seg.renderBlocks(render);
 			rnders.add(render);
 			render.setUpdated(true);
-			System.out.println("Sucessfully loaded segment at x:"+(startx+nextx)+" y:"+(starty+nexty));
-		}else{
-			this.printSegErr(startx+nextx, starty+nexty);
+			System.out.println("Sucessfully loaded segment at x:"+(x)+" y:"+(y));
 		}
-		nexty++;
-		if(!(nexty<2*this.MAX_SEGMENTS_RADIUS)){
-			nexty=0;
-			nextx++;
-		}
-		if(!(nextx<2*this.MAX_SEGMENTS_RADIUS)){
-			this.loaded = true;
-		}
-	}
-	private void printSegErr(int x, int y){
-		System.out.println("Could not get Segment at x:"+x+" y:"+y);
 	}
 
 	@Override
@@ -96,6 +108,53 @@ public class WorldStorage implements IWorldAccess{
 			return seg.setBlockAt(x, y, z, id);
 		}
 		return false;
+	}
+	public static boolean check = true;
+	private int cx,cy;
+	public void needCheck(int x, int y){
+		cx = x;
+		cy = y;
+		check = false;
+	}
+	Segment lastSeg;
+	public void checkGenRadius(){
+		if(!check){
+		check = false;
+		this.needsUpdate = true;
+		if(inc > this.MAX_SEGMENTS_RADIUS*360){
+			inc = 0;
+			check = true;
+			lastSeg=null;
+			return;
+		}
+		int x = -1,y = -1;
+		while(true){
+			x = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360));
+			y = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360));
+			inc+=0.5;
+			if(x==lastx&&y==lasty){
+				continue;
+			}else{
+				lastx = x;
+				lasty = y;
+				break;
+			}
+		}
+		Segment s;
+		if((s=segLoad.getSegmentAt(x+cx, y+cy))==null){
+			Segment seg;
+			segLoad.addSegment(seg = WorldStorage.loader.generateSegment(x+cx, y+cy).setWorld(this));
+			Renderer render = new Renderer();
+			seg.renderBlocks(render);
+			rnders.add(render);
+			render.setUpdated(true);
+			if(lastSeg!=null){
+				lastSeg.renderUpdate();
+			}
+		}else{
+			lastSeg = s;
+		}
+		}
 	}
 
 	@Override

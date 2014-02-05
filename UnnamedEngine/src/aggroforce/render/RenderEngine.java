@@ -117,6 +117,7 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_FOG);
 			renderBlocks.renderBlockOutline();
+			renderBlocks.checkForSegGen();
 		}
 		GUIRenderer.renderGUI();
 		GL11.glPopMatrix();
