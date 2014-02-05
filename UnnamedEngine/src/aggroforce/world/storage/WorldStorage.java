@@ -41,7 +41,9 @@ public class WorldStorage implements IWorldAccess{
 		return loaded;
 	}
 	double inc = 0;
+	private boolean done = false;
 	public void loadNextRenderer(){
+		if(!done){
 		this.needsUpdate = true;
 		int x = -1,y = -1;
 		while(true){
@@ -58,6 +60,7 @@ public class WorldStorage implements IWorldAccess{
 		}
 		if(inc > this.MAX_SEGMENTS_RADIUS*360){
 			inc = 0;
+			this.done = true;
 			this.loaded = true;
 			return;
 		}
@@ -68,6 +71,7 @@ public class WorldStorage implements IWorldAccess{
 			rnders.add(render);
 			render.setUpdated(true);
 			System.out.println("Sucessfully loaded segment at x:"+(x)+" y:"+(y));
+		}
 		}
 	}
 

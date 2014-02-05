@@ -76,7 +76,7 @@ public class RenderBlocks {
 	}
 	int lastx=0,lasty=0;
 	public void checkForSegGen(){
-		if(-(int)(Camera.x/16d)!=lastx||-(int)(Camera.z/16d)!=lasty){
+		if(!(-(int)(Camera.x/16d)==lastx&&-(int)(Camera.z/16d)==lasty)){
 			lastx = (int) -(Camera.x/16d);
 			lasty = (int) -(Camera.z/16d);
 			WorldStorage.getInstance().needCheck(lastx, lasty);

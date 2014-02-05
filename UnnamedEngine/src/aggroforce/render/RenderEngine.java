@@ -44,9 +44,7 @@ public class RenderEngine {
 		GL11.glPushMatrix();
 
 		if(wldstor!=null){
-			if(!this.wldstor.isLoaded()){
-				this.wldstor.loadNextRenderer();
-			}
+			this.wldstor.loadNextRenderer();
 			Camera.camTransform();
 			Camera.thirdPersonOff();
 
@@ -62,7 +60,7 @@ public class RenderEngine {
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool){
 				bool=KeyboardReader.keysts[Keyboard.KEY_R];
-				renderBlocks.upload();
+//				renderBlocks.upload();
 			}
 
 			lpos.y=1;

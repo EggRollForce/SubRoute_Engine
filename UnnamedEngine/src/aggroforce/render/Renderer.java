@@ -1,8 +1,6 @@
 package aggroforce.render;
 
 import java.nio.FloatBuffer;
-import java.util.Arrays;
-
 import org.lwjgl.BufferUtils;
 
 public class Renderer {
@@ -16,15 +14,15 @@ public class Renderer {
 
 	public Renderer(){
 		if(data == null){
-			data = new float[0x1000000];
+			data = new float[0x100000];
 		}
 	}
 	public void addVertexUV(float x, float y, float z, float u, float v){
 		if(data == null){
-			data = new float[0x1000000];
+			data = new float[0x100000];
 		}
 		if(verts*8+8>data.length){
-			data = Arrays.copyOf(data, data.length+800);
+//			data = Arrays.copyOf(data, data.length+800);
 		}
 		float[] temp = new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]};
 		for(int i = 0; i<8; i++){
@@ -38,8 +36,8 @@ public class Renderer {
 	}
 
 	public FloatBuffer getData(){
-		if(fb==null){
-			fb = (FloatBuffer) BufferUtils.createFloatBuffer(verts*8).put(data,0,verts*8).flip();
+		if(data!=null){
+			fb = (FloatBuffer)BufferUtils.createFloatBuffer(verts*8).put(data,0,verts*8).flip();
 		}
 		data = null;
 		return fb;
