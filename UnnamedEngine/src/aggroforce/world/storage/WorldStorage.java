@@ -9,7 +9,7 @@ import aggroforce.world.segment.Segment;
 public class WorldStorage implements IWorldAccess{
 
 	private static ArrayList<Renderer> rnders = new ArrayList<Renderer>();
-	private int MAX_SEGMENTS_RADIUS = 5;
+	private int MAX_SEGMENTS_RADIUS = 10;
 	private SegLoader segLoad = new SegLoader();
 	private boolean needsUpdate = false;
 	private boolean loaded = false;
@@ -17,8 +17,8 @@ public class WorldStorage implements IWorldAccess{
 	private static WorldLoader loader;
 
 	public WorldStorage(WorldLoader wl){
-		loader = wl;
 		if(instance == null){
+			loader = wl;
 			instance = this;
 			int lastx=-1,lasty=-1;
 			for(double i = 0; i <= this.MAX_SEGMENTS_RADIUS*360; i+=0.5){
@@ -40,13 +40,13 @@ public class WorldStorage implements IWorldAccess{
 	public boolean isLoaded(){
 		return loaded;
 	}
-	double inc;
+	double inc = 0;
 	public void loadNextRenderer(){
 		this.needsUpdate = true;
 		int x = -1,y = -1;
 		while(true){
-			x = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360));
-			y = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360));
+			x = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360d));
+			y = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360d));
 			inc+=0.5;
 			if(x==lastx&&y==lasty){
 				continue;
@@ -83,7 +83,7 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	public static ArrayList<Renderer> getRenderers(){
-		if(instance.segLoad.checkForUpdate()){
+		if(!instance.segLoad.checkForUpdate()){
 			instance.updated();
 			System.out.println("All renderers updated");
 		}
@@ -116,8 +116,6 @@ public class WorldStorage implements IWorldAccess{
 		cy = y;
 		check = false;
 	}
-	Segment lastSeg;
-	ArrayList<Segment> segs = new ArrayList<Segment>();
 	public void checkGenRadius(){
 		if(!check){
 		check = false;
@@ -125,8 +123,6 @@ public class WorldStorage implements IWorldAccess{
 		if(inc > this.MAX_SEGMENTS_RADIUS*360){
 			inc = 0;
 			check = true;
-			lastSeg=null;
-			this.addNewRenderers();
 			return;
 		}
 		int x = -1,y = -1;
@@ -142,25 +138,33 @@ public class WorldStorage implements IWorldAccess{
 				break;
 			}
 		}
-		Segment s;
-		if((s=segLoad.getSegmentAt(x+cx, y+cy))==null){
+		if(segLoad.getSegmentAt(x+cx, y+cy)==null){
 			Segment seg;
 			segLoad.addSegment(seg = WorldStorage.loader.generateSegment(x+cx, y+cy).setWorld(this));
-			this.segs.add(seg);
-		}else{
-			s.renderUpdate();
-		}
-		}
-	}
-
-	public void addNewRenderers(){
-		for(Segment seg : segs){
 			Renderer render = new Renderer();
 			seg.renderBlocks(render);
 			rnders.add(render);
 			render.setUpdated(true);
+			seg.updateNeeded();
+			this.updateAdjSegments(cx+x, cy+y);
 		}
-		segs.clear();
+		}
+	}
+
+	public void updateAdjSegments(int x, int y){
+			Segment seg;
+			if((seg=segLoad.getSegmentAt(x+1, y))!=null){
+				seg.renderUpdate();
+			}
+			if((seg=segLoad.getSegmentAt(x, y+1))!=null){
+				seg.renderUpdate();
+			}
+			if((seg=segLoad.getSegmentAt(x-1, y))!=null){
+				seg.renderUpdate();
+			}
+			if((seg=segLoad.getSegmentAt(x, y-1))!=null){
+				seg.renderUpdate();
+			}
 	}
 
 	@Override

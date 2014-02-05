@@ -19,11 +19,12 @@ public class RenderBlocks {
 	private int bid;
 	private int verts = 0;
 	private boolean uploaded=false;
+	public static final long bufferSize = ((3L*(Runtime.getRuntime().maxMemory()*8L)/4)/Float.SIZE);
 
 	public RenderBlocks(){
 		bid = GL15.glGenBuffers();
 		if(data==null){
-			data = BufferUtils.createFloatBuffer(80000000);
+			data = BufferUtils.createFloatBuffer((int)bufferSize);
 		}
 	}
 
@@ -33,12 +34,12 @@ public class RenderBlocks {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bid);
 		if(firstup){
 			firstup = false;
-	    	for(Renderer render: WorldStorage.getRenderers()){
-				data.put(render.getData());
-				verts+=render.getVerts();
-			}
-	    	data.position(data.capacity());
-	    	data.flip();
+//	    	for(Renderer render: WorldStorage.getRenderers()){
+//				data.put(render.getData());
+//				verts+=render.getVerts();
+//			}
+//	    	data.position(data.capacity());
+//	    	data.flip();
 			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STREAM_DRAW);
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
 		    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
@@ -82,9 +83,9 @@ public class RenderBlocks {
 	}
 	int lastx=0,lasty=0;
 	public void checkForSegGen(){
-		if(-Math.round(Camera.x/16d)!=lastx||-Math.round(Camera.z/16d)!=lasty){
-			lastx = (int) -Math.round(Camera.x/16d);
-			lasty = (int) -Math.round(Camera.z/16d);
+		if(-(int)(Camera.x/16d)!=lastx||-(int)(Camera.z/16d)!=lasty){
+			lastx = (int) -(Camera.x/16d);
+			lasty = (int) -(Camera.z/16d);
 			WorldStorage.getInstance().needCheck(lastx, lasty);
 		}
 		WorldStorage.getInstance().checkGenRadius();
