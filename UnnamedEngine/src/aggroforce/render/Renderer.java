@@ -1,23 +1,35 @@
 package aggroforce.render;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
+
 import org.lwjgl.BufferUtils;
 
 public class Renderer {
-	private FloatBuffer data;
 
 	private boolean isDone = false;
 	private boolean updated = false;
 	private int verts=0;
 	private float[] normal = {0f,0f,0f};
+	private float[] data;
+	private FloatBuffer fb;
 
 	public Renderer(){
 		if(data == null){
-			data = BufferUtils.createFloatBuffer(160000);
+			data = new float[0x1000000];
 		}
 	}
 	public void addVertexUV(float x, float y, float z, float u, float v){
-		data.put(new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]});
+		if(data == null){
+			data = new float[0x1000000];
+		}
+		if(verts*8+8>data.length){
+			data = Arrays.copyOf(data, data.length+800);
+		}
+		float[] temp = new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]};
+		for(int i = 0; i<8; i++){
+			data[verts*8+i] = temp[i];
+		}
 		verts++;
 	}
 
@@ -26,10 +38,11 @@ public class Renderer {
 	}
 
 	public FloatBuffer getData(){
-		if(!this.isDone){
-			compile();
+		if(fb==null){
+			fb = (FloatBuffer) BufferUtils.createFloatBuffer(verts*8).put(data,0,verts*8).flip();
 		}
-		return this.data.asReadOnlyBuffer();
+		data = null;
+		return fb;
 	}
 
 	public int getVerts(){
@@ -37,13 +50,11 @@ public class Renderer {
 	}
 	public void compile(){
 		this.isDone = true;
-		data.flip();
 	}
 	public void reset(){
 		verts = 0;
+		this.fb = null;
 		this.isDone = false;
-		data.flip();
-		data.clear();
 	}
 	public boolean isUpdated(){
 		return this.updated;

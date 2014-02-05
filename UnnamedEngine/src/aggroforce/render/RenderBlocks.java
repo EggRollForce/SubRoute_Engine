@@ -34,28 +34,21 @@ public class RenderBlocks {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bid);
 		if(firstup){
 			firstup = false;
-//	    	for(Renderer render: WorldStorage.getRenderers()){
-//				data.put(render.getData());
-//				verts+=render.getVerts();
-//			}
-//	    	data.position(data.capacity());
-//	    	data.flip();
 			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STREAM_DRAW);
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
 		    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
 		    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
-		}else{
-			long offset = 0;
-			boolean update = false;
-			for(Renderer render : WorldStorage.getRenderers()){
-				long stride = (render.getVerts()*8);
-				if(update||(update=render.isUpdated())){
-					render.setUpdated(false);
-					GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset<<2, render.getData());
-				}
-				offset+=stride;
-				verts+=render.getVerts();
+		}
+		long offset = 0;
+		boolean update = false;
+		for(Renderer render : WorldStorage.getRenderers()){
+			long stride = (render.getVerts()*8);
+			if(update||(update=render.isUpdated())){
+				render.setUpdated(false);
+				GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset<<2, render.getData());
 			}
+			offset+=stride;
+			verts+=render.getVerts();
 		}
 	}
 
