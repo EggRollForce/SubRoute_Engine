@@ -1,19 +1,20 @@
 package aggroforce.gui;
 
+import aggroforce.event.EventHandler;
+import aggroforce.event.EventRegistry;
 import aggroforce.event.MouseEvent;
-import aggroforce.gui.event.ComponentClicked;
+import aggroforce.event.listener.IEventListener;
 
-public class GUI extends GUIComponent{
+public class GUI extends GUIComponent implements IEventListener{
 
 	public GUI() {
 		super(null);
+		EventRegistry.EVENT_BUS.registerListener(this);
 	}
 
-	private void onScreenClicked(MouseEvent evt){
-		for(GUIComponent child : this.getChildren()){
-			if(child.isWithinComponent(evt.x, evt.y)){
-				child.onEvent(new ComponentClicked(evt.x,evt.y,evt.states));
-			}
-		}
+	@EventHandler
+	public void onEvent(MouseEvent e){
+		System.out.println(e);
 	}
+
 }

@@ -1,9 +1,9 @@
 package aggroforce.event;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import aggroforce.event.listener.IEventListener;
-import aggroforce.event.listener.IMouseListener;
 
 public class EventRegistry {
 
@@ -26,9 +26,18 @@ public class EventRegistry {
 
 	private void fireEvent(Event e){
 		for(IEventListener listener : listeners){
-			if(listener instanceof IMouseListener){
-				if(e instanceof MouseEvent){
-					((IMouseListener) listener).onMouseEvent((MouseEvent) e);
+			Method[] func = listener.getClass().getMethods();
+			for(Method m : func){
+				if(m.isAnnotationPresent(EventHandler.class)){
+					for(Class c : m.getParameterTypes()){
+						if(Event.class.isAssignableFrom(c)){
+							try {
+								m.invoke(listener,c.cast(e));
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
+						}
+					}
 				}
 			}
 		}

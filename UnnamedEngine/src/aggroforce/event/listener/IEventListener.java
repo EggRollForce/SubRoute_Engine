@@ -1,5 +1,4 @@
 package aggroforce.event.listener;
 
-public interface IEventListener {
-
+public interface IEventListener{
 }

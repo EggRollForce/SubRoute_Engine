@@ -1,14 +1,15 @@
 package aggroforce.menu;
 
+import aggroforce.event.EventHandler;
 import aggroforce.event.EventRegistry;
 import aggroforce.event.MouseEvent;
-import aggroforce.event.listener.IMouseListener;
+import aggroforce.event.listener.IEventListener;
 import aggroforce.gui.GUI;
 import aggroforce.gui.GUIRenderer;
 import aggroforce.gui.component.Button;
 import aggroforce.gui.event.ComponentClicked;
 
-public class MainMenu extends GUI implements IMouseListener{
+public class MainMenu extends GUI implements IEventListener{
 
 	public MainMenu(){
 		EventRegistry.EVENT_BUS.registerListener(this);
@@ -17,7 +18,7 @@ public class MainMenu extends GUI implements IMouseListener{
 		this.addChild(new Button(this,"Options",100,200,200,50));
 	}
 
-	@Override
+	@EventHandler
 	public void onMouseEvent(MouseEvent evt) {
 		this.onEvent(new ComponentClicked(evt));
 	}
