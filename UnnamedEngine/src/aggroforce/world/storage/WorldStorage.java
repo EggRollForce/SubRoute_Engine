@@ -20,7 +20,7 @@ public class WorldStorage implements IWorldAccess{
 		if(instance == null){
 			loader = wl;
 			instance = this;
-			int lastx=-1,lasty=-1;
+			int lastx=0,lasty=0;
 			for(double i = 0; i <= this.MAX_SEGMENTS_RADIUS*360; i+=0.5){
 					int x = (int)(Math.sin(Math.toRadians(i))*(int)(i/360));
 					int y = (int)(Math.cos(Math.toRadians(i))*(int)(i/360));
@@ -35,7 +35,7 @@ public class WorldStorage implements IWorldAccess{
 		}
 	}
 
-	int nextx,nexty,lastx=-1,lasty=-1;
+	int nextx,nexty,lastx=0,lasty=0;
 
 	public boolean isLoaded(){
 		return loaded;
@@ -44,11 +44,10 @@ public class WorldStorage implements IWorldAccess{
 	private boolean done = false;
 	public void loadNextRenderer(){
 		if(!done){
-		this.needsUpdate = true;
-		int x = -1,y = -1;
+		this.updateNeeded();
 		while(true){
-			x = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360d));
-			y = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360d));
+			int x = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360d));
+			int y = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360d));
 			inc+=0.5;
 			if(x==lastx&&y==lasty){
 				continue;
@@ -61,16 +60,16 @@ public class WorldStorage implements IWorldAccess{
 		if(inc > this.MAX_SEGMENTS_RADIUS*360){
 			inc = 0;
 			this.done = true;
-			this.loaded = true;
+			this.updated();
 			return;
 		}
-		Segment seg = segLoad.getSegmentAt(x, y);
+		Segment seg = segLoad.getSegmentAt(lastx, lasty);
 		if(seg != null&&seg.getRenderer()==null){
 			Renderer render = new Renderer();
 			seg.renderBlocks(render);
 			rnders.add(render);
 			render.setUpdated(true);
-			System.out.println("Sucessfully loaded segment at x:"+(x)+" y:"+(y));
+			System.out.println("Sucessfully loaded segment at x:"+(lastx)+" y:"+(lasty));
 		}
 		}
 	}
@@ -87,7 +86,7 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	public static ArrayList<Renderer> getRenderers(){
-		if(!instance.segLoad.checkForUpdate()){
+		if(instance.segLoad.checkForUpdate()){
 			instance.updated();
 			System.out.println("All renderers updated");
 		}
@@ -123,10 +122,11 @@ public class WorldStorage implements IWorldAccess{
 	public void checkGenRadius(){
 		if(!check){
 		check = false;
-		this.needsUpdate = true;
+		this.updateNeeded();
 		if(inc > this.MAX_SEGMENTS_RADIUS*360){
 			inc = 0;
 			check = true;
+			this.updated();
 			return;
 		}
 		int x = -1,y = -1;
@@ -149,7 +149,6 @@ public class WorldStorage implements IWorldAccess{
 			seg.renderBlocks(render);
 			rnders.add(render);
 			render.setUpdated(true);
-			seg.updateNeeded();
 			this.updateAdjSegments(cx+x, cy+y);
 		}
 		}

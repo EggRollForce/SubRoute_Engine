@@ -1,12 +1,9 @@
 package aggroforce.render;
 
-import java.nio.FloatBuffer;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-
 import aggroforce.render.camera.BlockTarget;
 import aggroforce.render.camera.Camera;
 import aggroforce.texture.TextureMap;
@@ -14,18 +11,15 @@ import aggroforce.world.storage.WorldStorage;
 
 public class RenderBlocks {
 
-	private static FloatBuffer data;
+//	private static FloatBuffer data;
 
 	private int bid;
 	private int verts = 0;
 	private boolean uploaded=false;
-	public static final long bufferSize = ((3L*(Runtime.getRuntime().maxMemory()*8L)/4)/Float.SIZE);
+	public static final long bufferSize = (((Runtime.getRuntime().maxMemory()*8L)/Float.SIZE)/2L);
 
 	public RenderBlocks(){
 		bid = GL15.glGenBuffers();
-		if(data==null){
-			data = BufferUtils.createFloatBuffer((int)bufferSize);
-		}
 	}
 
 	public boolean firstup = true;
@@ -34,7 +28,7 @@ public class RenderBlocks {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bid);
 		if(firstup){
 			firstup = false;
-			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STREAM_DRAW);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createByteBuffer((int)bufferSize), GL15.GL_STREAM_DRAW);
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
 		    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
 		    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
@@ -53,7 +47,8 @@ public class RenderBlocks {
 	}
 
 	public void render(){
-		if(!uploaded||WorldStorage.getInstance().getIsUpdateNeeded()){
+		if((!uploaded)||WorldStorage.getInstance().getIsUpdateNeeded()){
+//			System.out.println("Uploading to VBO");
 			this.upload();
 			this.uploaded = true;
 		}

@@ -31,6 +31,7 @@ public class RenderEngine {
 		GUIRenderer.setCurrentGUI(new MainMenu());
 	}
 
+	private boolean dgen = false;
 	private final Vector3f lpos = new Vector3f(0,0,0);
 	float time;
 	WorldStorage wldstor;
@@ -58,10 +59,11 @@ public class RenderEngine {
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_RIGHT]){
 			}
-			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool){
-				bool=KeyboardReader.keysts[Keyboard.KEY_R];
-//				renderBlocks.upload();
+			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool&&KeyboardReader.keysts[Keyboard.KEY_R]==false){
+				dgen = !dgen;
+				System.out.println("Dynamic segment loading toggled "+(dgen?"on":"off"));
 			}
+			bool=KeyboardReader.keysts[Keyboard.KEY_R];
 
 			lpos.y=1;
 			if(time > 360){
@@ -115,7 +117,9 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_FOG);
 			renderBlocks.renderBlockOutline();
-			renderBlocks.checkForSegGen();
+			if(dgen){
+				renderBlocks.checkForSegGen();
+			}
 		}
 		GUIRenderer.renderGUI();
 		GL11.glPopMatrix();

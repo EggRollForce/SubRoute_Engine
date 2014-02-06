@@ -1,13 +1,16 @@
 package aggroforce.render;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
+
 import org.lwjgl.BufferUtils;
 
 public class Renderer {
 
 	private boolean isDone = false;
 	private boolean updated = false;
-	private int verts=0;
+	private int verts = 0;
+	private int oldVerts = 0;
 	private float[] normal = {0f,0f,0f};
 	private float[] data;
 	private FloatBuffer fb;
@@ -22,7 +25,7 @@ public class Renderer {
 			data = new float[0x100000];
 		}
 		if(verts*8+8>data.length){
-//			data = Arrays.copyOf(data, data.length+800);
+			data = Arrays.copyOf(data, data.length+800);
 		}
 		float[] temp = new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]};
 		for(int i = 0; i<8; i++){
@@ -36,8 +39,11 @@ public class Renderer {
 	}
 
 	public FloatBuffer getData(){
-		if(data!=null){
+		if(data!=null&&verts>oldVerts){
+			oldVerts=verts;
 			fb = (FloatBuffer)BufferUtils.createFloatBuffer(verts*8).put(data,0,verts*8).flip();
+		}else if(data!=null){
+			fb.put(data, 0, verts*8).flip();
 		}
 		data = null;
 		return fb;
@@ -51,7 +57,10 @@ public class Renderer {
 	}
 	public void reset(){
 		verts = 0;
-		this.fb = null;
+		if(fb!=null){
+			fb.flip();
+			fb.clear();
+		}
 		this.isDone = false;
 	}
 	public boolean isUpdated(){
