@@ -7,7 +7,6 @@ import org.lwjgl.BufferUtils;
 
 public class Renderer {
 
-	private boolean isDone = false;
 	private boolean updated = false;
 	private int verts = 0;
 	private int oldVerts = 0;
@@ -52,16 +51,12 @@ public class Renderer {
 	public int getVerts(){
 		return verts;
 	}
-	public void compile(){
-		this.isDone = true;
-	}
 	public void reset(){
 		verts = 0;
 		if(fb!=null){
 			fb.flip();
 			fb.clear();
 		}
-		this.isDone = false;
 	}
 	public boolean isUpdated(){
 		return this.updated;
