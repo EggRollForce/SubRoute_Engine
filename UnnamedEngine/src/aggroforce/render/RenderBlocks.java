@@ -10,9 +10,6 @@ import aggroforce.texture.TextureMap;
 import aggroforce.world.storage.WorldStorage;
 
 public class RenderBlocks {
-
-//	private static FloatBuffer data;
-
 	private int bid;
 	private int verts = 0;
 	private boolean uploaded=false;
@@ -48,7 +45,6 @@ public class RenderBlocks {
 
 	public void render(){
 		if((!uploaded)||WorldStorage.getInstance().getIsUpdateNeeded()){
-//			System.out.println("Uploading to VBO");
 			this.upload();
 			this.uploaded = true;
 		}
@@ -111,7 +107,7 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x+1+off, t.y+off, t.z+1+off);
 			GL11.glEnd();
 			if(!b1state&&Mouse.isButtonDown(1)){
-				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), 6);
+				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), 1);
 			}
 			b1state = Mouse.isButtonDown(1);
 			if(!b2state&&Mouse.isButtonDown(0)){

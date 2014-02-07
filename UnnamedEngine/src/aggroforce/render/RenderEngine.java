@@ -47,7 +47,7 @@ public class RenderEngine {
 		if(wldstor!=null){
 			this.wldstor.loadNextRenderer();
 			Camera.camTransform();
-			Camera.thirdPersonOn();
+			Camera.thirdPersonOff();
 
 			if(KeyboardReader.keysts[Keyboard.KEY_UP]){
 				time += 0.1d*Game.instance().getDelta();
@@ -94,7 +94,6 @@ public class RenderEngine {
 			GL11.glVertex3d(0, p3+256, p4);
 			GL11.glEnd();
 
-		//				GL11.glEnable(GL11.GL_FOG);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			if(time<180){
 				GL11.glEnable(GL11.GL_LIGHT1);

@@ -13,6 +13,7 @@ public class GUIRenderer {
 	private static GUI current;
 
 	public static void renderGUI(){
+		GL11.glPushMatrix();
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 //		float aspect = (float)Game.instance().getScreenWidth()/(float)Game.instance().getScreenHeight();
@@ -20,6 +21,8 @@ public class GUIRenderer {
 //		GLU.gluPerspective(45.0f,((float)Game.instance().getScreenWidth()/(float)Game.instance().getScreenHeight()),0.1f,10.0f);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
+//		GL11.glDepthMask(false);
+		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(1f, 1f, 1f, 1f);
@@ -67,6 +70,7 @@ public class GUIRenderer {
 		GLU.gluPerspective(45.0f,((float)Game.instance().getScreenWidth()/(float)Game.instance().getScreenHeight()),0.1f,10000.0f);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
+		GL11.glPopMatrix();
 	}
 
 	public static void setCurrentGUI(GUI gui){

@@ -75,7 +75,7 @@ public class Camera{
 	public static void updateVeiwVector(){
 		Camera.veiwVec.set((float)Math.sin(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch)),-(float)Math.sin(Math.toRadians(pitch)),(float)Math.cos(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch)));
 	}
-	private static double x2,y2,z2;
+
 	private static double radius = 10;
 	public static void camTransform(){
 		updateVeiwVector();
@@ -89,9 +89,6 @@ public class Camera{
 	}
 	public static void thirdPersonOn(){
 		thirdPerson = true;
-		x2 = x-Math.sin(Math.toRadians(yaw+180))*Math.cos(Math.toRadians(pitch))*radius;
-		y2 = y-Math.sin(Math.toRadians(pitch))*radius;
-		z2 = z-Math.cos(Math.toRadians(yaw))*Math.cos(Math.toRadians(pitch))*radius;
 	}
 	public static void thirdPersonOff(){
 		thirdPerson =false;

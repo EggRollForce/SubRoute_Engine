@@ -123,7 +123,7 @@ public class WorldStorage implements IWorldAccess{
 		if(!check){
 		check = false;
 		this.updateNeeded();
-		if(inc > this.MAX_SEGMENTS_RADIUS*360){
+		if(inc >= this.MAX_SEGMENTS_RADIUS*360){
 			inc = 0;
 			check = true;
 			this.updated();
