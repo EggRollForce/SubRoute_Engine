@@ -31,4 +31,9 @@ public class Glass extends Block {
 		return true;
 	}
 
+	@Override
+	public boolean shouldRenderInPass(int pass){
+		return pass == 1;
+	}
+
 }

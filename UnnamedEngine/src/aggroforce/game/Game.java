@@ -62,11 +62,12 @@ public class Game {
 			}
 			updateDelta();
 			Input.checkEvents();
-			RenderEngine.instance.renderLoop();
-
+			if(Display.isVisible()){
+				RenderEngine.instance.renderLoop();
+			}
 			updateFPS();
 			Display.update();
-			//			Display.sync(60);
+//						Display.sync(60);
 		}
 		AL.destroy();
 		Display.destroy();
@@ -94,7 +95,7 @@ public class Game {
 			return "windows";
 		}else if(name.indexOf("mac") >= 0){
 			return "macosx";
-		}else if(name.indexOf("nux") >= 0){
+		}else if(name.indexOf("lin") >= 0){
 			return "linux";
 		}
 		return "unknown";

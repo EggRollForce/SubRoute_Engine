@@ -7,6 +7,7 @@ import aggroforce.render.camera.Camera;
 public class KeyboardReader {
 	public static KeyboardReader instance;
 	public static boolean[] keysts = new boolean[Keyboard.KEYBOARD_SIZE];
+	public static char lastChar;
 
 	public KeyboardReader() {
 		instance = this;
@@ -22,6 +23,7 @@ public class KeyboardReader {
 			}else{
 				keysts[Keyboard.getEventKey()] = false;
 			}
+			lastChar = Keyboard.getEventCharacter();
 		}
 		if(keysts[Keyboard.KEY_W]){
 			Camera.forward();

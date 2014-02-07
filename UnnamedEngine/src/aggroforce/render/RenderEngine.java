@@ -106,16 +106,21 @@ public class RenderEngine {
 			GL11.glFrontFace(GL11.GL_CW);
 
 			GL11.glColor4f(1f, 1f, 1f, 1f);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			GL11.glDisable(GL11.GL_LIGHTING);
+//			GL11.glDisable(GL11.GL_FOG);
+			renderBlocks.renderBlockOutline();
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glEnable(GL11.GL_LIGHTING);
+//			GL11.glEnable(GL11.GL_FOG);
 			GL11.glPushMatrix();
 			renderBlocks.render();
 			GL11.glPopMatrix();
 
 			GL11.glFrontFace(GL11.GL_CCW);
 			GL11.glDisable(GL11.GL_CULL_FACE);
-			GL11.glDisable(GL11.GL_LIGHT1);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_FOG);
-			renderBlocks.renderBlockOutline();
 			if(dgen){
 				renderBlocks.checkForSegGen();
 			}
