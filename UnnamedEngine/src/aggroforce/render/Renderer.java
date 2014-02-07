@@ -17,6 +17,7 @@ public class Renderer {
 	public Renderer(){
 		if(data == null){
 			data = new float[0x100000];
+			fb = BufferUtils.createFloatBuffer(0);
 		}
 	}
 	public void addVertexUV(float x, float y, float z, float u, float v){

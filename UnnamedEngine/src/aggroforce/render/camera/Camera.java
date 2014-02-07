@@ -91,7 +91,7 @@ public class Camera{
 		thirdPerson = true;
 	}
 	public static void thirdPersonOff(){
-		thirdPerson =false;
+		thirdPerson = false;
 	}
 	public static void camUnTransform(){
 		GL11.glRotated(-pitch, 1, 0, 0);

@@ -4,6 +4,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
+
+import aggroforce.input.KeyboardReader;
 import aggroforce.render.camera.BlockTarget;
 import aggroforce.render.camera.Camera;
 import aggroforce.texture.TextureMap;
@@ -44,6 +46,7 @@ public class RenderBlocks {
 	}
 
 	public void render(){
+		WorldStorage.getInstance().updateRenderQueue();
 		if((!uploaded)||WorldStorage.getInstance().getIsUpdateNeeded()){
 			this.upload();
 			this.uploaded = true;
@@ -78,6 +81,7 @@ public class RenderBlocks {
 	float off = 0.001f;
 	boolean b1state = false;
 	boolean b2state = false;
+	int id = 1;
 
 	public void renderBlockOutline(){
 		BlockTarget t = Camera.instance.getLookTargetBlock();
@@ -106,8 +110,11 @@ public class RenderBlocks {
 			GL11.glVertex3f(t.x-off, t.y+off, t.z+1+off);
 			GL11.glVertex3f(t.x+1+off, t.y+off, t.z+1+off);
 			GL11.glEnd();
+			if(Character.isDigit(KeyboardReader.lastChar)){
+				id = Integer.parseInt(""+KeyboardReader.lastChar);
+			}
 			if(!b1state&&Mouse.isButtonDown(1)){
-				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), 1);
+				WorldStorage.getInstance().setBlockAt(t.x+t.side.getX(), t.y+t.side.getY(), t.z+t.side.getZ(), id);
 			}
 			b1state = Mouse.isButtonDown(1);
 			if(!b2state&&Mouse.isButtonDown(0)){

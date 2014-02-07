@@ -14,21 +14,32 @@ public abstract class Block {
 	private static int nextId = 0;
 
 	public boolean shouldRenderSide(IWorldAccess wld, int x, int y, int z, Side side) {
+		int id;
 		switch(side.getOrdinal()){
 			case 1:
-				return wld.getBlockIdAt(x, y+1, z)==0;
+				id = wld.getBlockIdAt(x, y+1, z);
+				return !blocks[id].isSolidOpaque();
 			case 0:
-				return wld.getBlockIdAt(x, y-1, z)==0;
+				id = wld.getBlockIdAt(x, y-1, z);
+				return !blocks[id].isSolidOpaque();
 			case 2:
-				return wld.getBlockIdAt(x+1, y, z)==0;
+				id = wld.getBlockIdAt(x+1, y, z);
+				return !blocks[id].isSolidOpaque();
 			case 3:
-				return wld.getBlockIdAt(x-1, y, z)==0;
+				id = wld.getBlockIdAt(x-1, y, z);
+				return !blocks[id].isSolidOpaque();
 			case 4:
-				return wld.getBlockIdAt(x, y, z+1)==0;
+				id = wld.getBlockIdAt(x, y, z+1);
+				return !blocks[id].isSolidOpaque();
 			case 5:
-				return wld.getBlockIdAt(x, y, z-1)==0;
+				id = wld.getBlockIdAt(x, y, z-1);
+				return !blocks[id].isSolidOpaque();
 		}
 		return false;
+	}
+
+	public boolean shouldRenderInPass(int pass){
+		return pass == 0;
 	}
 
 	public boolean isSolidOpaque(){

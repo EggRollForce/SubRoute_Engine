@@ -9,15 +9,18 @@ import aggroforce.world.segment.Segment;
 public class WorldStorage implements IWorldAccess{
 
 	private static ArrayList<Renderer> rnders = new ArrayList<Renderer>();
+	private static ArrayList<Segment> queue = new ArrayList<Segment>();
 	private int MAX_SEGMENTS_RADIUS = 10;
 	private SegLoader segLoad = new SegLoader();
 	private boolean needsUpdate = false;
 	private boolean loaded = false;
 	private static WorldStorage instance;
 	private static WorldLoader loader;
+	public static Renderer rendererpass2;
 
 	public WorldStorage(WorldLoader wl){
 		if(instance == null){
+			rendererpass2 = new Renderer();
 			loader = wl;
 			instance = this;
 			int lastx=0,lasty=0;
@@ -90,6 +93,9 @@ public class WorldStorage implements IWorldAccess{
 			instance.updated();
 			System.out.println("All renderers updated");
 		}
+		if(rnders.remove(rendererpass2)||!rnders.contains(rendererpass2)){
+			rnders.add(rendererpass2);
+		}
 		return rnders;
 	}
 
@@ -104,11 +110,16 @@ public class WorldStorage implements IWorldAccess{
 
 	@Override
 	public boolean setBlockAt(int x, int y, int z, int id) {
+		this.updateNeeded();
 		int sx = (int)Math.floor((x)/16d);
 		int sy = (int)Math.floor((z)/16d);
 		Segment seg = segLoad.getSegmentAt(sx, sy);
 		if(seg!=null){
-			return seg.setBlockAt(x, y, z, id);
+			boolean success = seg.setBlockAt(x, y, z, id);
+			if(success){
+				this.updateAdjSegments(sx, sy);
+			}
+			return success;
 		}
 		return false;
 	}
@@ -154,19 +165,40 @@ public class WorldStorage implements IWorldAccess{
 		}
 	}
 
+	public void addToRenderUpdateQueue(Segment seg){
+		if(!queue.contains(seg)){
+			queue.add(seg);
+		}
+	}
+
+	boolean queueDone = false;
+	public void updateRenderQueue(){
+		if(check){
+			if(queue.size()>0){
+				queueDone = false;
+				Segment seg = queue.get(0);
+				queue.remove(seg);
+				seg.renderUpdate();
+			}else if(!queueDone){
+				queueDone = true;
+				this.updateNeeded();
+			}
+		}
+	}
+
 	public void updateAdjSegments(int x, int y){
 			Segment seg;
 			if((seg=segLoad.getSegmentAt(x+1, y))!=null){
-				seg.renderUpdate();
+				this.addToRenderUpdateQueue(seg);
 			}
 			if((seg=segLoad.getSegmentAt(x, y+1))!=null){
-				seg.renderUpdate();
+				this.addToRenderUpdateQueue(seg);
 			}
 			if((seg=segLoad.getSegmentAt(x-1, y))!=null){
-				seg.renderUpdate();
+				this.addToRenderUpdateQueue(seg);
 			}
 			if((seg=segLoad.getSegmentAt(x, y-1))!=null){
-				seg.renderUpdate();
+				this.addToRenderUpdateQueue(seg);
 			}
 	}
 

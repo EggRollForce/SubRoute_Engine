@@ -6,6 +6,7 @@ import aggroforce.texture.Icon;
 import aggroforce.util.Side;
 import aggroforce.world.storage.ISegmentAccess;
 import aggroforce.world.storage.IWorldAccess;
+import aggroforce.world.storage.WorldStorage;
 
 public class Segment implements ISegmentAccess{
 
@@ -75,6 +76,9 @@ public class Segment implements ISegmentAccess{
 					int z = j+16*segy;
 					Block blk = Block.blocks[this.blockStorage[i][j][k]];
 					if(blk!=null&&blk.renderType()!=-1){
+						if(!blk.shouldRenderInPass(0)){
+							rb = WorldStorage.rendererpass2;
+						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.UP)){
 							Icon icon = blk.getIconForSide(this, x, k, z, Side.UP);
 							rb.setNormal(0, 1f, 0);
@@ -123,6 +127,9 @@ public class Segment implements ISegmentAccess{
 							rb.addVertexUV(i+1+(16*segx), k-1, j+(16*segy), icon.getStartU(), icon.getStartV());
 							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), icon.getEndU(), icon.getStartV());
 							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), icon.getEndU(), icon.getEndV());
+						}
+						if(!blk.shouldRenderInPass(0)){
+							rb = render;
 						}
 					}
 				}
