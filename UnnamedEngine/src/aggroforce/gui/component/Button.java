@@ -4,8 +4,9 @@ import java.io.File;
 
 import org.lwjgl.opengl.GL11;
 
+import aggroforce.event.EventRegistry;
 import aggroforce.gui.GUIComponent;
-import aggroforce.gui.GUIRenderer;
+import aggroforce.gui.event.ButtonEvent;
 import aggroforce.gui.event.ComponentClicked;
 import aggroforce.gui.event.GUIEvent;
 import aggroforce.render.RenderEngine;
@@ -40,12 +41,16 @@ public class Button extends GUIComponent {
 			ComponentClicked evt = (ComponentClicked)e;
 			if(this.isWithinComponent(evt.x, evt.y)||!evt.states[0]){
 				on = evt.states[0];
-				if(evt.states[0]&&this.name.equalsIgnoreCase("Start")){
-					GUIRenderer.setCurrentGUI(null);
-					RenderEngine.instance.loadWorld();
+				if(on){
+					EventRegistry.EVENT_BUS.postEvent(new ButtonEvent(this));
 				}
 			}
 		}
+	}
+
+	@Override
+	public String toString(){
+		return "Button:["+name+","+(on?"on":"off")+",["+super.toString()+"]]";
 	}
 
 }

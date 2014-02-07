@@ -11,29 +11,43 @@ public class EventRegistry {
 
 	private ArrayList<IEventListener> listeners = new ArrayList<IEventListener>();
 
-	public void registerListener(IEventListener listener, String... types){
+	public void registerListener(IEventListener listener){
 		if(!listeners.contains(listener)){
 			listeners.add(listener);
+		}else{
+			System.out.println("Listener already registered!");
+		}
+	}
+
+	public void unregisterListener(IEventListener listener){
+		if(!listeners.remove(listener)){
+			System.err.println("Listener not registered!");
 		}
 	}
 
 	public void postEvent(Event e){
-		switch(e.getName().toLowerCase()){
-			case "mouse":
-				fireEvent(e);
-		}
+		fireEvent(e);
 	}
 
-	private void fireEvent(Event e){
+	@SuppressWarnings("rawtypes")
+	private synchronized void fireEvent(Event e){
 		for(IEventListener listener : listeners){
 			Method[] func = listener.getClass().getMethods();
 			for(Method m : func){
 				if(m.isAnnotationPresent(EventHandler.class)){
-					for(Class c : m.getParameterTypes()){
-						if(Event.class.isAssignableFrom(c)){
-							try {
-								m.invoke(listener,c.cast(e));
-							} catch (Exception ex) {
+					Class[] cs = m.getParameterTypes();
+					if(cs.length > 0){
+						Object[] objs = new Object[cs.length];
+						int index = 0;
+						for(Class c : cs){
+							if(Event.class.isAssignableFrom(c)&&c.isInstance(e)){
+								objs[index++] = c.cast(e);
+							}
+						}
+						if(objs[0]!=null){
+							try{
+								m.invoke(listener, objs);
+							}catch(Exception ex){
 								ex.printStackTrace();
 							}
 						}

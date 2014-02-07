@@ -111,7 +111,23 @@ public abstract class GUIComponent{
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 	}
 
-	public void updateLayout(){
+	public void setPosition(int x, int y){
+		this.translate(x-this.x,y-this.y);
+	}
 
+	public void translate(int x, int y){
+		this.x += x;
+		this.y += y;
+		for(GUIComponent child : children){
+			child.translate(x, y);
+		}
+	}
+	public void setSize(int w, int h){
+		this.width = w;
+		this.height = h;
+	}
+	@Override
+	public String toString(){
+		return "Component:["+x+","+y+","+width+","+height+"]";
 	}
 }

@@ -76,17 +76,16 @@ public class Camera{
 		Camera.veiwVec.set((float)Math.sin(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch)),-(float)Math.sin(Math.toRadians(pitch)),(float)Math.cos(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch)));
 	}
 	private static double x2,y2,z2;
-	private static int radius = 10;
+	private static double radius = 10;
 	public static void camTransform(){
 		updateVeiwVector();
 		GL11.glLoadIdentity();
+		if(thirdPerson){
+			GL11.glTranslated(0, 0, -radius);
+		}
 		GL11.glRotated(pitch, 1, 0, 0);
 		GL11.glRotated(yaw, 0, 1, 0);
-		if(thirdPerson){
-			GL11.glTranslated(x2, y2, z2);
-		}else{
-			GL11.glTranslated(x, y, z);
-		}
+		GL11.glTranslated(x, y, z);
 	}
 	public static void thirdPersonOn(){
 		thirdPerson = true;

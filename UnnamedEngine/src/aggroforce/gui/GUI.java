@@ -4,6 +4,7 @@ import aggroforce.event.EventHandler;
 import aggroforce.event.EventRegistry;
 import aggroforce.event.MouseEvent;
 import aggroforce.event.listener.IEventListener;
+import aggroforce.gui.event.ComponentClicked;
 
 public class GUI extends GUIComponent implements IEventListener{
 
@@ -14,7 +15,9 @@ public class GUI extends GUIComponent implements IEventListener{
 
 	@EventHandler
 	public void onEvent(MouseEvent e){
-		System.out.println(e);
+		if(e.hasChanged){
+			this.onEvent(new ComponentClicked(e));
+		}
 	}
 
 }

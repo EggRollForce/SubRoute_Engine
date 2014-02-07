@@ -47,7 +47,7 @@ public class RenderEngine {
 		if(wldstor!=null){
 			this.wldstor.loadNextRenderer();
 			Camera.camTransform();
-			Camera.thirdPersonOff();
+			Camera.thirdPersonOn();
 
 			if(KeyboardReader.keysts[Keyboard.KEY_UP]){
 				time += 0.1d*Game.instance().getDelta();
