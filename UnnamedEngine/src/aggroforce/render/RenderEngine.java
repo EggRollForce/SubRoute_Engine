@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
+import aggroforce.audio.AudioEngine;
 import aggroforce.game.Game;
 import aggroforce.gui.GUIRenderer;
 import aggroforce.input.KeyboardReader;
@@ -36,6 +37,7 @@ public class RenderEngine {
 	float time;
 	WorldStorage wldstor;
 	public boolean bool = false;
+	public boolean bool2 = false;
 	public void renderLoop(){
 
 
@@ -57,8 +59,10 @@ public class RenderEngine {
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_LEFT]){
 			}
-			if(KeyboardReader.keysts[Keyboard.KEY_RIGHT]){
+			if(KeyboardReader.keysts[Keyboard.KEY_P]!=bool2&&KeyboardReader.keysts[Keyboard.KEY_P]==false){
+				AudioEngine.instance().playSound();
 			}
+			bool2 = KeyboardReader.keysts[Keyboard.KEY_P];
 			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool&&KeyboardReader.keysts[Keyboard.KEY_R]==false){
 				dgen = !dgen;
 				System.out.println("Dynamic segment loading toggled "+(dgen?"on":"off"));

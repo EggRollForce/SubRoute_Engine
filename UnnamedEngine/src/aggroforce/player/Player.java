@@ -1,8 +1,10 @@
 package aggroforce.player;
 
-public class Player {
+import aggroforce.entity.Entity;
+
+public class Player extends Entity{
 
 	public Player(){
-
+		super(0,0,0);
 	}
 }
