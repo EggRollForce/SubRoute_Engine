@@ -72,9 +72,17 @@ public class Camera{
 	public boolean isBoundingBoxInFutstrum(double x, double y, double z, double width, double height){
 		return false;
 	}
+
+	public static float[] getVeiwAT(){
+		return new float[] {Camera.veiwVec.x,Camera.veiwVec.y,Camera.veiwVec.z};
+	}
+	public static float[] getViewUP(){
+		return new float[] {(float)Math.sin(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch+90)),-(float)Math.sin(Math.toRadians(pitch+90)),(float)Math.cos(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch+90))};
+	}
 	public static void updateVeiwVector(){
 		Camera.veiwVec.set((float)Math.sin(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch)),-(float)Math.sin(Math.toRadians(pitch)),(float)Math.cos(Math.toRadians(yaw))*(float)Math.cos(Math.toRadians(pitch)));
 	}
+
 
 	private static double radius = 10;
 	public static void camTransform(){

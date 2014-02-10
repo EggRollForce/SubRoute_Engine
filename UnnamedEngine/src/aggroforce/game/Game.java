@@ -50,9 +50,9 @@ public class Game {
 			System.exit(0);
 		}
 		Block.setupBlocks();
+		new AudioEngine();
 		new RenderEngine();
 		new Input();
-		new AudioEngine();
 
 		this.initOpenGL();
 		updateDelta();
@@ -66,6 +66,7 @@ public class Game {
 				RenderEngine.instance.renderLoop();
 			}
 			updateFPS();
+			AudioEngine.instance().loop();
 			Display.update();
 //						Display.sync(60);
 		}

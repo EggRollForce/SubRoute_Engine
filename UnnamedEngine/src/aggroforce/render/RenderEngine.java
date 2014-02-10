@@ -30,6 +30,7 @@ public class RenderEngine {
 		new Camera(0d,-500d,0d);
 		this.initLighting();
 		GUIRenderer.setCurrentGUI(new MainMenu());
+		AudioEngine.instance().loadSound();
 	}
 
 	private boolean dgen = false;
