@@ -30,11 +30,17 @@ public class Game {
 	private static final int scrW = 800;
 	private static final int scrH = 600;
 	public static DisplayMode screen = new DisplayMode(scrW,scrH);
-	private static long lastFPS = getTime();
+	private long lastFPS = getTime();
 	private static long lastFrame;
 	private static int fps;
 	private static int cfps;
 	private static int delta;
+
+	public static void main(String[] args){
+		System.out.println("Starting SubRoute ver:"+version);
+		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
+		new Game(args);
+	}
 
 	public static Game instance(){
 		return instance;
@@ -52,9 +58,9 @@ public class Game {
 			System.exit(0);
 		}
 		Block.setupBlocks();
+		new AudioEngine();
 		new RenderEngine();
 		new Input();
-		new AudioEngine();
 
 		this.initOpenGL();
 		updateDelta();
@@ -76,13 +82,14 @@ public class Game {
 			EventRegistry.EVENT_BUS.postEvent(new EntityTick());
 			//Update the FPS counter
 			updateFPS();
+			AudioEngine.instance().loop();
 			Display.update();
 //						Display.sync(60);
 		}
 		AL.destroy();
 		Display.destroy();
 	}
-	public static long getTime(){
+	public long getTime(){
 		return (Sys.getTime()*1000)/Sys.getTimerResolution();
 	}
 	public void updateFPS(){
@@ -92,12 +99,6 @@ public class Game {
 			lastFPS+=1000;
 		}
 		cfps++;
-	}
-
-	public static void main(String[] args) {
-		System.out.println(Game.getOSName());
-		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
-		new Game(args);
 	}
 
 	public static String getOSName(){

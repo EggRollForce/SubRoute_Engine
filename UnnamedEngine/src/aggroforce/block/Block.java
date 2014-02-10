@@ -1,5 +1,6 @@
 package aggroforce.block;
 
+import aggroforce.phys.util.AABB;
 import aggroforce.texture.Icon;
 import aggroforce.texture.TileRegister;
 import aggroforce.util.Side;
@@ -7,6 +8,7 @@ import aggroforce.world.storage.IWorldAccess;
 
 public abstract class Block {
 
+	protected static AABB bounding = new AABB(0,0,0,1,1,1);
 	public static Block[] blocks = new Block[256];
 
 	public int id;
@@ -71,6 +73,10 @@ public abstract class Block {
 	public abstract void registerTexTiles(TileRegister reg);
 
 	public abstract Icon getIconForSide(IWorldAccess wld, int x, int y, int z, Side side);
+
+	public AABB getBoudingBox(IWorldAccess wld, int x, int y, int z){
+		return bounding.setPosition(x, y, z);
+	}
 
 	public static void setupBlocks(){
 		new Air();
