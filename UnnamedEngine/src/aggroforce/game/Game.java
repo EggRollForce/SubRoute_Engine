@@ -17,6 +17,8 @@ import org.lwjgl.util.glu.GLU;
 import aggroforce.render.RenderEngine;
 import aggroforce.audio.AudioEngine;
 import aggroforce.block.Block;
+import aggroforce.event.EventRegistry;
+import aggroforce.event.tick.EntityTick;
 import aggroforce.input.Input;
 
 public class Game {
@@ -28,11 +30,11 @@ public class Game {
 	private static final int scrW = 800;
 	private static final int scrH = 600;
 	public static DisplayMode screen = new DisplayMode(scrW,scrH);
-	private long lastFPS = getTime();
-	private long lastFrame;
-	private int fps;
-	private int cfps;
-	private int delta;
+	private static long lastFPS = getTime();
+	private static long lastFrame;
+	private static int fps;
+	private static int cfps;
+	private static int delta;
 
 	public static Game instance(){
 		return instance;
@@ -56,15 +58,23 @@ public class Game {
 
 		this.initOpenGL();
 		updateDelta();
+		//Main game loop that is exited when the display is closed
 		while (!Display.isCloseRequested()) {
+			//Recreate the veiwport if the window was resized
 			if(Display.wasResized()){
 				GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 			}
+			//Update the time between frames
 			updateDelta();
+			//Check all input events for mouse and keyboard (Controller coming soon!)
 			Input.checkEvents();
+			//Only render if the display is visible
 			if(Display.isVisible()){
 				RenderEngine.instance.renderLoop();
 			}
+			//Update the entities by passing this event to the bus
+			EventRegistry.EVENT_BUS.postEvent(new EntityTick());
+			//Update the FPS counter
 			updateFPS();
 			Display.update();
 //						Display.sync(60);
@@ -72,7 +82,7 @@ public class Game {
 		AL.destroy();
 		Display.destroy();
 	}
-	public long getTime(){
+	public static long getTime(){
 		return (Sys.getTime()*1000)/Sys.getTimerResolution();
 	}
 	public void updateFPS(){
@@ -85,6 +95,7 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
+		System.out.println(Game.getOSName());
 		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
 		new Game(args);
 	}
@@ -105,14 +116,15 @@ public class Game {
 		long time = getTime();
 		int delta = (int) (time - lastFrame);
 		lastFrame = time;
-		this.delta = delta;
+		Game.delta = delta;
 	}
 
-	public int getDelta(){
-		return this.delta;
+	//Returns delta in millisecs
+	public static int getDelta(){
+		return delta;
 	}
 
-	public int getFps(){
+	public static int getFps(){
 		return fps;
 	}
 
