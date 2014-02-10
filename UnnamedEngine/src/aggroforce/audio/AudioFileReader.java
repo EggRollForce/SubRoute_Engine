@@ -23,13 +23,9 @@ public class AudioFileReader {
 				data = BufferUtils.createByteBuffer(audio.available());
 				adat = new byte[audio.available()];
 				audio.read(adat);
-//				for(byte b : adat){
-//					System.out.print(b+",");
-//				}
-//				System.out.println();
 				data.put(adat);
 				adat = null;
-				data.rewind();
+				data.flip();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
