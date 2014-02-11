@@ -22,4 +22,9 @@ public class RefinedMetal extends Block {
 		return icon;
 	}
 
+	@Override
+	public float getSlipperyness(){
+		return 2f;
+	}
+
 }

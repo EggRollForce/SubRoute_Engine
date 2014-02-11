@@ -14,9 +14,9 @@ public class Camera{
 	public static Vector3f veiwVec = new Vector3f();
 	public static Camera instance;
 	private static float mouseSens = 0.1f;
-	private static float sprintMod = 10f;
-	private static float defMovSpd = 0.005f;
-	private static float movSpd = 0.005f;
+	private static float sprintMod = 2f;
+	private static float defMovSpd = 10f;
+	private static float movSpd = 1f;
 	private static boolean thirdPerson = false;
 	private static Entity boundEnt;
 	private static boolean isBound = false;
@@ -40,66 +40,58 @@ public class Camera{
 
 	public static void forward(){
 		if(isBound){
-			x = boundEnt.getXPos();
-			z = boundEnt.getZPos();
+			x = 0;
+			z = 0;
 		}
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.getDelta();
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.getDelta();
 		if(isBound){
-			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
 	}
 	public static void backward(){
 		if(isBound){
-			x = boundEnt.getXPos();
-			z = boundEnt.getZPos();
+			x = 0;
+			z = 0;
 		}
 		x -= movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.getDelta();
 		z += movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.getDelta();
 		if(isBound){
-			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
 	}
 	public static void strafeRight(){
 		if(isBound){
-			x = boundEnt.getXPos();
-			z = boundEnt.getZPos();
+			x = 0;
+			z = 0;
 		}
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw+90)) * Game.getDelta();
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw+90)) * Game.getDelta();
 		if(isBound){
-			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
 	}
 	public static void strafeLeft(){
 		if(isBound){
-			x = boundEnt.getXPos();
-			z = boundEnt.getZPos();
+			x = 0;
+			z = 0;
 		}
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw-90)) * Game.getDelta();
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw-90)) * Game.getDelta();
 		if(isBound){
-			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
 	}
 	public static void up(){
-		if(isBound){
-			y = boundEnt.getYPos();
-		}
 		y += movSpd * Game.getDelta();
 		if(isBound){
-			boundEnt.setVelocity(0, 10, 0);
-			boundEnt.setPosition(x, y, z);
+			boundEnt.setVelocity(boundEnt.getXVel(), movSpd, boundEnt.getZVel());
 		}
 	}
 	public static void down(){
-		if(isBound){
-			y = boundEnt.getYPos();
-		}
 		y -= movSpd * Game.getDelta();
 		if(isBound){
-			boundEnt.setVelocity(0, 0, 0);
-			boundEnt.setPosition(x, y, z);
+			boundEnt.setVelocity(boundEnt.getXVel(), -movSpd, boundEnt.getZVel());
 		}
 	}
 	public static void sprintOn(){
@@ -149,9 +141,10 @@ public class Camera{
 			GL11.glRotated(yaw, 0, 1, 0);
 			GL11.glTranslated(x, y, z);
 		}else{
+			double[] off = boundEnt.getHeadOffset();
 			GL11.glRotated(boundEnt.getPitch(), 1, 0, 0);
 			GL11.glRotated(boundEnt.getYaw(), 0, 1, 0);
-			GL11.glTranslated(-boundEnt.getXPos(), -boundEnt.getYPos(), -boundEnt.getZPos());
+			GL11.glTranslated(-boundEnt.getXPos()-off[0], -boundEnt.getYPos()-off[1], -boundEnt.getZPos()-off[2]);
 		}
 	}
 	public static void thirdPersonOn(){
@@ -172,15 +165,29 @@ public class Camera{
 	public BlockTarget getLookTargetBlock(){
 		int x = 0,y = 0,z = 0,id = 0;
 		double[] prevpos = new double[3];
+		double ax,ay,az;
+
+		if(isBound){
+			double[] off = boundEnt.getHeadOffset();
+			ax = boundEnt.getXPos()+off[0];
+			ay = boundEnt.getYPos()+off[1];
+			az = boundEnt.getZPos()+off[2];
+		}else{
+			ax = Camera.x;
+			ay = Camera.y;
+			az = Camera.z;
+		}
+
+
 		float mul = 0;
 		boolean first = true;
 		do{
 			double[] pos = new double[3];
 			mul+=0.001f;
-			double temp = Camera.z+(veiwVec.z*mul);
-			pos[0] = -(Camera.x-(veiwVec.x*mul));
-			pos[1] =((veiwVec.y*mul)-Camera.y)+1;
-			pos[2] = -(temp+(Math.signum(temp)!=1?0:1));
+			double temp = az-(veiwVec.z*mul);
+			pos[0] = (ax+(veiwVec.x*mul));
+			pos[1] =((veiwVec.y*mul)+ay)+1;
+			pos[2] = (temp-(Math.signum(temp)!=-1?0:1));
 			if((int)Math.floor(pos[0])!=x||(int)pos[1]!=y||(int)pos[2]!=z||first){
 				first = false;
 				x=(int)Math.floor(pos[0]);y=(int)pos[1];z=(int)pos[2];
@@ -217,5 +224,8 @@ public class Camera{
 			return Side.EAST;
 		}
 		return Side.NONE;
+	}
+	public static Entity getBoundEntity(){
+		return boundEnt;
 	}
 }

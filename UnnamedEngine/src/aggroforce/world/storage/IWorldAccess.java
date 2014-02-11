@@ -6,6 +6,8 @@ public interface IWorldAccess {
 
 	public boolean setBlockAt(int x, int y, int z, int id);
 
+	public boolean blockExistsAt(int x, int y, int z);
+
 	public void updateNeeded();
 
 	public boolean getIsUpdateNeeded();

@@ -215,4 +215,9 @@ public class WorldStorage implements IWorldAccess{
 	private void updated(){
 		this.needsUpdate = false;
 	}
+
+	@Override
+	public boolean blockExistsAt(int x, int y, int z) {
+		return this.getBlockIdAt(x, y, z)!=0;
+	}
 }
