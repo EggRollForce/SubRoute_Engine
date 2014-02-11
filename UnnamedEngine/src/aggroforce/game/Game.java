@@ -74,12 +74,12 @@ public class Game {
 			updateDelta();
 			//Check all input events for mouse and keyboard (Controller coming soon!)
 			Input.checkEvents();
+			//Update the entities by passing this event to the bus
+			EventRegistry.EVENT_BUS.postEvent(new EntityTick());
 			//Only render if the display is visible
 			if(Display.isVisible()){
 				RenderEngine.instance.renderLoop();
 			}
-			//Update the entities by passing this event to the bus
-			EventRegistry.EVENT_BUS.postEvent(new EntityTick());
 			//Update the FPS counter
 			updateFPS();
 			AudioEngine.instance().loop();

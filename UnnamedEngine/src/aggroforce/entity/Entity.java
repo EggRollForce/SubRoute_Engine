@@ -69,11 +69,14 @@ public class Entity implements IEventListener{
 	public final void onUpdate(EntityTick e){
 		if(!stasis){
 			if(this.isAffectedByGravity()){
-				this.yVel -= (grav*grav)*(Game.getDelta()/1000f);
+				this.yVel -= (grav*grav*0.5)*(Game.getDelta()/1000f);
 			}
 			if(this.isColliding()){
 				if(Math.signum(yVel)!=1){
-					this.yVel = 0;
+					this.yVel = (float) (-(grav*grav*0.5)*(Game.getDelta()/1000f));
+				}
+				if(compare != null){
+					this.yPos = Math.ceil(this.yPos);
 				}
 				this.updateVelocity();
 				xVel *= Block.blocks[blockid].getSlipperyness()*(Game.getDelta()/1000f);
@@ -87,8 +90,13 @@ public class Entity implements IEventListener{
 
 	private void updateVelocity(){
 		this.xPos += xVel*(Game.getDelta()/1000f);
-		this.yPos += yVel*(Game.getDelta()/1000f);
-		this.zPos += zVel*(Game.getDelta()/1000d);
+		if((yPos + yVel*(Game.getDelta()/1000f))<=0){
+			this.yPos = 0;
+			this.yVel = 0;
+		}else{
+			this.yPos += yVel*(Game.getDelta()/1000f);
+		}
+		this.zPos += zVel*(Game.getDelta()/1000f);
 	}
 
 	public double getXPos(){return this.xPos;}
@@ -116,12 +124,14 @@ public class Entity implements IEventListener{
 	//a response for collision detection and boolean statement. 2 methods
 
 	private int blockid;
+	private double[] compare;
 	public boolean isColliding(){
 		//if collision detected return true. default return false
-		AABB bb = new AABB(0,0,0,1,1,1);
+		AABB bb = new AABB(0,-99,0,1,100,1);
 		if(WorldStorage.getInstance()!=null){
 			if((blockid = WorldStorage.getInstance().getBlockIdAt((int)Math.floor(xPos+0.5), (int)Math.floor(yPos+1), (int)Math.floor(zPos+0.5)))!=0){
-				return AABB.intersects(boundingBox.setPosition(xPos-Math.floor(xPos), yPos-Math.floor(yPos), zPos-Math.floor(zPos)), bb);
+				compare = boundingBox.compareAABB(bb);
+				return AABB.intersects(boundingBox.setPosition(xPos-Math.floor(xPos), (yVel+yPos-Math.floor(yPos)), zPos-Math.floor(zPos)), bb);
 			}
 		}
 		return false;
