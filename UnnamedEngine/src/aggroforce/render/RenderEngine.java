@@ -11,6 +11,7 @@ import aggroforce.game.Game;
 import aggroforce.gui.GUIRenderer;
 import aggroforce.input.KeyboardReader;
 import aggroforce.menu.MainMenu;
+import aggroforce.player.Player;
 import aggroforce.render.camera.Camera;
 import aggroforce.texture.TextureRegistry;
 import aggroforce.world.WorldLoader;
@@ -27,7 +28,7 @@ public class RenderEngine {
 		textureMap = new TextureRegistry();
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
-		new Camera(0d,-500d,0d);
+		new Camera(new Player());
 		this.initLighting();
 		GUIRenderer.setCurrentGUI(new MainMenu());
 		AudioEngine.instance().loadSound();
@@ -53,10 +54,10 @@ public class RenderEngine {
 			Camera.thirdPersonOff();
 
 			if(KeyboardReader.keysts[Keyboard.KEY_UP]){
-				time += 0.1d*Game.instance().getDelta();
+				time += 0.1d*Game.getDelta();
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_DOWN]){
-				time -= 0.1d*Game.instance().getDelta();
+				time -= 0.1d*Game.getDelta();
 			}
 			if(KeyboardReader.keysts[Keyboard.KEY_LEFT]){
 			}
@@ -74,7 +75,8 @@ public class RenderEngine {
 			if(time > 360){
 				time=0;
 			}else{
-				time+=Game.instance().getDelta()/1000f;
+				Game.instance();
+				time+=Game.getDelta()/1000f;
 			}
 			double p = Math.sin(Math.toRadians(time))*1000;
 			double p2 = Math.cos(Math.toRadians(time))*1000;

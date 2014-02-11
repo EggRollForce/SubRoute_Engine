@@ -3,6 +3,7 @@ package aggroforce.render.camera;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
+import aggroforce.entity.Entity;
 import aggroforce.game.Game;
 import aggroforce.util.Side;
 import aggroforce.world.storage.WorldStorage;
@@ -17,11 +18,18 @@ public class Camera{
 	private static float defMovSpd = 0.005f;
 	private static float movSpd = 0.005f;
 	private static boolean thirdPerson = false;
+	private static Entity boundEnt;
+	private static boolean isBound = false;
 
 	public Camera(){
 		instance = this;
 		pitch = 0;
 		yaw = 0;
+	}
+	public Camera(Entity ent){
+		instance = this;
+		boundEnt = ent;
+		isBound = true;
 	}
 	public Camera(double x, double y, double z){
 		this();
@@ -31,26 +39,68 @@ public class Camera{
 	}
 
 	public static void forward(){
-		x -= movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.instance().getDelta();
-		z += movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.instance().getDelta();
+		if(isBound){
+			x = boundEnt.getXPos();
+			z = boundEnt.getZPos();
+		}
+		x += movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.getDelta();
+		z -= movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.getDelta();
+		if(isBound){
+			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+		}
 	}
 	public static void backward(){
-		x += movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.instance().getDelta();
-		z -= movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.instance().getDelta();
+		if(isBound){
+			x = boundEnt.getXPos();
+			z = boundEnt.getZPos();
+		}
+		x -= movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.getDelta();
+		z += movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.getDelta();
+		if(isBound){
+			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+		}
 	}
 	public static void strafeRight(){
-		x -= movSpd * (float)Math.sin(Math.toRadians(yaw+90)) * Game.instance().getDelta();
-		z += movSpd * (float)Math.cos(Math.toRadians(yaw+90)) * Game.instance().getDelta();
+		if(isBound){
+			x = boundEnt.getXPos();
+			z = boundEnt.getZPos();
+		}
+		x += movSpd * (float)Math.sin(Math.toRadians(yaw+90)) * Game.getDelta();
+		z -= movSpd * (float)Math.cos(Math.toRadians(yaw+90)) * Game.getDelta();
+		if(isBound){
+			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+		}
 	}
 	public static void strafeLeft(){
-		x -= movSpd * (float)Math.sin(Math.toRadians(yaw-90)) * Game.instance().getDelta();
-		z += movSpd * (float)Math.cos(Math.toRadians(yaw-90)) * Game.instance().getDelta();
+		if(isBound){
+			x = boundEnt.getXPos();
+			z = boundEnt.getZPos();
+		}
+		x += movSpd * (float)Math.sin(Math.toRadians(yaw-90)) * Game.getDelta();
+		z -= movSpd * (float)Math.cos(Math.toRadians(yaw-90)) * Game.getDelta();
+		if(isBound){
+			boundEnt.setPosition(x, boundEnt.getYPos(), z);
+		}
 	}
 	public static void up(){
-		y -= movSpd * Game.instance().getDelta();
+		if(isBound){
+			y = boundEnt.getYPos();
+		}
+		y += movSpd * Game.getDelta();
+		if(isBound){
+			boundEnt.setVelocity(0, 10, 0);
+			boundEnt.setPosition(x, y, z);
+		}
 	}
 	public static void down(){
-		y += movSpd * Game.instance().getDelta();
+		if(isBound){
+			y = boundEnt.getYPos();
+		}
+		y -= movSpd * Game.getDelta();
+		if(isBound){
+			boundEnt.setVelocity(0, 0, 0);
+			boundEnt.setPosition(x, y, z);
+		}
 	}
 	public static void sprintOn(){
 		movSpd = defMovSpd*sprintMod;
@@ -67,6 +117,9 @@ public class Camera{
 			return;
 		}else if(temp > -90 && temp < 90){
 			pitch = temp;
+		}
+		if(isBound){
+			boundEnt.setAngles((float)pitch, (float)yaw);
 		}
 	}
 	public boolean isBoundingBoxInFutstrum(double x, double y, double z, double width, double height){
@@ -91,9 +144,15 @@ public class Camera{
 		if(thirdPerson){
 			GL11.glTranslated(0, 0, -radius);
 		}
-		GL11.glRotated(pitch, 1, 0, 0);
-		GL11.glRotated(yaw, 0, 1, 0);
-		GL11.glTranslated(x, y, z);
+		if(!isBound){
+			GL11.glRotated(pitch, 1, 0, 0);
+			GL11.glRotated(yaw, 0, 1, 0);
+			GL11.glTranslated(x, y, z);
+		}else{
+			GL11.glRotated(boundEnt.getPitch(), 1, 0, 0);
+			GL11.glRotated(boundEnt.getYaw(), 0, 1, 0);
+			GL11.glTranslated(-boundEnt.getXPos(), -boundEnt.getYPos(), -boundEnt.getZPos());
+		}
 	}
 	public static void thirdPersonOn(){
 		thirdPerson = true;

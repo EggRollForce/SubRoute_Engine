@@ -8,10 +8,11 @@ import aggroforce.game.Game;
 
 public class Entity implements IEventListener{
 
-	boolean stasis = true;
+	boolean stasis = false;
 	protected double xPos,yPos,zPos;
 	protected float xVel = 0f, yVel = 0f, zVel = 0f;
 	protected float pitch = 0f, yaw = 0f;
+	public double grav = 9.806;
 
 	public Entity(double posx, double posy, double posz){
 		EventRegistry.EVENT_BUS.registerListener(this);
@@ -38,12 +39,23 @@ public class Entity implements IEventListener{
 		}
 	}
 
+	public void setPosition(double x, double y, double z){
+		this.xPos = x;
+		this.yPos = y;
+		this.zPos = z;
+	}
+
+	public void setAngles(float pitch, float yaw){
+		this.pitch = pitch;
+		this.yaw = yaw;
+	}
 	//Update function called by the event bus
 	@EventHandler
 	public void onUpdate(EntityTick e){
+//		System.out.println("Entity Updated");
 		if(!stasis){
 			if(this.isAffectedByGravity()){
-				this.zVel *= (9.806*(Game.getDelta()/1000d));
+				this.yVel -= (grav*(Game.getDelta()/1000d));
 			}
 			this.xPos += xVel*(Game.getDelta()/1000d);
 			this.yPos += yVel*(Game.getDelta()/1000d);
