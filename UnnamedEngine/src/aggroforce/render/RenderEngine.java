@@ -12,7 +12,6 @@ import aggroforce.game.Game;
 import aggroforce.gui.GUIRenderer;
 import aggroforce.input.KeyboardReader;
 import aggroforce.menu.MainMenu;
-import aggroforce.phys.util.AABB;
 import aggroforce.player.Player;
 import aggroforce.render.camera.Camera;
 import aggroforce.texture.TextureRegistry;
@@ -40,8 +39,7 @@ public class RenderEngine {
 	private final Vector3f lpos = new Vector3f(0,0,0);
 	float time;
 	WorldStorage wldstor;
-	public boolean bool = false;
-	public boolean bool2 = false;
+	private boolean bool = false, bool2 = false, bool3 = false;
 	public void renderLoop(){
 
 
@@ -53,7 +51,6 @@ public class RenderEngine {
 		if(wldstor!=null){
 			this.wldstor.loadNextRenderer();
 			Camera.camTransform();
-			Camera.thirdPersonOn();
 
 			if(KeyboardReader.keysts[Keyboard.KEY_UP]){
 				time += 0.1d*Game.getDelta();
@@ -61,11 +58,12 @@ public class RenderEngine {
 			if(KeyboardReader.keysts[Keyboard.KEY_DOWN]){
 				time -= 0.1d*Game.getDelta();
 			}
-			if(KeyboardReader.keysts[Keyboard.KEY_LEFT]){
+			if(KeyboardReader.keysts[Keyboard.KEY_F5]!=bool3&&KeyboardReader.keysts[Keyboard.KEY_F5]==false){
+				Camera.setThirdPerson(!Camera.isThirdPerson());
 			}
+			bool3 = KeyboardReader.keysts[Keyboard.KEY_F5];
 			if(KeyboardReader.keysts[Keyboard.KEY_P]!=bool2&&KeyboardReader.keysts[Keyboard.KEY_P]==false){
 //				AudioEngine.instance().playSound();
-				System.out.println(AABB.intersects(new AABB(0,0,0,1,1,1),new AABB(0,0,0,1,1,1)));
 			}
 			bool2 = KeyboardReader.keysts[Keyboard.KEY_P];
 			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool&&KeyboardReader.keysts[Keyboard.KEY_R]==false){

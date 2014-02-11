@@ -84,7 +84,7 @@ public class Game {
 			updateFPS();
 			AudioEngine.instance().loop();
 			Display.update();
-//						Display.sync(60);
+			Display.sync(60);
 		}
 		AL.destroy();
 		Display.destroy();

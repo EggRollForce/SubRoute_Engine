@@ -43,8 +43,8 @@ public class Camera{
 			x = 0;
 			z = 0;
 		}
-		x += movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.getDelta();
-		z -= movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.getDelta();
+		x += movSpd * (float)Math.sin(Math.toRadians(yaw));
+		z -= movSpd * (float)Math.cos(Math.toRadians(yaw));
 		if(isBound){
 			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
@@ -54,8 +54,8 @@ public class Camera{
 			x = 0;
 			z = 0;
 		}
-		x -= movSpd * (float)Math.sin(Math.toRadians(yaw)) * Game.getDelta();
-		z += movSpd * (float)Math.cos(Math.toRadians(yaw)) * Game.getDelta();
+		x -= movSpd * (float)Math.sin(Math.toRadians(yaw));
+		z += movSpd * (float)Math.cos(Math.toRadians(yaw));
 		if(isBound){
 			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
@@ -65,8 +65,8 @@ public class Camera{
 			x = 0;
 			z = 0;
 		}
-		x += movSpd * (float)Math.sin(Math.toRadians(yaw+90)) * Game.getDelta();
-		z -= movSpd * (float)Math.cos(Math.toRadians(yaw+90)) * Game.getDelta();
+		x += movSpd * (float)Math.sin(Math.toRadians(yaw+90));
+		z -= movSpd * (float)Math.cos(Math.toRadians(yaw+90));
 		if(isBound){
 			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
@@ -76,22 +76,23 @@ public class Camera{
 			x = 0;
 			z = 0;
 		}
-		x += movSpd * (float)Math.sin(Math.toRadians(yaw-90)) * Game.getDelta();
-		z -= movSpd * (float)Math.cos(Math.toRadians(yaw-90)) * Game.getDelta();
+		x += movSpd * (float)Math.sin(Math.toRadians(yaw-90));
+		z -= movSpd * (float)Math.cos(Math.toRadians(yaw-90));
 		if(isBound){
 			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
 		}
 	}
 	public static void up(){
+		boundEnt.notOnGround();
 		y += movSpd * Game.getDelta();
 		if(isBound){
-			boundEnt.setVelocity(boundEnt.getXVel(), movSpd, boundEnt.getZVel());
+			boundEnt.setVelocity(boundEnt.getXVel(), 20, boundEnt.getZVel());
 		}
 	}
 	public static void down(){
 		y -= movSpd * Game.getDelta();
 		if(isBound){
-			boundEnt.setVelocity(boundEnt.getXVel(), -movSpd, boundEnt.getZVel());
+//			boundEnt.setVelocity(boundEnt.getXVel(), -movSpd, boundEnt.getZVel());
 		}
 	}
 	public static void sprintOn(){
@@ -147,11 +148,11 @@ public class Camera{
 			GL11.glTranslated(-boundEnt.getXPos()-off[0], -boundEnt.getYPos()-off[1], -boundEnt.getZPos()-off[2]);
 		}
 	}
-	public static void thirdPersonOn(){
-		thirdPerson = true;
+	public static void setThirdPerson(boolean thrdper){
+		thirdPerson = thrdper;
 	}
-	public static void thirdPersonOff(){
-		thirdPerson = false;
+	public static boolean isThirdPerson(){
+		return thirdPerson;
 	}
 	public static void camUnTransform(){
 		GL11.glRotated(-pitch, 1, 0, 0);

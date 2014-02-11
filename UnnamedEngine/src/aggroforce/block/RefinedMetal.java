@@ -24,7 +24,7 @@ public class RefinedMetal extends Block {
 
 	@Override
 	public float getSlipperyness(){
-		return 2f;
+		return 4f;
 	}
 
 }

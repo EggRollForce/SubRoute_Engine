@@ -49,6 +49,21 @@ public class AABB {
 		double d2 = Math.min(Math.max(this.z, bb.z+bb.l),this.z+this.l);
 		return d == bb.z || (bb.z+bb.l) == d2;
 	}
+	/**
+	 * Compares to AxisAlignedBoundingBoxes and outputs the collision values in a double array
+	 *
+	 * @param bb the AxisAlignedBoundingBox that is being compared against this one
+	 * @return a double array containing collision values in the format {MaxX,MaxY,MaxZ,MinX,MinY,MinZ}
+	 */
+	public double[] compareAABB(AABB bb){
+		double maxx = Math.min(Math.max(this.x, bb.x),this.x+this.w);
+		double minx = Math.min(Math.max(this.x, bb.x+bb.w),this.x+this.w);
+		double maxy = Math.min(Math.max(this.y, bb.y),this.y+this.h);
+		double miny = Math.min(Math.max(this.y, bb.y+bb.h),this.y+this.h);
+		double maxz = Math.min(Math.max(this.z, bb.z),this.z+this.l);
+		double minz = Math.min(Math.max(this.z, bb.z+bb.l),this.z+this.l);
+		return new double[] {maxx,maxy,maxz,minx,miny,minz};
+	}
 
 	public AABB translateAABB(double dx, double dy, double dz){
 		this.x += dx;

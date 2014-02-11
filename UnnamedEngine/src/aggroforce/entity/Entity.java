@@ -12,6 +12,8 @@ import aggroforce.world.storage.WorldStorage;
 public class Entity implements IEventListener{
 
 	boolean stasis = false;
+	private float atime = 0f;
+	private boolean onGround = true;
 	protected AABB boundingBox;
 	protected double xPos,yPos,zPos;
 	protected double[] headOffset = new double[] {0,0,0};
@@ -44,6 +46,10 @@ public class Entity implements IEventListener{
 		}
 	}
 
+	public void notOnGround(){
+		this.onGround = false;
+	}
+
 	public double[] getHeadOffset(){
 		return headOffset;
 	}
@@ -63,16 +69,16 @@ public class Entity implements IEventListener{
 	public final void onUpdate(EntityTick e){
 		if(!stasis){
 			if(this.isAffectedByGravity()){
-				this.yVel -= ((grav*2d)*(Game.getDelta()/1000d));
+				this.yVel -= (grav*grav)*(Game.getDelta()/1000f);
 			}
 			if(this.isColliding()){
 				if(Math.signum(yVel)!=1){
 					this.yVel = 0;
 				}
 				this.updateVelocity();
-				xVel *= Block.blocks[blockid].getSlipperyness();
+				xVel *= Block.blocks[blockid].getSlipperyness()*(Game.getDelta()/1000f);
 //				yVel *= Block.blocks[blockid].getSlipperyness();
-				zVel *= Block.blocks[blockid].getSlipperyness();
+				zVel *= Block.blocks[blockid].getSlipperyness()*(Game.getDelta()/1000f);
 			}else{
 				this.updateVelocity();
 			}
@@ -80,8 +86,8 @@ public class Entity implements IEventListener{
 	}
 
 	private void updateVelocity(){
-		this.xPos += xVel*(Game.getDelta()/1000d);
-		this.yPos += yVel*(Game.getDelta()/1000d);
+		this.xPos += xVel*(Game.getDelta()/1000f);
+		this.yPos += yVel*(Game.getDelta()/1000f);
 		this.zPos += zVel*(Game.getDelta()/1000d);
 	}
 
