@@ -220,4 +220,22 @@ public class WorldStorage implements IWorldAccess{
 	public boolean blockExistsAt(int x, int y, int z) {
 		return this.getBlockIdAt(x, y, z)!=0;
 	}
+
+	public int[] getNextBlockInColumn(boolean down, int x, int z, int height){
+		int y = height;
+		int id = -1;
+		do{
+			if(!(y<=0||y>=1024)){
+				id = this.getBlockIdAt(x, y, z);
+				if(down){
+					y--;
+				}else{
+					y++;
+				}
+			}else{
+				id = -1;
+			}
+		}while(id==0&&id!=-1);
+		return new int[] {id,y};
+	}
 }

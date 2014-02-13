@@ -15,7 +15,7 @@ public class Camera{
 	public static Camera instance;
 	private static float mouseSens = 0.1f;
 	private static float sprintMod = 2f;
-	private static float defMovSpd = 10f;
+	private static float defMovSpd = 1f;
 	private static float movSpd = 1f;
 	private static boolean thirdPerson = false;
 	private static Entity boundEnt;
@@ -83,10 +83,9 @@ public class Camera{
 		}
 	}
 	public static void up(){
-		boundEnt.notOnGround();
 		y += movSpd * Game.getDelta();
 		if(isBound){
-			boundEnt.setVelocity(boundEnt.getXVel(), 20, boundEnt.getZVel());
+			boundEnt.setVelocity(boundEnt.getXVel(), 2, boundEnt.getZVel());
 		}
 	}
 	public static void down(){

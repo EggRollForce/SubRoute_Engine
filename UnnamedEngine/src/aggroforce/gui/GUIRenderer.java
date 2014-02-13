@@ -7,6 +7,7 @@ import org.lwjgl.util.glu.GLU;
 
 import aggroforce.game.Game;
 import aggroforce.render.RenderEngine;
+import aggroforce.render.camera.Camera;
 
 public class GUIRenderer {
 
@@ -36,6 +37,10 @@ public class GUIRenderer {
 		long total = Runtime.getRuntime().totalMemory();
 		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), 1, 0, 1f);
 		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(new DecimalFormat("#.###")).format((max/1024d/1024d/1024d)))+"GB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(new DecimalFormat("#.#####")).format((total/1024d/1024d/1024d))+"GB", 1, 10, 1f);
+		RenderEngine.fontRenderer.drawString("Cam Pos:", 1, 50, 1f);
+		RenderEngine.fontRenderer.drawString("X:"+Camera.getBoundEntity().getXPos(), 1, 40, 1f);
+		RenderEngine.fontRenderer.drawString("Y:"+Camera.getBoundEntity().getYPos(), 1, 30, 1f);
+		RenderEngine.fontRenderer.drawString("Z:"+Camera.getBoundEntity().getZPos(), 1, 20, 1f);
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0, 0, -5);

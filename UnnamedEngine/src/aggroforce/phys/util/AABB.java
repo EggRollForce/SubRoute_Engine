@@ -4,11 +4,41 @@ import org.lwjgl.opengl.GL11;
 
 public class AABB {
 
+	public enum Alignment{
+		ACTUAL_COORDS,
+		BOTTOM_CENTER,
+		ABSOLUTE_CENTER
+	}
+	private Alignment align;
 	private double x,y,z,w,l,h;
 
 	//Create a new AxisAlignedBoundingBox
-	public AABB(double x, double y, double z, double width, double height, double length){
-		this.x = x;this.y = y;this.z = z;this.w = width;this.l = length;this.h = height;
+	public AABB(Alignment a, double x, double y, double z, double width, double height, double length){
+		align = a;
+		this.w = width;
+		this.l = length;
+		this.h = height;
+		switch(align){
+		case ACTUAL_COORDS:
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			break;
+		case BOTTOM_CENTER:
+			this.x = x-(w/2d);
+			this.y = y;
+			this.z = z-(l/2d);
+			break;
+		case ABSOLUTE_CENTER:
+			this.x = x-(w/2d);
+			this.y = y-(h/2d);
+			this.z = z-(l/2d);
+			break;
+		}
+	}
+
+	public AABB(Alignment a, double width, double height, double length){
+		this(a,0,0,0,width,height,length);
 	}
 
 	public double getX(){
@@ -28,6 +58,9 @@ public class AABB {
 	}
 	public double getLength(){
 		return l;
+	}
+	public Alignment getAlignment(){
+		return align;
 	}
 
 	public static boolean intersects(AABB bb1, AABB bb2){
@@ -73,9 +106,23 @@ public class AABB {
 	}
 
 	public AABB setPosition(double x, double y, double z){
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		switch(align){
+		case ACTUAL_COORDS:
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			break;
+		case BOTTOM_CENTER:
+			this.x = x-(w/2d);
+			this.y = y;
+			this.z = z-(l/2d);
+			break;
+		case ABSOLUTE_CENTER:
+			this.x = x-(w/2d);
+			this.y = y-(h/2d);
+			this.z = z-(l/2d);
+			break;
+		}
 		return this;
 	}
 

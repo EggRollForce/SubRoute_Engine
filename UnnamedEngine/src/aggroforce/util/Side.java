@@ -24,4 +24,11 @@ public enum Side{
 	public int getY(){return pos[1];}
 	public int getZ(){return pos[2];}
 
+	public static Side[] getValidSides(){
+		return new Side[] {DOWN,UP,NORTH,SOUTH,EAST,WEST};
+	}
+
+	public static Side[] getFaces(){
+		return new Side[] {NORTH,SOUTH,EAST,WEST};
+	}
 }

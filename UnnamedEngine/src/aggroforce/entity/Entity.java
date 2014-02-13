@@ -7,13 +7,12 @@ import aggroforce.event.listener.IEventListener;
 import aggroforce.event.tick.EntityTick;
 import aggroforce.game.Game;
 import aggroforce.phys.util.AABB;
+import aggroforce.util.Side;
 import aggroforce.world.storage.WorldStorage;
 
 public class Entity implements IEventListener{
 
 	boolean stasis = false;
-	private float atime = 0f;
-	private boolean onGround = true;
 	protected AABB boundingBox;
 	protected double xPos,yPos,zPos;
 	protected double[] headOffset = new double[] {0,0,0};
@@ -46,10 +45,6 @@ public class Entity implements IEventListener{
 		}
 	}
 
-	public void notOnGround(){
-		this.onGround = false;
-	}
-
 	public double[] getHeadOffset(){
 		return headOffset;
 	}
@@ -68,35 +63,73 @@ public class Entity implements IEventListener{
 	@EventHandler
 	public final void onUpdate(EntityTick e){
 		if(!stasis){
-			if(this.isAffectedByGravity()){
-				this.yVel -= (grav*grav*0.5)*(Game.getDelta()/1000f);
+			Side[] walls;
+			if((walls = this.isCollidingWalls())!=null){
+				for(Side side : walls){
+					if(side == null){
+						continue;
+					}else{
+						if(side == Side.SOUTH){
+							if(xVel+(xPos+(this.boundingBox.getWidth()/2d)) < Math.ceil(xPos)+1){
+								if(Math.signum(xVel)==-1){
+									xVel = 0;
+									this.xPos = Math.ceil(xPos)-1+(this.boundingBox.getWidth()/2d);
+								}
+							}
+						}else if(side == Side.NORTH){
+							if(xPos+xVel > Math.floor(xPos)-1){
+								if(Math.signum(xVel)==1){
+									xVel = 0;
+									this.xPos = Math.floor(xPos)+1-(this.boundingBox.getWidth()/2d);
+								}
+							}
+						}else if(side == Side.WEST){
+							if(zVel+(zPos+(this.boundingBox.getLength()/2d)) < Math.ceil(zPos)+1){
+								if(Math.signum(zVel)==-1){
+									zVel = 0;
+									this.zPos = Math.ceil(zPos)-1+(this.boundingBox.getLength()/2d);
+								}
+							}
+						}else if(side == Side.EAST){
+							if(zPos+zVel > Math.floor(zPos)-1){
+								if(Math.signum(zVel)==1){
+									zVel = 0;
+									this.zPos = Math.floor(zPos)+1-(this.boundingBox.getLength()/2d);
+								}
+							}
+						}
+					}
+				}
 			}
-			if(this.isColliding()){
+			if(this.isCollidingGround()){
 				if(Math.signum(yVel)!=1){
-					this.yVel = (float) (-(grav*grav*0.5)*(Game.getDelta()/1000f));
+					this.yVel = 0;
 				}
-				if(compare != null){
-					this.yPos = Math.ceil(this.yPos);
-				}
+				this.yPos = Math.ceil(this.yPos);
 				this.updateVelocity();
-				xVel *= Block.blocks[blockid].getSlipperyness()*(Game.getDelta()/1000f);
+				if(nbdat!=null){
+				xVel *= Block.blocks[nbdat[0]].getSlipperyness();
 //				yVel *= Block.blocks[blockid].getSlipperyness();
-				zVel *= Block.blocks[blockid].getSlipperyness()*(Game.getDelta()/1000f);
+				zVel *= Block.blocks[nbdat[0]].getSlipperyness();
+				}
 			}else{
 				this.updateVelocity();
+			}
+			if(this.isAffectedByGravity()){
+				this.yVel -= (grav*grav*0.5)*(Game.getDelta()/1000f);
 			}
 		}
 	}
 
 	private void updateVelocity(){
-		this.xPos += xVel*(Game.getDelta()/1000f);
-		if((yPos + yVel*(Game.getDelta()/1000f))<=0){
+		this.xPos += xVel*(Game.getDelta()/100d);
+		if((yPos + yVel*(Game.getDelta()/100f))<=0){
 			this.yPos = 0;
 			this.yVel = 0;
 		}else{
-			this.yPos += yVel*(Game.getDelta()/1000f);
+			this.yPos += yVel*(Game.getDelta()/100d);
 		}
-		this.zPos += zVel*(Game.getDelta()/1000f);
+		this.zPos += zVel*(Game.getDelta()/100d);
 	}
 
 	public double getXPos(){return this.xPos;}
@@ -122,17 +155,45 @@ public class Entity implements IEventListener{
 
 
 	//a response for collision detection and boolean statement. 2 methods
-
-	private int blockid;
-	private double[] compare;
-	public boolean isColliding(){
-		//if collision detected return true. default return false
-		AABB bb = new AABB(0,-99,0,1,100,1);
+	public Side[] isCollidingWalls(){
 		if(WorldStorage.getInstance()!=null){
-			if((blockid = WorldStorage.getInstance().getBlockIdAt((int)Math.floor(xPos+0.5), (int)Math.floor(yPos+1), (int)Math.floor(zPos+0.5)))!=0){
-				compare = boundingBox.compareAABB(bb);
-				return AABB.intersects(boundingBox.setPosition(xPos-Math.floor(xPos), (yVel+yPos-Math.floor(yPos)), zPos-Math.floor(zPos)), bb);
+		WorldStorage wld = WorldStorage.getInstance();
+		Side[] arr = new Side[4];
+		int index = 0;
+		boolean isNull = true;
+		for(Side side : Side.getFaces()){
+			int xpos = (int)Math.floor(xPos)+side.getX();
+			int zpos = (int)Math.floor(zPos)+side.getZ();
+			int id;
+			if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+1), zpos))!=0){
+				arr[index] = side;
+				isNull = false;
+			}else if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+2), zpos))!=0){
+				arr[index] = side;
+				isNull = false;
 			}
+			index++;
+		}
+			if(!isNull){
+				return arr;
+			}else{
+				return null;
+			}
+		}else{
+			return Side.getFaces();
+		}
+	}
+
+	private int[] nbdat;
+	public boolean isCollidingGround(){
+		//if collision detected return true. default return false
+		if(WorldStorage.getInstance()!=null){
+			nbdat = WorldStorage.getInstance().getNextBlockInColumn(true, (int)Math.floor(xPos), (int)Math.floor(zPos), (int)Math.floor(yPos+1));
+			if(nbdat[0]!=-1){
+				return yPos<=nbdat[1]+1;
+			}
+		}else{
+			return true;
 		}
 		return false;
 	}

@@ -1,6 +1,7 @@
 package aggroforce.block;
 
 import aggroforce.phys.util.AABB;
+import aggroforce.phys.util.AABB.Alignment;
 import aggroforce.texture.Icon;
 import aggroforce.texture.TileRegister;
 import aggroforce.util.Side;
@@ -8,7 +9,7 @@ import aggroforce.world.storage.IWorldAccess;
 
 public abstract class Block {
 
-	protected static AABB bounding = new AABB(0,0,0,1,1,1);
+	protected static AABB bounding = new AABB(Alignment.ACTUAL_COORDS,0,0,0,1,1,1);
 	public static Block[] blocks = new Block[256];
 
 	public int id;

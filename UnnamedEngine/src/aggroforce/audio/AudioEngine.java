@@ -72,7 +72,7 @@ public class AudioEngine {
 	public void initAudioEngine(){
 		AL10.alSourcef(src.get(0), AL10.AL_PITCH, 1.0f);
 		AL10.alSourcef(src.get(0), AL10.AL_ROLLOFF_FACTOR, 1f);
-		AL10.alSource(src.get(0), AL10.AL_POSITION, (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0f,0f,0f}).rewind());
+		AL10.alSource(src.get(0), AL10.AL_POSITION, (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0f,500f,0f}).rewind());
 		AL10.alSourcef(src.get(0), AL10.AL_REFERENCE_DISTANCE, 1f);
 		AL10.alSourcef(src.get(0), AL10.AL_MAX_DISTANCE, 100f);
 		AL10.alSourcei(src.get(0), AL10.AL_LOOPING, AL10.AL_TRUE);
