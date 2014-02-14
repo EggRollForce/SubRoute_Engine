@@ -1,0 +1,14 @@
+these notes are to plan out what we are going to do for all aspects
+
+Physics
+IMPORTANT
+- fix and tidy up collisions
+
+ for later
+- liquid dynamics
+
+
+Entities
+
+
+
