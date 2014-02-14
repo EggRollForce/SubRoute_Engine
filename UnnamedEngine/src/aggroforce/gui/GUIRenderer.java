@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
+import aggroforce.entity.Entity;
 import aggroforce.game.Game;
 import aggroforce.render.RenderEngine;
 import aggroforce.render.camera.Camera;
@@ -41,6 +42,12 @@ public class GUIRenderer {
 		RenderEngine.fontRenderer.drawString("X:"+Camera.getBoundEntity().getXPos(), 1, 40, 1f);
 		RenderEngine.fontRenderer.drawString("Y:"+Camera.getBoundEntity().getYPos(), 1, 30, 1f);
 		RenderEngine.fontRenderer.drawString("Z:"+Camera.getBoundEntity().getZPos(), 1, 20, 1f);
+		Entity ent = Camera.getBoundEntity();
+		RenderEngine.fontRenderer.drawString("Speed:"+(Math.hypot(ent.xPos-ent.lastX, ent.zPos-ent.lastZ)), 1, 60, 1f);
+		RenderEngine.fontRenderer.drawString("VelX:"+ent.getXVel(), 1, 80, 1f);
+		RenderEngine.fontRenderer.drawString("VelZ:"+ent.getZVel(), 1, 70, 1f);
+		RenderEngine.fontRenderer.drawString("Delta:"+Game.getDelta(), 1, 90, 1f);
+
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0, 0, -5);
