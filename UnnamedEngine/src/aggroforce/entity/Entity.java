@@ -116,7 +116,7 @@ public class Entity implements IEventListener{
 				this.updateVelocity();
 			}
 			if(this.isAffectedByGravity()){
-				this.yVel -= (grav*grav*0.5)*(Game.getDelta()/1000f);
+				this.yVel -= (grav*0.5)*(Math.pow(Game.getDelta()/100f,2));
 			}
 		}
 	}
