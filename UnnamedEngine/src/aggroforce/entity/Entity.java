@@ -106,15 +106,16 @@ public class Entity implements IEventListener{
 				}
 			}
 			if(this.isCollidingGround()){
+				System.out.println("true");
 				if(Math.signum(yVel)!=1){
 					this.yVel = 0;
 				}
 				this.yPos = Math.ceil(this.yPos);
 				this.updateVelocity();
 				if(nbdat!=null){
-				xVel *= Block.blocks[nbdat[0]].getSlipperyness();
-////				yVel *= Block.blocks[blockid].getSlipperyness();
-				zVel *= Block.blocks[nbdat[0]].getSlipperyness();
+					xVel *= Block.blocks[nbdat[0]].getSlipperyness();
+	////				yVel *= Block.blocks[blockid].getSlipperyness();
+					zVel *= Block.blocks[nbdat[0]].getSlipperyness();
 				}
 			}else{
 				this.updateVelocity();
@@ -132,11 +133,11 @@ public class Entity implements IEventListener{
 			this.yVel = 0;
 		}else{
 			this.yPos += yVel*(Game.getDelta()/100d);
-			System.out.println(yVel);
+//			System.out.println(yVel);
 
 		}
 		this.zPos += zVel*(Game.getDelta()/100d);
-		System.out.println(zVel);
+//		System.out.println(zVel);
 	}
 
 	public double getXPos(){return this.xPos;}
@@ -199,10 +200,14 @@ public class Entity implements IEventListener{
 			if(nbdat[0]!=-1){
 				return yPos<=nbdat[1]+1;
 			}
-		}else{
+		}else if(nbdat[0]>=1){
+			System.out.println("true");
 			return true;
 		}
+
+		System.out.println("false");
 		return false;
+
 	}
 
 	//is entity nonmoving or moving
