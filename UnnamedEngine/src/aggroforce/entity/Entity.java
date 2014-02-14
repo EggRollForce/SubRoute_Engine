@@ -128,8 +128,11 @@ public class Entity implements IEventListener{
 			this.yVel = 0;
 		}else{
 			this.yPos += yVel*(Game.getDelta()/100d);
+			System.out.println(yVel);
+
 		}
 		this.zPos += zVel*(Game.getDelta()/100d);
+		System.out.println(zVel);
 	}
 
 	public double getXPos(){return this.xPos;}
