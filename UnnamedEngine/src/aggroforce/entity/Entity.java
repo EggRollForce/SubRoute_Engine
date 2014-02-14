@@ -14,7 +14,8 @@ public class Entity implements IEventListener{
 
 	boolean stasis = false;
 	protected AABB boundingBox;
-	protected double xPos,yPos,zPos;
+	public double xPos,yPos,zPos;
+	public double lastX,lastY,lastZ;
 	protected double[] headOffset = new double[] {0,0,0};
 	protected float xVel = 0f, yVel = 0f, zVel = 0f;
 	protected float pitch = 0f, yaw = 0f;
@@ -62,6 +63,9 @@ public class Entity implements IEventListener{
 	//Update function called by the event bus
 	@EventHandler
 	public final void onUpdate(EntityTick e){
+		this.lastX = xPos;
+		this.lastY = yPos;
+		this.lastZ = zPos;
 		if(!stasis){
 			Side[] walls;
 			if((walls = this.isCollidingWalls())!=null){
@@ -70,28 +74,28 @@ public class Entity implements IEventListener{
 						continue;
 					}else{
 						if(side == Side.SOUTH){
-							if(xVel+(xPos+(this.boundingBox.getWidth()/2d)) < Math.ceil(xPos)+1){
+							if((xVel*(Game.getDelta()/1000d))+(xPos+(this.boundingBox.getWidth()/2d)) < Math.ceil(xPos)+1){
 								if(Math.signum(xVel)==-1){
 									xVel = 0;
 									this.xPos = Math.ceil(xPos)-1+(this.boundingBox.getWidth()/2d);
 								}
 							}
 						}else if(side == Side.NORTH){
-							if(xPos+xVel > Math.floor(xPos)-1){
+							if(xPos+(xVel*(Game.getDelta()/1000d)) > Math.floor(xPos)-1){
 								if(Math.signum(xVel)==1){
 									xVel = 0;
 									this.xPos = Math.floor(xPos)+1-(this.boundingBox.getWidth()/2d);
 								}
 							}
 						}else if(side == Side.WEST){
-							if(zVel+(zPos+(this.boundingBox.getLength()/2d)) < Math.ceil(zPos)+1){
+							if((zVel*(Game.getDelta()/1000d))+(zPos+(this.boundingBox.getLength()/2d)) < Math.ceil(zPos)+1){
 								if(Math.signum(zVel)==-1){
 									zVel = 0;
 									this.zPos = Math.ceil(zPos)-1+(this.boundingBox.getLength()/2d);
 								}
 							}
 						}else if(side == Side.EAST){
-							if(zPos+zVel > Math.floor(zPos)-1){
+							if(zPos+(zVel*(Game.getDelta()/1000d)) > Math.floor(zPos)-1){
 								if(Math.signum(zVel)==1){
 									zVel = 0;
 									this.zPos = Math.floor(zPos)+1-(this.boundingBox.getLength()/2d);
@@ -109,14 +113,14 @@ public class Entity implements IEventListener{
 				this.updateVelocity();
 				if(nbdat!=null){
 				xVel *= Block.blocks[nbdat[0]].getSlipperyness();
-//				yVel *= Block.blocks[blockid].getSlipperyness();
+////				yVel *= Block.blocks[blockid].getSlipperyness();
 				zVel *= Block.blocks[nbdat[0]].getSlipperyness();
 				}
 			}else{
 				this.updateVelocity();
 			}
 			if(this.isAffectedByGravity()){
-				this.yVel -= (grav*grav*0.5)*(Game.getDelta()/1000f);
+				this.yVel -= (grav*0.5)*(Math.pow((Game.getDelta()/100d),2));
 			}
 		}
 	}

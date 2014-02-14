@@ -31,9 +31,9 @@ public class Game {
 	private static final int scrH = 600;
 	public static DisplayMode screen = new DisplayMode(scrW,scrH);
 	private long lastFPS = getTime();
-	private static long lastFrame;
+	private long lastFrame;
 	private static int fps;
-	private static int cfps;
+	private int cfps;
 	private static int delta;
 
 	public static void main(String[] args){
@@ -50,7 +50,7 @@ public class Game {
 		try {
 			Display.setDisplayMode(screen);
 			Display.create();
-			Display.setTitle("SubRoute");
+			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
 			Display.setResizable(true);
 //			Display.setVSyncEnabled(true);
 		} catch (LWJGLException e) {
@@ -66,12 +66,12 @@ public class Game {
 		updateDelta();
 		//Main game loop that is exited when the display is closed
 		while (!Display.isCloseRequested()) {
+			//Update the time between frames
+			updateDelta();
 			//Recreate the veiwport if the window was resized
 			if(Display.wasResized()){
 				GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 			}
-			//Update the time between frames
-			updateDelta();
 			//Check all input events for mouse and keyboard (Controller coming soon!)
 			Input.checkEvents();
 			//Update the entities by passing this event to the bus
