@@ -71,9 +71,18 @@ public class RenderBlocks {
 	}
 	int lastx=0,lasty=0;
 	public void checkForSegGen(){
-		if(!(-(int)(Camera.x/16d)==lastx&&-(int)(Camera.z/16d)==lasty)){
-			lastx = (int) -(Camera.x/16d);
-			lasty = (int) -(Camera.z/16d);
+		double cx;
+		double cz;
+		if(Camera.getBoundEntity() != null){
+			cx = (Camera.getBoundEntity().getXPos()/16d);
+			cz = (Camera.getBoundEntity().getZPos()/16d);
+		}else{
+			cx = (Camera.x/16d);
+			cz = (Camera.z/16d);
+		}
+		if(!((int)cx==lastx&&(int)cz==lasty)){
+			lastx = (int)cx;
+			lasty = (int)cz;
 			WorldStorage.getInstance().needCheck(lastx, lasty);
 		}
 		WorldStorage.getInstance().checkGenRadius();
