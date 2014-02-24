@@ -9,6 +9,7 @@ public class KeyboardReader {
 	public static KeyboardReader instance;
 	public static boolean[] keysts = new boolean[Keyboard.KEYBOARD_SIZE];
 	public static char lastChar;
+	private boolean toggle = false;
 
 	public KeyboardReader() {
 		instance = this;
@@ -26,6 +27,7 @@ public class KeyboardReader {
 			}
 			lastChar = Keyboard.getEventCharacter();
 		}
+		Camera.resetInput();
 		if(keysts[Keyboard.KEY_W]){
 			Camera.forward();
 		}
@@ -38,9 +40,10 @@ public class KeyboardReader {
 		if(keysts[Keyboard.KEY_A]){
 			Camera.strafeLeft();
 		}
-		if(keysts[Keyboard.KEY_SPACE]){
+		if(keysts[Keyboard.KEY_SPACE]!=toggle&&keysts[Keyboard.KEY_SPACE]){
 			Camera.up();
 		}
+		toggle = keysts[Keyboard.KEY_SPACE];
 		if(keysts[Keyboard.KEY_LCONTROL]){
 			Camera.down();
 		}
@@ -49,5 +52,6 @@ public class KeyboardReader {
 		}else{
 			Camera.sprintOff();
 		}
+		Camera.inputDone();
 	}
 }

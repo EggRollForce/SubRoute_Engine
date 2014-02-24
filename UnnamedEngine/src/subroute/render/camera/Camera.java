@@ -3,7 +3,6 @@ package subroute.render.camera;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import subroute.Game;
 import subroute.entity.Entity;
 import subroute.util.Side;
 import subroute.world.storage.WorldStorage;
@@ -16,8 +15,8 @@ public class Camera{
 	public static Camera instance;
 	private static float mouseSens = 0.1f;
 	private static float sprintMod = 2f;
-	private static float defMovSpd = 1f;
-	private static float movSpd = 1f;
+	private static float defMovSpd = 8f;
+	private static float movSpd = 8f;
 	private static boolean thirdPerson = false;
 	private static Entity boundEnt;
 	private static boolean isBound = false;
@@ -28,7 +27,7 @@ public class Camera{
 		yaw = 0;
 	}
 	public Camera(Entity ent){
-		instance = this;
+		this(ent.getXPos(),ent.getYPos(),ent.getZPos());
 		boundEnt = ent;
 		isBound = true;
 	}
@@ -39,61 +38,40 @@ public class Camera{
 		Camera.z = z;
 	}
 
-	public static void forward(){
+	public static void resetInput(){
 		if(isBound){
 			x = 0;
 			z = 0;
+			y = 0;
 		}
+	}
+
+	public static void inputDone(){
+		if(isBound){
+			boundEnt.setVelocity((float)x, (float) (boundEnt.getYVel()+y), (float)z);
+		}
+	}
+	public static void forward(){
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw));
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw));
-		if(isBound){
-			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
-		}
 	}
 	public static void backward(){
-		if(isBound){
-			x = 0;
-			z = 0;
-		}
 		x -= movSpd * (float)Math.sin(Math.toRadians(yaw));
 		z += movSpd * (float)Math.cos(Math.toRadians(yaw));
-		if(isBound){
-			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
-		}
 	}
 	public static void strafeRight(){
-		if(isBound){
-			x = 0;
-			z = 0;
-		}
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw+90));
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw+90));
-		if(isBound){
-			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
-		}
 	}
 	public static void strafeLeft(){
-		if(isBound){
-			x = 0;
-			z = 0;
-		}
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw-90));
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw-90));
-		if(isBound){
-			boundEnt.setVelocity((float)x, boundEnt.getYVel(), (float)z);
-		}
 	}
 	public static void up(){
-		y += movSpd * Game.getDelta();
-		if(isBound){
-			boundEnt.setVelocity(boundEnt.getXVel(), 2, boundEnt.getZVel());
-		}
+		y += 6.481;
 	}
 	public static void down(){
-		y -= movSpd * Game.getDelta();
-		if(isBound){
-//			boundEnt.setVelocity(boundEnt.getXVel(), -movSpd, boundEnt.getZVel());
-		}
+		y -= 6.481;
 	}
 	public static void sprintOn(){
 		movSpd = defMovSpd*sprintMod;

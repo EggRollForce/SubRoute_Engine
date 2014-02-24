@@ -37,17 +37,19 @@ public class GUIRenderer {
 		long max = Runtime.getRuntime().maxMemory();
 		long free = Runtime.getRuntime().freeMemory();
 		long total = Runtime.getRuntime().totalMemory();
-		RenderEngine.fontRenderer.drawString("FPS: "+Game.instance().getFps(), 1, 0, 1f);
+		Game.instance();
+		RenderEngine.fontRenderer.drawString("FPS: "+Game.getFps(), 1, 0, 1f);
 		RenderEngine.fontRenderer.drawString("Mem: Max-"+(max==Long.MAX_VALUE?"unlim.":(new DecimalFormat("#.###")).format((max/1024d/1024d/1024d)))+"GB Free-"+(int)(free/1024d/1024d)+"MB Total-"+(new DecimalFormat("#.#####")).format((total/1024d/1024d/1024d))+"GB", 1, 10, 1f);
 		RenderEngine.fontRenderer.drawString("Cam Pos:", 1, 50, 1f);
 		RenderEngine.fontRenderer.drawString("X:"+Camera.getBoundEntity().getXPos(), 1, 40, 1f);
 		RenderEngine.fontRenderer.drawString("Y:"+Camera.getBoundEntity().getYPos(), 1, 30, 1f);
 		RenderEngine.fontRenderer.drawString("Z:"+Camera.getBoundEntity().getZPos(), 1, 20, 1f);
 		Entity ent = Camera.getBoundEntity();
-		RenderEngine.fontRenderer.drawString("Speed:"+(Math.hypot(ent.xPos-ent.lastX, ent.zPos-ent.lastZ)), 1, 60, 1f);
-		RenderEngine.fontRenderer.drawString("VelX:"+ent.getXVel(), 1, 80, 1f);
-		RenderEngine.fontRenderer.drawString("VelZ:"+ent.getZVel(), 1, 70, 1f);
+		RenderEngine.fontRenderer.drawString("Speed:"+(Math.hypot(ent.xPos-ent.lastX, ent.zPos-ent.lastZ))*Game.getFps(), 1, 60, 1f);
+		RenderEngine.fontRenderer.drawString("VelX:"+(ent.getXVel()*(Game.getDelta()/1000d))*Game.getFps(), 1, 80, 1f);
+		RenderEngine.fontRenderer.drawString("VelZ:"+(ent.getZVel()*(Game.getDelta()/1000d))*Game.getFps(), 1, 70, 1f);
 		RenderEngine.fontRenderer.drawString("Delta:"+Game.getDelta(), 1, 90, 1f);
+		RenderEngine.fontRenderer.drawString("Time: "+Game.instance().getTimeAsString(), 1, 100, 1f);
 
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();

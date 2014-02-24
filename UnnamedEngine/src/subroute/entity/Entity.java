@@ -1,7 +1,6 @@
 package subroute.entity;
 
 import subroute.Game;
-import subroute.block.Block;
 import subroute.event.EventHandler;
 import subroute.event.EventRegistry;
 import subroute.event.listener.IEventListener;
@@ -17,7 +16,7 @@ public class Entity implements IEventListener{
 	public double xPos,yPos,zPos;
 	public double lastX,lastY,lastZ;
 	protected double[] headOffset = new double[] {0,0,0};
-	protected float xVel = 0f, yVel = 0f, zVel = 0f;
+	public float xVel = 0f, yVel = 0f, zVel = 0f;
 	protected float pitch = 0f, yaw = 0f;
 	public double grav = 9.806;
 
@@ -66,74 +65,34 @@ public class Entity implements IEventListener{
 		this.lastX = xPos;
 		this.lastY = yPos;
 		this.lastZ = zPos;
-		if(!stasis){
-			Side[] walls;
-			if((walls = this.isCollidingWalls())!=null){
-				for(Side side : walls){
-					if(side == null){
-						continue;
-					}else{
-						if(side == Side.SOUTH){
-							if((xVel*(Game.getDelta()/1000d))+(xPos+(this.boundingBox.getWidth()/2d)) < Math.ceil(xPos)+1){
-								if(Math.signum(xVel)==-1){
-									xVel = 0;
-									this.xPos = Math.ceil(xPos)-1+(this.boundingBox.getWidth()/2d);
-								}
-							}
-						}else if(side == Side.NORTH){
-							if(xPos+(xVel*(Game.getDelta()/1000d)) > Math.floor(xPos)-1){
-								if(Math.signum(xVel)==1){
-									xVel = 0;
-									this.xPos = Math.floor(xPos)+1-(this.boundingBox.getWidth()/2d);
-								}
-							}
-						}else if(side == Side.WEST){
-							if((zVel*(Game.getDelta()/1000d))+(zPos+(this.boundingBox.getLength()/2d)) < Math.ceil(zPos)+1){
-								if(Math.signum(zVel)==-1){
-									zVel = 0;
-									this.zPos = Math.ceil(zPos)-1+(this.boundingBox.getLength()/2d);
-								}
-							}
-						}else if(side == Side.EAST){
-							if(zPos+(zVel*(Game.getDelta()/1000d)) > Math.floor(zPos)-1){
-								if(Math.signum(zVel)==1){
-									zVel = 0;
-									this.zPos = Math.floor(zPos)+1-(this.boundingBox.getLength()/2d);
-								}
-							}
-						}
-					}
-				}
-			}
-			if(this.isCollidingGround()){
-				if(Math.signum(yVel)!=1){
-					this.yVel = 0;
-				}
-				this.yPos = Math.ceil(this.yPos);
-				this.updateVelocity();
+		if(isCollidingGround()){
+			if(Math.signum(yVel)!=1){
 				if(nbdat!=null){
-				xVel *= Block.blocks[nbdat[0]].getSlipperyness();
-////				yVel *= Block.blocks[blockid].getSlipperyness();
-				zVel *= Block.blocks[nbdat[0]].getSlipperyness();
+					yVel = 0;
+					yPos = nbdat[1]+1;
+				}else{
+					yVel = 0;
 				}
-			}else{
-				this.updateVelocity();
 			}
-			if(this.isAffectedByGravity()){
-				this.yVel -= (grav*0.5)*(Math.pow((Game.getDelta()/100d),2));
-			}
+		}
+		this.updateVelocity();
+		if(this.isAffectedByGravity()){
+			yVel -= (grav)*this.getDeltaSec();
 		}
 	}
 
+	private double getDeltaSec(){
+		return (Game.getDelta()/1000d);
+	}
 	private void updateVelocity(){
-		this.xPos += xVel*(Game.getDelta()/100d);
-		if((yPos + yVel*(Game.getDelta()/100f))<=0){
+		this.xPos += xVel*this.getDeltaSec();
+		if(!((yPos + yVel)>=0)){
 			this.yPos = 0;
 			this.yVel = 0;
 		}else{
-			this.yPos += yVel*(Game.getDelta()/100d);
+			this.yPos += yVel*this.getDeltaSec();
 		}
-		this.zPos += zVel*(Game.getDelta()/100d);
+		this.zPos += zVel*this.getDeltaSec();
 	}
 
 	public double getXPos(){return this.xPos;}

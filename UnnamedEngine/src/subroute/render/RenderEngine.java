@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import subroute.Game;
 import subroute.audio.AudioEngine;
+import subroute.entity.Entity;
 import subroute.gui.GUIRenderer;
 import subroute.input.KeyboardReader;
 import subroute.menu.MainMenu;
@@ -118,9 +119,10 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_LIGHTING);
 //			GL11.glDisable(GL11.GL_FOG);
-			GL11.glPointSize(1f);
+			GL11.glPointSize(10f);
 			GL11.glBegin(GL11.GL_POINTS);
-			GL11.glVertex3d(Math.floor(Camera.getBoundEntity().getXPos()),Math.floor(Camera.getBoundEntity().getYPos()),Math.floor(Camera.getBoundEntity().getZPos()));
+			Entity ent = Camera.getBoundEntity();
+			GL11.glVertex3d(ent.getXPos()+ent.xVel*(Game.getDelta()/1000d),ent.getYPos()+ent.yVel*(Game.getDelta()/1000d),ent.getZPos()+ent.zVel*(Game.getDelta()/1000d));
 			GL11.glEnd();
 			Camera.getBoundEntity().getBoundingBox().renderDebugBox();
 			renderBlocks.renderBlockOutline();

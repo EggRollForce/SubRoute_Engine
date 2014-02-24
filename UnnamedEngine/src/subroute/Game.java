@@ -38,9 +38,13 @@ public class Game {
 	private static int delta;
 
 	public static void main(String[] args){
-		System.out.println("Starting SubRoute ver:"+version);
-		System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
-		new Game(args);
+		try{
+			System.out.println("Starting SubRoute ver:"+version);
+			System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
+			new Game(args);
+		}catch(Exception e){
+
+		}
 	}
 
 	public static Game instance(){
@@ -91,6 +95,19 @@ public class Game {
 	}
 	public long getTime(){
 		return (Sys.getTime()*1000)/Sys.getTimerResolution();
+	}
+
+	public int getTimeMinutes(){
+		return (int) Math.floor(getTimeSeconds()/60);
+	}
+	public double getTimeSeconds(){
+		return getTime()/1000d;
+	}
+	public int getTimeHours(){
+		return (int) Math.floor(getTimeMinutes()/60);
+	}
+	public String getTimeAsString(){
+		return this.getTimeHours()+":"+this.getTimeMinutes()%60+":"+this.getTimeSeconds()%60;
 	}
 	public void updateFPS(){
 		if(getTime()-lastFPS > 1000){
