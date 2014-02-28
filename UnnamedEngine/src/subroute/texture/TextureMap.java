@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL12;
 
 public class TextureMap {
 
-	public static final TextureMap blockMap = new TextureMap(256,256);
+	public static final TextureMap blockMap = new TextureMap(1024,1024);
 
 	private ArrayList<TextureTile> tileMap = new ArrayList<TextureTile>();
 
@@ -22,6 +22,13 @@ public class TextureMap {
 		if(texid == -1){
 			texid = GL11.glGenTextures();
 		}
+	}
+
+	public int getWidth(){
+		return width;
+	}
+	public int getHeight(){
+		return height;
 	}
 
 	public void bindTextureMap(){

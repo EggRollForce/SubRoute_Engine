@@ -91,7 +91,7 @@ public abstract class Block {
 		new Scrap();
 		new RefinedMetal();
 		new Log();
-
+		new Wood();
 		new Leaves();
 		new Sand();
 		new Glass();
