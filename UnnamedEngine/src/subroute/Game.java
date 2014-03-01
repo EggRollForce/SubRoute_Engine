@@ -39,11 +39,12 @@ public class Game {
 
 	public static void main(String[] args){
 		try{
-			System.out.println("Starting SubRoute ver:"+version);
+			System.out.println("Linking native libraries.");
 			System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
+			System.out.println("Starting SubRoute ver:"+version);
 			new Game(args);
 		}catch(Exception e){
-
+			e.printStackTrace();
 		}
 	}
 
