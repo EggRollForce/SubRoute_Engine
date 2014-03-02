@@ -48,21 +48,28 @@ public class Game {
 		}
 	}
 
+
 	public static Game instance(){
+		if(instance==null){
+			instance = new Game(null);
+		}
 		return instance;
 	}
 	public Game(String[] args){
+		System.out.println("Starting game");
 		Game.instance = this;
+		System.out.println("Hi");
 		try {
 			Display.setDisplayMode(screen);
-			Display.create();
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
 			Display.setResizable(true);
+			Display.create();
 //			Display.setVSyncEnabled(true);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
+		System.out.println("Setting up blocks n stuff");
 		Block.setupBlocks();
 		new AudioEngine();
 		new RenderEngine();
