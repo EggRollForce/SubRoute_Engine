@@ -16,6 +16,7 @@ import org.lwjgl.util.glu.GLU;
 
 import subroute.audio.AudioEngine;
 import subroute.block.Block;
+import subroute.debug.DebugConsole;
 import subroute.event.EventRegistry;
 import subroute.event.tick.EntityTick;
 import subroute.input.Input;
@@ -39,6 +40,12 @@ public class Game {
 
 	public static void main(String[] args){
 		try{
+			new DebugConsole();
+			System.out.print("Arguments: ");
+			for(String a : args){
+			System.out.print(a+", ");
+			}
+			System.out.println();
 			System.out.println("Linking native libraries.");
 			System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
 			System.out.println("Starting SubRoute ver:"+version);
@@ -56,9 +63,7 @@ public class Game {
 		return instance;
 	}
 	public Game(String[] args){
-		System.out.println("Starting game");
 		Game.instance = this;
-		System.out.println("Hi");
 		try {
 			Display.setDisplayMode(screen);
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
@@ -69,7 +74,6 @@ public class Game {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Setting up blocks n stuff");
 		Block.setupBlocks();
 		new AudioEngine();
 		new RenderEngine();
@@ -100,6 +104,7 @@ public class Game {
 		}
 		AL.destroy();
 		Display.destroy();
+		DebugConsole.instance().dispose();
 	}
 	public long getTime(){
 		return (Sys.getTime()*1000)/Sys.getTimerResolution();
