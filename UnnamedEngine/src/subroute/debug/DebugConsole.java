@@ -109,10 +109,10 @@ public class DebugConsole extends JFrame implements ActionListener {
 		public void run(){
 			while(!stop){
 				try{
-				if(in.available()>0){
+				while(in.available()>0){
 					append((char)in.read()+"", "None");
 				}
-				if(err.available()>0){
+				while(err.available()>0){
 					append((char)err.read()+"","Error");
 				}
 				}catch(IOException e){

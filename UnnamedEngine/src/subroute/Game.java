@@ -40,12 +40,20 @@ public class Game {
 
 	public static void main(String[] args){
 		try{
-			new DebugConsole();
-			System.out.print("Arguments: ");
+			boolean debug = false;
 			for(String a : args){
-			System.out.print(a+", ");
+				if(a.indexOf("-console_enable")!=-1){
+					debug=true;
+					break;
+				}
 			}
-			System.out.println();
+			if(debug){
+				new DebugConsole();
+				System.out.println("Debug console initialized");
+			}else{
+				System.out.println("Starting game normally...");
+			}
+			System.err.println("Error stream formatting test");
 			System.out.println("Linking native libraries.");
 			System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
 			System.out.println("Starting SubRoute ver:"+version);
@@ -104,7 +112,9 @@ public class Game {
 		}
 		AL.destroy();
 		Display.destroy();
-		DebugConsole.instance().dispose();
+		if(DebugConsole.instance()!=null){
+			DebugConsole.instance().dispose();
+		}
 	}
 	public long getTime(){
 		return (Sys.getTime()*1000)/Sys.getTimerResolution();
