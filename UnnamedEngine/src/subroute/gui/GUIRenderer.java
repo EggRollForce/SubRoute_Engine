@@ -49,7 +49,7 @@ public class GUIRenderer {
 		RenderEngine.fontRenderer.drawString("VelX:"+(ent.getXVel()*(Game.getDelta()/1000d))*Game.getFps(), 1, 80, 1f);
 		RenderEngine.fontRenderer.drawString("VelZ:"+(ent.getZVel()*(Game.getDelta()/1000d))*Game.getFps(), 1, 70, 1f);
 		RenderEngine.fontRenderer.drawString("Delta:"+Game.getDelta(), 1, 90, 1f);
-		RenderEngine.fontRenderer.drawString("Time: "+Game.instance().getTimeAsString(), 1, 100, 1f);
+		RenderEngine.fontRenderer.drawString("Time: "+Game.getTimeSinceStart(), 1, 100, 1f);
 
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();

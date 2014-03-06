@@ -10,14 +10,19 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.logging.Logger;
+
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import subroute.Game;
 
 public class DebugConsole extends JFrame implements ActionListener {
 
@@ -29,6 +34,8 @@ public class DebugConsole extends JFrame implements ActionListener {
 	private JTextField tf = new JTextField();
 	private ProcessReader pr;
 	private static boolean stop = false;
+	private int scrpos = 0;
+	public static final Logger log = Logger.getLogger("Game");
 
 	public DebugConsole() throws IOException{
 		if(instance!=null){
@@ -71,7 +78,10 @@ public class DebugConsole extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 //		System.out.println(e);
 		if(e.getSource().equals(this.tf)){
-			this.append(e.getActionCommand()+"\n","None");
+			if(!e.getActionCommand().isEmpty()){
+				this.append(e.getActionCommand()+"\n","None");
+				this.tf.setText("");
+			}
 		}
 	}
 
@@ -87,6 +97,10 @@ public class DebugConsole extends JFrame implements ActionListener {
 
 	private void append(String str, String style){
 		try {
+			if(this.ta.getSize().height-scrpos>this.spane.getSize().height){
+				JScrollBar bar = this.spane.getVerticalScrollBar();
+				bar.setValue(bar.getMaximum());
+			}
 			this.con.insertString(con.getLength(), str, con.getStyle(style));
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -105,19 +119,34 @@ public class DebugConsole extends JFrame implements ActionListener {
 			this.start();
 		}
 
+		private String ins="",errs="";
 		@Override
 		public void run(){
 			while(!stop){
 				try{
 				while(in.available()>0){
 					char c = (char)in.read();
-					append(c+"", "None");
-					if(c=='\n'){break;}
+					if(c=='\n'){
+						ins+=(c+"");
+						Game.instance();
+						append("["+Game.getTimeSinceStart()+"]:"+ins, "None");
+						ins="";
+						break;
+					}else{
+						ins+=(c+"");
+					}
 				}
 				while(err.available()>0){
 					char c = (char)err.read();
-					append(c+"","Error");
-					if(c=='\n'){break;}
+					if(c=='\n'){
+						errs+=(c+"");
+						Game.instance();
+						append("["+Game.getTimeSinceStart()+"]:"+errs,"Error");
+						errs="";
+						break;
+					}else{
+						errs+=(c+"");
+					}
 				}
 				}catch(IOException e){
 					e.printStackTrace();

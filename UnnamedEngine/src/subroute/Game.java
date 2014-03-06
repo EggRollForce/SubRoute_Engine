@@ -4,8 +4,6 @@ package subroute;
 
 
 import java.io.File;
-import java.util.logging.Logger;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;
@@ -26,7 +24,6 @@ import subroute.render.RenderEngine;
 public class Game {
 
 	private static final String version = "0.0.0.01";
-	public static final Logger log = Logger.getGlobal();
 
 	private static Game instance;
 	private static final int scrW = 800;
@@ -37,6 +34,7 @@ public class Game {
 	private static int fps;
 	private int cfps;
 	private static int delta;
+	private static long startTime;
 
 	public static void main(String[] args){
 		try{
@@ -63,15 +61,13 @@ public class Game {
 		}
 	}
 
-
 	public static Game instance(){
-		if(instance==null){
-			instance = new Game(null);
-		}
 		return instance;
 	}
+
 	public Game(String[] args){
 		Game.instance = this;
+		Game.startTime = getTime();
 		try {
 			Display.setDisplayMode(screen);
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
@@ -141,6 +137,17 @@ public class Game {
 		cfps++;
 	}
 
+	public static String getTimeSinceStart(){
+		if(Game.instance!=null){
+			long time = Game.instance.getTime()-Game.startTime;
+			double sec = time/1000d;
+			int min = (int) Math.floor(sec/60);
+			int hr = (int) Math.floor(min/60);
+			return String.format("%02d",hr)+":"+String.format("%02d",min%60)+":"+String.format("%02d",(int)(sec%60));//hr,min%60,sec%60);//hr+":"+min%60+":"+(int)Math.floor(sec%60);
+		}else{
+			return "initializing";
+		}
+	}
 	public static String getOSName(){
 		String name = System.getProperty("os.name","generic").toLowerCase();
 		if(name.indexOf("win") >= 0){
