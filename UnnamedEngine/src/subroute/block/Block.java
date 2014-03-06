@@ -16,6 +16,7 @@ public abstract class Block {
 
 	private static int nextId = 0;
 
+
 	public boolean shouldRenderSide(IWorldAccess wld, int x, int y, int z, Side side) {
 		int id;
 		switch(side.getOrdinal()){
@@ -102,4 +103,6 @@ public abstract class Block {
 			}
 		}
 	}
+
+
 }

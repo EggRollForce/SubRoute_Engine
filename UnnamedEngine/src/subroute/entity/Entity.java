@@ -65,6 +65,9 @@ public class Entity implements IEventListener{
 		this.lastX = xPos;
 		this.lastY = yPos;
 		this.lastZ = zPos;
+
+		isCollidingWalls();
+
 		if(isCollidingGround()){
 			if(Math.signum(yVel)!=1){
 				if(nbdat!=null){
@@ -115,37 +118,37 @@ public class Entity implements IEventListener{
 	public AABB getBoundingBox(){
 		return this.boundingBox;
 	}
-
-
-	//a response for collision detection and boolean statement. 2 methods
-	public Side[] isCollidingWalls(){
-		if(WorldStorage.getInstance()!=null){
+//total perspective
+	public Side[] getSides(boolean totalPerspective){
 		WorldStorage wld = WorldStorage.getInstance();
-		Side[] arr = new Side[4];
-		int index = 0;
-		boolean isNull = true;
-		for(Side side : Side.getFaces()){
-			int xpos = (int)Math.floor(xPos)+side.getX();
-			int zpos = (int)Math.floor(zPos)+side.getZ();
-			int id;
-			if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+1), zpos))!=0){
-				arr[index] = side;
-				isNull = false;
-			}else if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+2), zpos))!=0){
-				arr[index] = side;
-				isNull = false;
-			}
-			index++;
+
+		if(totalPerspective == true){
+			return Side.getValidSides();
 		}
-			if(!isNull){
-				return arr;
-			}else{
-				return null;
-			}
-		}else{
+		else{
 			return Side.getFaces();
 		}
+
 	}
+
+	//a response for collision detection and boolean statement. 2 methods
+	//retun was originally Side[]
+	public void isCollidingWalls(){
+
+		if(WorldStorage.getInstance()!=null){
+		WorldStorage wld = WorldStorage.getInstance();
+
+
+		//[0]N [1]S [2]E [3]W
+
+
+
+
+
+		}
+
+	}
+
 
 	private int[] nbdat;
 	public boolean isCollidingGround(){
