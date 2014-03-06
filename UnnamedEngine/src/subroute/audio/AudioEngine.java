@@ -25,7 +25,6 @@ public class AudioEngine {
 		instance = this;
 		try{
 			AL.create();
-			System.out.println(AL10.alGetString(AL10.AL_EXTENSIONS));
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("OpenAL failed to initilize!");

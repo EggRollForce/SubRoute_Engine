@@ -16,6 +16,7 @@ import org.lwjgl.util.glu.GLU;
 
 import subroute.audio.AudioEngine;
 import subroute.block.Block;
+import subroute.debug.DebugConsole;
 import subroute.event.EventRegistry;
 import subroute.event.tick.EntityTick;
 import subroute.input.Input;
@@ -39,24 +40,43 @@ public class Game {
 
 	public static void main(String[] args){
 		try{
-			System.out.println("Starting SubRoute ver:"+version);
+			boolean debug = false;
+			for(String a : args){
+				if(a.indexOf("-console_enable")!=-1){
+					debug=true;
+					break;
+				}
+			}
+			if(debug){
+				new DebugConsole();
+				System.out.println("Debug console initialized");
+			}else{
+				System.out.println("Starting game normally...");
+			}
+			System.err.println("Error stream formatting test");
+			System.out.println("Linking native libraries.");
 			System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
+			System.out.println("Starting SubRoute ver:"+version);
 			new Game(args);
 		}catch(Exception e){
-
+			e.printStackTrace();
 		}
 	}
 
+
 	public static Game instance(){
+		if(instance==null){
+			instance = new Game(null);
+		}
 		return instance;
 	}
 	public Game(String[] args){
 		Game.instance = this;
 		try {
 			Display.setDisplayMode(screen);
-			Display.create();
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
 			Display.setResizable(true);
+			Display.create();
 //			Display.setVSyncEnabled(true);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -92,6 +112,9 @@ public class Game {
 		}
 		AL.destroy();
 		Display.destroy();
+		if(DebugConsole.instance()!=null){
+			DebugConsole.instance().dispose();
+		}
 	}
 	public long getTime(){
 		return (Sys.getTime()*1000)/Sys.getTimerResolution();

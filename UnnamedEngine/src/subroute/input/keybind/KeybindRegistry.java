@@ -1,5 +1,4 @@
 package subroute.input.keybind;
 
-public @interface Keybinding {
-
+public class KeybindRegistry {
 }

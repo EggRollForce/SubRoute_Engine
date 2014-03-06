@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: . lib/lwjgl_util.jar lib/lwjgl.jar
+Main-Class: subroute.Game
+
