@@ -1,4 +1,4 @@
-package subroute.debug;
+package subroute.console;
 
 
 import java.awt.Color;
@@ -18,7 +18,6 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
@@ -42,6 +41,7 @@ public class DebugConsole extends JFrame implements ActionListener {
 			instance.dispose();
 		}
 		instance = this;
+		ConsoleCommandRegistry.initCommands();
 //			in = game.getInputStream();
 //			out = game.getOutputStream();
 //			err = game.getErrorStream();
@@ -72,6 +72,7 @@ public class DebugConsole extends JFrame implements ActionListener {
 		);
 		this.setVisible(true);
 		pr = new ProcessReader();
+
 	}
 
 	@Override
@@ -80,6 +81,7 @@ public class DebugConsole extends JFrame implements ActionListener {
 		if(e.getSource().equals(this.tf)){
 			if(!e.getActionCommand().isEmpty()){
 				this.append(e.getActionCommand()+"\n","None");
+				ConsoleCommandRegistry.executeCommand(e.getActionCommand());
 				this.tf.setText("");
 			}
 		}
@@ -97,12 +99,12 @@ public class DebugConsole extends JFrame implements ActionListener {
 
 	private void append(String str, String style){
 		try {
+			this.con.insertString(con.getLength(), str, con.getStyle(style));
 			if(this.ta.getSize().height-scrpos>this.spane.getSize().height){
 				JScrollBar bar = this.spane.getVerticalScrollBar();
 				bar.setValue(bar.getMaximum());
 			}
-			this.con.insertString(con.getLength(), str, con.getStyle(style));
-		} catch (BadLocationException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -110,8 +112,11 @@ public class DebugConsole extends JFrame implements ActionListener {
 	private class ProcessReader extends Thread{
 
 		InputStream in, err;
+		PrintStream oldout,olderr;
 
 		public ProcessReader() throws IOException{
+			this.oldout = System.out;
+			this.olderr = System.err;
 			PrintStream out = new PrintStream(new PipedOutputStream((PipedInputStream)(in=new PipedInputStream())));
 			PrintStream er = new PrintStream(new PipedOutputStream((PipedInputStream)(err=new PipedInputStream())));
 			System.setOut(out);
@@ -126,6 +131,7 @@ public class DebugConsole extends JFrame implements ActionListener {
 				try{
 				while(in.available()>0){
 					char c = (char)in.read();
+					this.oldout.write(c);
 					if(c=='\n'){
 						ins+=(c+"");
 						Game.instance();
@@ -138,6 +144,7 @@ public class DebugConsole extends JFrame implements ActionListener {
 				}
 				while(err.available()>0){
 					char c = (char)err.read();
+					olderr.write(c);
 					if(c=='\n'){
 						errs+=(c+"");
 						Game.instance();

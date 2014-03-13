@@ -79,6 +79,10 @@ public abstract class Block {
 		return bounding;
 	}
 
+	private void initBlock() throws InstantiationException, IllegalAccessException{
+		this.getClass().newInstance();
+	}
+
 	//!!CAUTION!! WET FLOOR
 	public float getSlipperyness(){
 		return 0f;

@@ -1,7 +1,6 @@
 package subroute.world.storage;
 
-import java.util.ArrayList;
-
+import subroute.render.RenderEngine;
 import subroute.render.Renderer;
 import subroute.world.WorldLoader;
 import subroute.world.segment.Segment;
@@ -9,37 +8,58 @@ import subroute.world.segment.Segment;
 
 public class WorldStorage implements IWorldAccess{
 
-	private static ArrayList<Renderer> rnders = new ArrayList<Renderer>();
-	private static ArrayList<Segment> queue = new ArrayList<Segment>();
 	private int MAX_SEGMENTS_RADIUS = 10;
 	private SegLoader segLoad = new SegLoader();
 	private boolean needsUpdate = false;
 	private boolean loaded = false;
 	private static WorldStorage instance;
 	private static WorldLoader loader;
-	public static Renderer rendererpass2;
 
 	public WorldStorage(WorldLoader wl){
 		if(instance == null){
-			rendererpass2 = new Renderer();
 			loader = wl;
 			instance = this;
-			int lastx=0,lasty=0;
-			for(double i = 0; i <= this.MAX_SEGMENTS_RADIUS*360; i+=0.5){
-					int x = (int)(Math.sin(Math.toRadians(i))*(int)(i/360));
-					int y = (int)(Math.cos(Math.toRadians(i))*(int)(i/360));
-					if(x==lastx&&y==lasty){
-						continue;
-					}else{
-						lastx = x;
-						lasty = y;
-					}
-					segLoad.addSegment(wl.generateSegment(x,y).setWorld(this));
+			this.generateSquare(wl, this.MAX_SEGMENTS_RADIUS, 0, 0);
+		}
+	}
+	private void generateSquare(WorldLoader wl, int radius, int sx, int sy){
+		this.generateSquare(wl, radius, sx, sy, 1);
+	}
+	private void generateSquare(WorldLoader wl, int radius, int startx, int starty, int level){
+		System.out.println("Attempting square gen");
+		if(level<=radius){
+			int x = startx;
+			int y = starty;
+			for(int i = 0; i < (level*2)-1; i++){
+				System.out.println("Generating segment: "+x+","+y);
+				segLoad.addSegment(wl.generateSegment(x,y).setWorld(this));
+				x--;
 			}
+			for(int i = 0; i < (level*2)-1; i++){
+				System.out.println("Generating segment: "+x+","+y);
+				segLoad.addSegment(wl.generateSegment(x,y).setWorld(this));
+				y--;
+			}
+			for(int i = 0; i < (level*2)-1; i++){
+				System.out.println("Generating segment: "+x+","+y);
+				segLoad.addSegment(wl.generateSegment(x,y).setWorld(this));
+				x++;
+			}
+			for(int i = 0; i < (level*2)-1; i++){
+				System.out.println("Generating segment: "+x+","+y);
+				segLoad.addSegment(wl.generateSegment(x,y).setWorld(this));
+				y++;
+			}
+			level++;
+			startx++;
+			starty++;
+			this.generateSquare(wl, radius, startx, starty, level);
+		}else{
+			return;
 		}
 	}
 
-	int nextx,nexty,lastx=0,lasty=0;
+	int advx,advy,sx=0,sy=0,level=1,rot=0;
 
 	public boolean isLoaded(){
 		return loaded;
@@ -48,33 +68,55 @@ public class WorldStorage implements IWorldAccess{
 	private boolean done = false;
 	public void loadNextRenderer(){
 		if(!done){
-		this.updateNeeded();
-		while(true){
-			int x = (int)(Math.cos(Math.toRadians(inc))*(int)(inc/360d));
-			int y = (int)(Math.sin(Math.toRadians(inc))*(int)(inc/360d));
-			inc+=0.5;
-			if(x==lastx&&y==lasty){
-				continue;
-			}else{
-				lastx = x;
-				lasty = y;
-				break;
+			this.updateNeeded();
+			int r = (level*2)-1;
+			if(level>this.MAX_SEGMENTS_RADIUS){
+				done= true;
+				return;
+			}
+			switch(rot){
+				case 0:
+					renderInSegment(sx,sy);
+					sx--;
+					if(sx<-(level-1)){
+						rot++;
+					}
+					break;
+				case 1:
+					renderInSegment(sx,sy);
+					sy--;
+					if(sy<-(level-1)){
+						rot++;
+					}
+					break;
+				case 2:
+					renderInSegment(sx,sy);
+					sx++;
+					if(sx>=level-1){
+						rot++;
+					}
+					break;
+				case 3:
+					renderInSegment(sx,sy);
+					sy++;
+					if(sy>=level-1){
+						rot=0;
+						level++;
+						sx = level-1;
+						sy = level-1;
+					}
+					break;
 			}
 		}
-		if(inc > this.MAX_SEGMENTS_RADIUS*360){
-			inc = 0;
-			this.done = true;
-			this.updated();
-			return;
-		}
-		Segment seg = segLoad.getSegmentAt(lastx, lasty);
+	}
+	private void renderInSegment(int x, int y){
+		Segment seg = segLoad.getSegmentAt(x, y);
 		if(seg != null&&seg.getRenderer()==null){
-			Renderer render = new Renderer();
-			seg.renderBlocks(render);
-			rnders.add(render);
+			Renderer render = new Renderer(seg);
+			render.updateRenderable();
+			RenderEngine.renderBlocks.addRenderer(render);
 			render.setUpdated(true);
-			System.out.println("Sucessfully loaded segment at x:"+(lastx)+" y:"+(lasty));
-		}
+//			System.out.println("Sucessfully loaded segment at x:"+(lastx)+" y:"+(lasty));
 		}
 	}
 
@@ -87,21 +129,6 @@ public class WorldStorage implements IWorldAccess{
 			return seg.getBlockIdAt(x, y, z);
 		}
 		return 0;
-	}
-
-	public static ArrayList<Renderer> getRenderers(){
-		if(instance.segLoad.checkForUpdate()){
-			instance.updated();
-			System.out.println("All renderers updated");
-		}
-		if(rnders.remove(rendererpass2)||!rnders.contains(rendererpass2)){
-			rnders.add(rendererpass2);
-		}
-		return rnders;
-	}
-
-	public static ArrayList<Renderer> getUpdateRenderers(){
-		return null;
 	}
 
 	public static WorldStorage getInstance(){
@@ -131,6 +158,7 @@ public class WorldStorage implements IWorldAccess{
 		cy = y;
 		check = false;
 	}
+	int lastx,lasty;
 	public void checkGenRadius(){
 		if(!check){
 		check = false;
@@ -157,50 +185,12 @@ public class WorldStorage implements IWorldAccess{
 		if(segLoad.getSegmentAt(x+cx, y+cy)==null){
 			Segment seg;
 			segLoad.addSegment(seg = WorldStorage.loader.generateSegment(x+cx, y+cy).setWorld(this));
-			Renderer render = new Renderer();
+			Renderer render = new Renderer(seg);
 			seg.renderBlocks(render);
-			rnders.add(render);
-			render.setUpdated(true);
-			this.updateAdjSegments(cx+x, cy+y);
+			RenderEngine.renderBlocks.addRenderer(render);
+//			render.setUpdated(true);
 		}
 		}
-	}
-
-	public void addToRenderUpdateQueue(Segment seg){
-		if(!queue.contains(seg)){
-			queue.add(seg);
-		}
-	}
-
-	boolean queueDone = false;
-	public void updateRenderQueue(){
-		if(check){
-			if(queue.size()>0){
-				queueDone = false;
-				Segment seg = queue.get(0);
-				queue.remove(seg);
-				seg.renderUpdate();
-			}else if(!queueDone){
-				queueDone = true;
-				this.updateNeeded();
-			}
-		}
-	}
-
-	public void updateAdjSegments(int x, int y){
-			Segment seg;
-			if((seg=segLoad.getSegmentAt(x+1, y))!=null){
-				this.addToRenderUpdateQueue(seg);
-			}
-			if((seg=segLoad.getSegmentAt(x, y+1))!=null){
-				this.addToRenderUpdateQueue(seg);
-			}
-			if((seg=segLoad.getSegmentAt(x-1, y))!=null){
-				this.addToRenderUpdateQueue(seg);
-			}
-			if((seg=segLoad.getSegmentAt(x, y-1))!=null){
-				this.addToRenderUpdateQueue(seg);
-			}
 	}
 
 	@Override
@@ -220,6 +210,22 @@ public class WorldStorage implements IWorldAccess{
 	@Override
 	public boolean blockExistsAt(int x, int y, int z) {
 		return this.getBlockIdAt(x, y, z)!=0;
+	}
+
+	public void updateAdjSegments(int x, int y){
+		Segment seg;
+		if((seg=segLoad.getSegmentAt(x+1, y))!=null){
+			seg.getRenderer().setUpdated(true);
+		}
+		if((seg=segLoad.getSegmentAt(x, y+1))!=null){
+			seg.getRenderer().setUpdated(true);
+		}
+		if((seg=segLoad.getSegmentAt(x-1, y))!=null){
+			seg.getRenderer().setUpdated(true);
+		}
+		if((seg=segLoad.getSegmentAt(x, y-1))!=null){
+			seg.getRenderer().setUpdated(true);
+		}
 	}
 
 	public int[] getNextBlockInColumn(boolean down, int x, int z, int height){
