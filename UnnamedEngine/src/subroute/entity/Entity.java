@@ -127,11 +127,10 @@ public class Entity implements IEventListener{
 		for(Side side : Side.getFaces()){
 			int xpos = (int)Math.floor(xPos)+side.getX();
 			int zpos = (int)Math.floor(zPos)+side.getZ();
-			int id;
-			if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+1), zpos))!=0){
+			if((wld.getBlockIdAt(xpos,(int)Math.floor(yPos+1), zpos))!=0){
 				arr[index] = side;
 				isNull = false;
-			}else if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+2), zpos))!=0){
+			}else if((wld.getBlockIdAt(xpos,(int)Math.floor(yPos+2), zpos))!=0){
 				arr[index] = side;
 				isNull = false;
 			}

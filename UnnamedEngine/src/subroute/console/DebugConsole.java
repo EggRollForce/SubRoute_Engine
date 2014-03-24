@@ -31,7 +31,6 @@ public class DebugConsole extends JFrame implements ActionListener {
 	private JTextPane ta = new JTextPane();
 	private JScrollPane spane = new JScrollPane(ta);
 	private JTextField tf = new JTextField();
-	private ProcessReader pr;
 	private static boolean stop = false;
 	private int scrpos = 0;
 	public static final Logger log = Logger.getLogger("Game");
@@ -71,7 +70,7 @@ public class DebugConsole extends JFrame implements ActionListener {
 				.addComponent(tf, 20, 20, 20)
 		);
 		this.setVisible(true);
-		pr = new ProcessReader();
+		new ProcessReader();
 
 	}
 

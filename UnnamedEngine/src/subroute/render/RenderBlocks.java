@@ -32,12 +32,10 @@ public class RenderBlocks {
 	public void addRenderer(Renderer r){
 		for(VertexBufferObject vbo : VBOS){
 			if(vbo.hasRoomForRenderer(r)){
-				System.out.println("Adding renderer to vbo id:"+vbo.bufid);
 				vbo.addRenderer(r);
 				return;
 			}
 		}
-		System.err.println("Can't add renderer!");
 	}
 
 	public void render(){
@@ -151,6 +149,9 @@ public class RenderBlocks {
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.bufid);
 			if(!init){
 				GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer((int)size), GL15.GL_STREAM_DRAW);
+				GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
+			    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
+			    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
 			    init = true;
 			}
 			verts = 0;
@@ -168,13 +169,8 @@ public class RenderBlocks {
 				offset+=stride;
 				verts+=r.getVerts();
 			}
-			System.out.println("Done uploading. Length: "+offset);
 			this.avalible = size-(verts*8);
 			this.marked = false;
-
-			GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
-		    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
-		    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
 		}
 
 		public void render(){

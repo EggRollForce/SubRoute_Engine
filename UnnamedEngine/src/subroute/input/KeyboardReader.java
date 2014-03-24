@@ -17,7 +17,7 @@ public class KeyboardReader {
 
 	public void loop() {
 		while(Keyboard.next()){
-			System.out.println(Keyboard.getEventKey());
+//			System.out.println(Keyboard.getEventKey());
 			if(Keyboard.getEventKeyState()){
 				keysts[Keyboard.getEventKey()] = true;
 				if(Keyboard.getEventKey()==Keyboard.KEY_ESCAPE){

@@ -18,7 +18,6 @@ public class AudioEngine {
 	public IntBuffer buf = BufferUtils.createIntBuffer(1);
 	public IntBuffer src = BufferUtils.createIntBuffer(1);
 
-	private float[] apos = new float[] {0f,0f,0f};
 	private FloatBuffer ori = BufferUtils.createFloatBuffer(6);
 
 	public AudioEngine(){

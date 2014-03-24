@@ -100,17 +100,38 @@ public class Game {
 	public static Game instance(){
 		return instance;
 	}
+	private static void printDisplay(DisplayMode disp){
+		System.out.println("Display:[Width:"+disp.getWidth()+",Height:"+disp.getHeight()+",Freq:"+disp.getFrequency()+",BPP:"+disp.getBitsPerPixel()+",Fullscreen:"+disp.isFullscreenCapable()+"]");
+	}
 
+	private DisplayMode getDisplayForSize(int w, int h) throws LWJGLException{
+		DisplayMode disp = null, orig = Display.getDesktopDisplayMode();
+			for(DisplayMode d : Display.getAvailableDisplayModes()){
+				if(d.getWidth() == w && d.getHeight() == h){
+					if(d.getFrequency()==orig.getFrequency()){
+						disp = d;
+						if(d.getBitsPerPixel()==orig.getBitsPerPixel()){
+							return d;
+						}
+					}
+				}
+			}
+			if(disp == null){
+				disp = new DisplayMode(w,h);
+			}
+		return disp;
+
+	}
 	public Game(String[] args){
 		Game.instance = this;
 		Game.startTime = getTime();
 		try {
-			display = new DisplayMode(scrW,scrH);
+			display = this.getDisplayForSize(scrW, scrH);
 			Display.setDisplayMode(display);
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
-			Display.setResizable(true);
+			Display.setResizable(false);
 			Display.create();
-//			Display.setVSyncEnabled(true);
+			printDisplay(display);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);

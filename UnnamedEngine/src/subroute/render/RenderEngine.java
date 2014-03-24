@@ -53,6 +53,29 @@ public class RenderEngine {
 
 		if(wldstor!=null){
 			this.wldstor.loadNextRenderer();
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glPushMatrix();
+			GL11.glLoadIdentity();
+
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glLoadIdentity();
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glShadeModel(GL11.GL_SMOOTH);
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glColor4f(0.33f,0.66f,0.82f,1f);
+			GL11.glVertex2f(-1,-1);
+			GL11.glVertex2f(1,-1);
+			GL11.glColor4f(0.44f,0.77f,0.93f,1f);
+			GL11.glVertex2f(1, 1);
+			GL11.glVertex2f(-1, 1);
+			GL11.glEnd();
+			GL11.glShadeModel(GL11.GL_FLAT);
+
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glPopMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			Camera.camTransform();
 
 			if(KeyboardReader.keysts[Keyboard.KEY_UP]){

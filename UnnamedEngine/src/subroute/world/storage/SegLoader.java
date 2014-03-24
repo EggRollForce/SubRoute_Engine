@@ -33,15 +33,4 @@ public class SegLoader {
 		}
 		return null;
 	}
-	public boolean updateNeeded;
-	public boolean checkForUpdate(){
-		updateNeeded = false;
-		for(Segment s : loadedSegs){
-			if(s.getIsUpdateNeeded()){
-				updateNeeded = true;
-				s.renderUpdate();
-			}
-		}
-		return updateNeeded;
-	}
 }

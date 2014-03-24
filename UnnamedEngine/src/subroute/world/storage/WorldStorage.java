@@ -10,8 +10,6 @@ public class WorldStorage implements IWorldAccess{
 
 	private int MAX_SEGMENTS_RADIUS = 10;
 	private SegLoader segLoad = new SegLoader();
-	private boolean needsUpdate = false;
-	private boolean loaded = false;
 	private static WorldStorage instance;
 	private static WorldLoader loader;
 
@@ -60,16 +58,10 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	int advx,advy,sx=0,sy=0,level=1,rot=0;
-
-	public boolean isLoaded(){
-		return loaded;
-	}
 	double inc = 0;
 	private boolean done = false;
 	public void loadNextRenderer(){
 		if(!done){
-			this.updateNeeded();
-			int r = (level*2)-1;
 			if(level>this.MAX_SEGMENTS_RADIUS){
 				done= true;
 				return;
@@ -138,7 +130,6 @@ public class WorldStorage implements IWorldAccess{
 
 	@Override
 	public boolean setBlockAt(int x, int y, int z, int id) {
-		this.updateNeeded();
 		int sx = (int)Math.floor((x)/16d);
 		int sy = (int)Math.floor((z)/16d);
 		Segment seg = segLoad.getSegmentAt(sx, sy);
@@ -162,11 +153,9 @@ public class WorldStorage implements IWorldAccess{
 	public void checkGenRadius(){
 		if(!check){
 		check = false;
-		this.updateNeeded();
 		if(inc >= this.MAX_SEGMENTS_RADIUS*360){
 			inc = 0;
 			check = true;
-			this.updated();
 			return;
 		}
 		int x = -1,y = -1;
@@ -194,20 +183,6 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	@Override
-	public void updateNeeded() {
-		this.needsUpdate = true;
-	}
-
-	@Override
-	public boolean getIsUpdateNeeded() {
-		return this.needsUpdate;
-	}
-
-	private void updated(){
-		this.needsUpdate = false;
-	}
-
-	@Override
 	public boolean blockExistsAt(int x, int y, int z) {
 		return this.getBlockIdAt(x, y, z)!=0;
 	}
@@ -215,16 +190,24 @@ public class WorldStorage implements IWorldAccess{
 	public void updateAdjSegments(int x, int y){
 		Segment seg;
 		if((seg=segLoad.getSegmentAt(x+1, y))!=null){
-			seg.getRenderer().setUpdated(true);
+			if(seg.getRenderer()!=null){
+				seg.getRenderer().setUpdated(true);
+			}
 		}
 		if((seg=segLoad.getSegmentAt(x, y+1))!=null){
-			seg.getRenderer().setUpdated(true);
+			if(seg.getRenderer()!=null){
+				seg.getRenderer().setUpdated(true);
+			}
 		}
 		if((seg=segLoad.getSegmentAt(x-1, y))!=null){
-			seg.getRenderer().setUpdated(true);
+			if(seg.getRenderer()!=null){
+				seg.getRenderer().setUpdated(true);
+			}
 		}
 		if((seg=segLoad.getSegmentAt(x, y-1))!=null){
-			seg.getRenderer().setUpdated(true);
+			if(seg.getRenderer()!=null){
+				seg.getRenderer().setUpdated(true);
+			}
 		}
 	}
 
