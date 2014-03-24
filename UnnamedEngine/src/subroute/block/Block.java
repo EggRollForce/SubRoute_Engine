@@ -76,7 +76,11 @@ public abstract class Block {
 	public abstract Icon getIconForSide(IWorldAccess wld, int x, int y, int z, Side side);
 
 	public AABB getBoudingBox(IWorldAccess wld, int x, int y, int z){
-		return bounding.setPosition(x, y, z);
+		return bounding;
+	}
+
+	private void initBlock() throws InstantiationException, IllegalAccessException{
+		this.getClass().newInstance();
 	}
 
 	//!!CAUTION!! WET FLOOR

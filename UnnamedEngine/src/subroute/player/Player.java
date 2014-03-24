@@ -6,9 +6,9 @@ import subroute.phys.util.AABB.Alignment;
 
 public class Player extends Entity{
 
-	//regular is 9.806
+
 	public Player(){
-		super(9.086, 0,500,0);
+		super(0,500,0);
 		this.headOffset = new double[] {0,1.5,0};
 		this.boundingBox = new AABB(Alignment.BOTTOM_CENTER,0.6,1.8,0.6);
 	}

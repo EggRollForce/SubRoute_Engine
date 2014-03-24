@@ -6,24 +6,22 @@ import subroute.event.EventRegistry;
 import subroute.event.listener.IEventListener;
 import subroute.event.tick.EntityTick;
 import subroute.phys.util.AABB;
-import subroute.render.RenderEngine;
+import subroute.util.Side;
 import subroute.world.storage.WorldStorage;
 
 public class Entity implements IEventListener{
 
 	boolean stasis = false;
-	protected AABB boundingBox,bound1;
+	protected AABB boundingBox;
 	public double xPos,yPos,zPos;
 	public double lastX,lastY,lastZ;
 	protected double[] headOffset = new double[] {0,0,0};
 	public float xVel = 0f, yVel = 0f, zVel = 0f;
 	protected float pitch = 0f, yaw = 0f;
-//	public double grav = 9.806;
-	public double grav;
+	public double grav = 9.806;
 
-	public Entity(double gravity, double posx, double posy, double posz){
+	public Entity(double posx, double posy, double posz){
 		EventRegistry.EVENT_BUS.registerListener(this);
-		grav = gravity;
 		this.xPos = posx;
 		this.yPos = posy;
 		this.zPos = posz;
@@ -67,7 +65,6 @@ public class Entity implements IEventListener{
 		this.lastX = xPos;
 		this.lastY = yPos;
 		this.lastZ = zPos;
-
 		if(isCollidingGround()){
 			if(Math.signum(yVel)!=1){
 				if(nbdat!=null){
@@ -120,14 +117,33 @@ public class Entity implements IEventListener{
 	}
 
 
-	//a response for collision detection and boolean statement. 2 methods Side[]
-	public void isCollidingWalls(){
-		AABB testBox;
-		bound1 =RenderEngine.bbox1;
+	//a response for collision detection and boolean statement. 2 methods
+	public Side[] isCollidingWalls(){
 		if(WorldStorage.getInstance()!=null){
 		WorldStorage wld = WorldStorage.getInstance();
-
-
+		Side[] arr = new Side[4];
+		int index = 0;
+		boolean isNull = true;
+		for(Side side : Side.getFaces()){
+			int xpos = (int)Math.floor(xPos)+side.getX();
+			int zpos = (int)Math.floor(zPos)+side.getZ();
+			int id;
+			if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+1), zpos))!=0){
+				arr[index] = side;
+				isNull = false;
+			}else if((id = wld.getBlockIdAt(xpos,(int)Math.floor(yPos+2), zpos))!=0){
+				arr[index] = side;
+				isNull = false;
+			}
+			index++;
+		}
+			if(!isNull){
+				return arr;
+			}else{
+				return null;
+			}
+		}else{
+			return Side.getFaces();
 		}
 	}
 
@@ -159,6 +175,5 @@ public class Entity implements IEventListener{
 			//set coordinates for travel
 		}
 	}
-
 
 }

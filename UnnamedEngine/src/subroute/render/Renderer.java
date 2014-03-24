@@ -10,11 +10,15 @@ public class Renderer {
 	private boolean updated = false;
 	private int verts = 0;
 	private int oldVerts = 0;
+	private int bufid = 0;
 	private float[] normal = {0f,0f,0f};
 	private float[] data;
 	private FloatBuffer fb;
+	private IRenderable r;
+	private IUpdateable vbo;
 
-	public Renderer(){
+	public Renderer(IRenderable renderable){
+		r = renderable;
 		if(data == null){
 			data = new float[0x100000];
 			fb = BufferUtils.createFloatBuffer(0);
@@ -63,6 +67,22 @@ public class Renderer {
 		return this.updated;
 	}
 	public void setUpdated(boolean updated){
+		if(this.vbo!=null&&updated){
+			vbo.markForUpdate();
+		}
 		this.updated = updated;
+	}
+	protected void setBufferId(int id){
+		this.bufid = id;
+	}
+	protected int getBufferId(){
+		return this.bufid;
+	}
+	public void updateRenderable(){
+		this.r.renderTo(this);
+	}
+	public Renderer setUpdateable(IUpdateable vbo){
+		this.vbo = vbo;
+		return this;
 	}
 }

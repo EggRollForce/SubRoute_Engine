@@ -14,7 +14,7 @@ import org.lwjgl.util.glu.GLU;
 
 import subroute.audio.AudioEngine;
 import subroute.block.Block;
-import subroute.debug.DebugConsole;
+import subroute.console.DebugConsole;
 import subroute.event.EventRegistry;
 import subroute.event.tick.EntityTick;
 import subroute.input.Input;
@@ -26,9 +26,9 @@ public class Game {
 	private static final String version = "0.0.0.01";
 
 	private static Game instance;
-	private static final int scrW = 800;
-	private static final int scrH = 600;
-	public static DisplayMode screen = new DisplayMode(scrW,scrH);
+	private static int scrW = 800;
+	private static int scrH = 600;
+	private static DisplayMode display;
 	private long lastFPS = getTime();
 	private long lastFrame;
 	private static int fps;
@@ -39,7 +39,39 @@ public class Game {
 	public static void main(String[] args){
 		try{
 			boolean debug = false;
-			for(String a : args){
+			for(int i = 0; i<args.length; i++){
+				String a = args[i].trim();
+				switch(a){
+					case "-console_enable":
+						debug=true;
+						continue;
+					case "-width":
+					case "-scrw":
+						int w;
+						if(i+1<=args.length){
+							w=Integer.decode(args[i+1]);
+							if(w==0){
+								System.err.println("Width is not valid!");
+							}else{
+								System.out.println("Setting screen width to "+w);
+								Game.scrW = w;
+							}
+						}
+						continue;
+					case "-height":
+					case "-scrh":
+						int h;
+						if(i+1<=args.length){
+							h=Integer.decode(args[i+1]);
+							if(h==0){
+								System.err.println("Height is not valid!");
+							}else{
+								System.out.println("Setting screen height to "+h);
+								Game.scrH = h;
+							}
+						}
+						continue;
+				}
 				if(a.indexOf("-console_enable")!=-1){
 					debug=true;
 					break;
@@ -51,7 +83,11 @@ public class Game {
 			}else{
 				System.out.println("Starting game normally...");
 			}
-			System.err.println("Error stream formatting test");
+			System.out.print("Start Args: ");
+			for(String a: args){
+				System.out.print(a+" ");
+			}
+			System.out.println();
 			System.out.println("Linking native libraries.");
 			System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath()+File.separator+Game.getOSName());
 			System.out.println("Starting SubRoute ver:"+version);
@@ -69,7 +105,8 @@ public class Game {
 		Game.instance = this;
 		Game.startTime = getTime();
 		try {
-			Display.setDisplayMode(screen);
+			display = new DisplayMode(scrW,scrH);
+			Display.setDisplayMode(display);
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
 			Display.setResizable(true);
 			Display.create();

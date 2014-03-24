@@ -12,10 +12,6 @@ public class AABB {
 	private Alignment align;
 	private double x,y,z,w,l,h;
 
-	private AABB(AABB parent){
-		this(Alignment.ACTUAL_COORDS,parent.x,parent.y,parent.z,parent.w,parent.h,parent.l);
-	}
-
 	//Create a new AxisAlignedBoundingBox
 	public AABB(Alignment a, double x, double y, double z, double width, double height, double length){
 		align = a;
@@ -107,10 +103,6 @@ public class AABB {
 		this.y += dy;
 		this.z += dz;
 		return this;
-	}
-
-	public AABB translateCopy(double dx, double dy, double dz){
-		return new AABB(this).translateAABB(dx, dy, dz);
 	}
 
 	public AABB setPosition(double x, double y, double z){

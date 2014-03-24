@@ -1,14 +1,14 @@
  package subroute.world.segment;
 
 import subroute.block.Block;
+import subroute.render.IRenderable;
 import subroute.render.Renderer;
 import subroute.texture.Icon;
 import subroute.util.Side;
 import subroute.world.storage.ISegmentAccess;
 import subroute.world.storage.IWorldAccess;
-import subroute.world.storage.WorldStorage;
 
-public class Segment implements ISegmentAccess{
+public class Segment implements ISegmentAccess,IRenderable{
 
 	public int segx;
 	public int segy;
@@ -76,9 +76,6 @@ public class Segment implements ISegmentAccess{
 					int z = j+16*segy;
 					Block blk = Block.blocks[this.blockStorage[i][j][k]];
 					if(blk!=null&&blk.renderType()!=-1){
-						if(!blk.shouldRenderInPass(0)){
-							rb = WorldStorage.rendererpass2;
-						}
 						if(blk.shouldRenderSide(this, x, k, z, Side.UP)){
 							Icon icon = blk.getIconForSide(this, x, k, z, Side.UP);
 							rb.setNormal(0, 1f, 0);
@@ -128,9 +125,6 @@ public class Segment implements ISegmentAccess{
 							rb.addVertexUV(i+(16*segx), k-1, j+(16*segy), icon.getEndU(), icon.getStartV());
 							rb.addVertexUV(i+(16*segx), k-1, j+1+(16*segy), icon.getEndU(), icon.getEndV());
 						}
-						if(!blk.shouldRenderInPass(0)){
-							rb = render;
-						}
 					}
 				}
 			}
@@ -158,6 +152,7 @@ public class Segment implements ISegmentAccess{
 	@Override
 	public boolean setBlockAt(int x, int y, int z, int id) {
 		this.updateNeeded();
+		this.render.setUpdated(true);
 		this.world.updateNeeded();
 		if(Math.signum(y)==-1||y>=1024){
 			return false;
@@ -191,5 +186,15 @@ public class Segment implements ISegmentAccess{
 	@Override
 	public boolean blockExistsAt(int x, int y, int z) {
 		return this.getBlockIdAt(x, y, z)!=0;
+	}
+
+	@Override
+	public boolean isMarkedForUpdate() {
+		return update;
+	}
+
+	@Override
+	public void renderTo(Renderer r) {
+		this.renderBlocks(r);
 	}
 }
