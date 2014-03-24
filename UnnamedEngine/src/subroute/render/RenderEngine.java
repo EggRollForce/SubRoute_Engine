@@ -9,10 +9,12 @@ import org.lwjgl.util.vector.Vector3f;
 
 import subroute.Game;
 import subroute.audio.AudioEngine;
+import subroute.block.Block;
 import subroute.entity.Entity;
 import subroute.gui.GUIRenderer;
 import subroute.input.KeyboardReader;
 import subroute.menu.MainMenu;
+import subroute.phys.util.AABB;
 import subroute.player.Player;
 import subroute.render.camera.Camera;
 import subroute.texture.TextureRegistry;
@@ -25,18 +27,22 @@ public class RenderEngine {
 	public static TextureRegistry textureMap;
 	public static FontRenderer fontRenderer;
 	public static RenderBlocks renderBlocks = new RenderBlocks();
+	public static AABB bbox1, bbox2, bbox3,bbox4;
+
 	public RenderEngine(){
 		instance = this;
 		fontRenderer = new FontRenderer();
 		textureMap = new TextureRegistry();
 		textureMap.loadBaseTextures();
 		new GUIRenderer();
+
 		new Camera(new Player());
+
 		this.initLighting();
 		GUIRenderer.setCurrentGUI(new MainMenu());
 		AudioEngine.instance().loadSound();
 	}
-
+	AABB playerBounds;
 	private boolean dgen = false;
 	private final Vector3f lpos = new Vector3f(0,0,0);
 	float time;
@@ -65,7 +71,7 @@ public class RenderEngine {
 			}
 			bool3 = KeyboardReader.keysts[Keyboard.KEY_F5];
 			if(KeyboardReader.keysts[Keyboard.KEY_P]!=bool2&&KeyboardReader.keysts[Keyboard.KEY_P]==false){
-//				AudioEngine.instance().playSound();
+				AudioEngine.instance().playSound();
 			}
 			bool2 = KeyboardReader.keysts[Keyboard.KEY_P];
 			if(KeyboardReader.keysts[Keyboard.KEY_R]!=bool&&KeyboardReader.keysts[Keyboard.KEY_R]==false){
@@ -124,7 +130,139 @@ public class RenderEngine {
 			Entity ent = Camera.getBoundEntity();
 			GL11.glVertex3d(ent.getXPos()+ent.xVel*(Game.getDelta()/1000d),ent.getYPos()+ent.yVel*(Game.getDelta()/1000d),ent.getZPos()+ent.zVel*(Game.getDelta()/1000d));
 			GL11.glEnd();
-			Camera.getBoundEntity().getBoundingBox().renderDebugBox();
+
+
+			AABB bbox =  Camera.getBoundEntity().getBoundingBox();
+			playerBounds = bbox;
+			bbox.renderDebugBox();
+
+			//does not work on negative x side
+			//does not work on negative z
+			//fix negative problems, then send information to entity to respond to collision
+			if((ent.xPos >= 0)&&(ent.zPos >=0)){
+
+			int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos+1));
+			int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos-1));
+			int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos);
+			int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-1),(int)ent.yPos+1, (int)ent.zPos);
+
+			System.out.print(id + " ");
+			System.out.print(id2 + " ");
+			System.out.print(id3+ " ");
+			System.out.println(id4);
+
+			if((id !=0)){
+				bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos+1));
+				bbox1.renderDebugBox();
+			}
+			if((id2 !=0)){
+				bbox2 = Block.blocks[id2].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos-1));
+				bbox2.renderDebugBox();
+			}
+			if((id3 !=0)){
+				bbox3 = Block.blocks[id3].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos+1),(int)(ent.yPos), (int)(ent.zPos));
+				bbox3.renderDebugBox();
+			}
+			if((id4 !=0)){
+				bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos-1),(int)(ent.yPos), (int)(ent.zPos));
+				bbox4.renderDebugBox();
+			}
+
+			ent.getBoundingBox();
+			}
+
+			if((ent.xPos < 0)&&(ent.zPos <0)){
+
+
+				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos));
+				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos-2));
+				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos),(int)ent.yPos+1, (int)ent.zPos-1);
+				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-2),(int)ent.yPos+1, (int)ent.zPos-1);
+
+				System.out.print(id + " ");
+				System.out.print(id2 + " ");
+				System.out.print(id3+ " ");
+				System.out.println(id4);
+
+				if((id !=0)){
+					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos-1),(int)(ent.yPos), (int)Math.ceil(ent.zPos));
+					bbox1.renderDebugBox();
+				}
+				if((id2 !=0)){
+					bbox2 = Block.blocks[id2].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos-1),(int)(ent.yPos), (int)Math.ceil(ent.zPos-2));
+					bbox2.renderDebugBox();
+				}
+				if((id3 !=0)){
+					bbox3 = Block.blocks[id3].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos),(int)(ent.yPos), (int)(ent.zPos-1));
+					bbox3.renderDebugBox();
+				}
+				if((id4 !=0)){
+					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos-2),(int)(ent.yPos), (int)(ent.zPos-1));
+					bbox4.renderDebugBox();
+				}
+				}
+
+			if((ent.xPos >= 0)&&(ent.zPos < 0)){
+				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos));
+				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos-2));
+				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos-1);
+				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-1),(int)ent.yPos+1, (int)ent.zPos-1);
+
+				System.out.print(id + " ");
+				System.out.print(id2 + " ");
+				System.out.print(id3+ " ");
+				System.out.println(id4);
+
+				if((id !=0)){
+					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.ceil(ent.zPos));
+					bbox1.renderDebugBox();
+
+				}
+				if((id2 !=0)){
+					bbox2 = Block.blocks[id2].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.ceil(ent.zPos-2));
+					bbox2.renderDebugBox();
+				}
+				if((id3 !=0)){
+					bbox3 = Block.blocks[id3].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos+1),(int)(ent.yPos), (int)(ent.zPos-1));
+					bbox3.renderDebugBox();
+				}
+				if((id4 !=0)){
+					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos-1),(int)(ent.yPos), (int)(ent.zPos-1));
+					bbox4.renderDebugBox();
+				}
+				}
+
+			if((ent.xPos < 0)&&(ent.zPos >=0)){
+				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos+1));
+				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos-1));
+				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos),(int)ent.yPos+1, (int)ent.zPos);
+				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-2),(int)ent.yPos+1, (int)ent.zPos);
+
+				System.out.print(id + " ");
+				System.out.print(id2 + " ");
+				System.out.print(id3+ " ");
+				System.out.println(id4);
+
+				if((id !=0)){
+					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos-1),(int)(ent.yPos), (int)Math.floor(ent.zPos+1));
+					bbox1.renderDebugBox();
+				}
+				if((id2 !=0)){
+					bbox2 = Block.blocks[id2].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos-1),(int)(ent.yPos), (int)Math.floor(ent.zPos-1));
+					bbox2.renderDebugBox();
+				}
+				if((id3 !=0)){
+					bbox3 = Block.blocks[id3].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos),(int)(ent.yPos), (int)(ent.zPos));
+					bbox3.renderDebugBox();
+				}
+				if((id4 !=0)){
+					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos-2),(int)(ent.yPos), (int)(ent.zPos));
+					bbox4.renderDebugBox();
+				}
+				}
+
+
+
 			renderBlocks.renderBlockOutline();
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glEnable(GL11.GL_LIGHTING);

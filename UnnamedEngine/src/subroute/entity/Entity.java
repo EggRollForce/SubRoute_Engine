@@ -6,22 +6,24 @@ import subroute.event.EventRegistry;
 import subroute.event.listener.IEventListener;
 import subroute.event.tick.EntityTick;
 import subroute.phys.util.AABB;
-import subroute.util.Side;
+import subroute.render.RenderEngine;
 import subroute.world.storage.WorldStorage;
 
 public class Entity implements IEventListener{
 
 	boolean stasis = false;
-	protected AABB boundingBox;
+	protected AABB boundingBox,bound1;
 	public double xPos,yPos,zPos;
 	public double lastX,lastY,lastZ;
 	protected double[] headOffset = new double[] {0,0,0};
 	public float xVel = 0f, yVel = 0f, zVel = 0f;
 	protected float pitch = 0f, yaw = 0f;
-	public double grav = 9.806;
+//	public double grav = 9.806;
+	public double grav;
 
-	public Entity(double posx, double posy, double posz){
+	public Entity(double gravity, double posx, double posy, double posz){
 		EventRegistry.EVENT_BUS.registerListener(this);
+		grav = gravity;
 		this.xPos = posx;
 		this.yPos = posy;
 		this.zPos = posz;
@@ -65,8 +67,6 @@ public class Entity implements IEventListener{
 		this.lastX = xPos;
 		this.lastY = yPos;
 		this.lastZ = zPos;
-
-		isCollidingWalls();
 
 		if(isCollidingGround()){
 			if(Math.signum(yVel)!=1){
@@ -118,37 +118,18 @@ public class Entity implements IEventListener{
 	public AABB getBoundingBox(){
 		return this.boundingBox;
 	}
-//total perspective
-	public Side[] getSides(boolean totalPerspective){
-		WorldStorage wld = WorldStorage.getInstance();
 
-		if(totalPerspective == true){
-			return Side.getValidSides();
-		}
-		else{
-			return Side.getFaces();
-		}
 
-	}
-
-	//a response for collision detection and boolean statement. 2 methods
-	//retun was originally Side[]
+	//a response for collision detection and boolean statement. 2 methods Side[]
 	public void isCollidingWalls(){
-
+		AABB testBox;
+		bound1 =RenderEngine.bbox1;
 		if(WorldStorage.getInstance()!=null){
 		WorldStorage wld = WorldStorage.getInstance();
 
 
-		//[0]N [1]S [2]E [3]W
-
-
-
-
-
 		}
-
 	}
-
 
 	private int[] nbdat;
 	public boolean isCollidingGround(){
@@ -178,5 +159,6 @@ public class Entity implements IEventListener{
 			//set coordinates for travel
 		}
 	}
+
 
 }

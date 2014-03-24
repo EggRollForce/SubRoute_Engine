@@ -45,6 +45,7 @@ public class AudioEngine {
 
 	}
 	public void playSound(){
+		AL10.alSource(src.get(0), AL10.AL_POSITION, (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0f,(float)Camera.y,0f}).rewind());
 		AL10.alListener3f(AL10.AL_POSITION, -(float)Camera.x, -(float)Camera.y, -(float)Camera.z);
 		System.out.println("Atempting to play sound");
 		AL10.alSourcePlay(src.get(0));
@@ -59,12 +60,15 @@ public class AudioEngine {
 		AL10.alGenSources(src);
 		AL10.alGetError();
 		this.initAudioEngine();
-		AudioFileReader reader = new AudioFileReader(new File("resource/sound/amb.wav"));
+		AudioFileReader reader = new AudioFileReader(new File("resource/sound/route1.wav"));
 		int format =reader.getAudioFormat();
 		if(format == AL10.AL_FORMAT_MONO16 || format == AL10.AL_FORMAT_MONO8){
 			AL10.alBufferData(buf.get(0), reader.getAudioFormat(), reader.getAudioData(), reader.getSampleRate());
+
 		}else{
-			assert false : "Cannot use Stereo audio data!";
+
+			System.err.println("Cannot use Stereo audio data!");
+
 		}
 		AL10.alSourcei(src.get(0), AL10.AL_BUFFER, buf.get(0));
 	}

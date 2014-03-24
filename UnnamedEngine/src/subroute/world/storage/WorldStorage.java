@@ -18,8 +18,11 @@ public class WorldStorage implements IWorldAccess{
 	private static WorldStorage instance;
 	private static WorldLoader loader;
 	public static Renderer rendererpass2;
+	private double gravity = 9.806;
 
 	public WorldStorage(WorldLoader wl){
+
+
 		if(instance == null){
 			rendererpass2 = new Renderer();
 			loader = wl;
@@ -238,5 +241,13 @@ public class WorldStorage implements IWorldAccess{
 			}
 		}while(id==0&&id!=-1);
 		return new int[] {id,y};
+	}
+
+	public void setGravity(double i){
+		gravity = i;
+	}
+
+	public double getGravity(){
+		return gravity;
 	}
 }
