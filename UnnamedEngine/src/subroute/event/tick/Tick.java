@@ -10,4 +10,8 @@ public class Tick extends Event {
 		super("Tick",false);
 		this.type = type;
 	}
+
+	public TickType getType(){
+		return this.type;
+	}
 }

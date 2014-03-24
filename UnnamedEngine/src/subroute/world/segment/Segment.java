@@ -55,16 +55,6 @@ public class Segment implements ISegmentAccess,IRenderable{
 		return yin&&xin;
 	}
 
-	public void renderUpdate(){
-		if(this.render!=null){
-			render.setUpdated(true);
-			this.renderBlocks(render);
-			System.out.println("Updated segment");
-		}else{
-			System.out.println("Renderer not initialized!");
-		}
-	}
-
 	public void renderBlocks(Renderer rb){
 		this.update = false;
 		this.render = rb;
@@ -151,9 +141,9 @@ public class Segment implements ISegmentAccess,IRenderable{
 
 	@Override
 	public boolean setBlockAt(int x, int y, int z, int id) {
-		this.updateNeeded();
-		this.render.setUpdated(true);
-		this.world.updateNeeded();
+		if(render!=null){
+			this.render.setUpdated(true);
+		}
 		if(Math.signum(y)==-1||y>=1024){
 			return false;
 		}
@@ -171,16 +161,6 @@ public class Segment implements ISegmentAccess,IRenderable{
 	}
 	public Renderer getRenderer(){
 		return this.render;
-	}
-
-	@Override
-	public void updateNeeded() {
-		update = true;
-	}
-
-	@Override
-	public boolean getIsUpdateNeeded() {
-		return update;
 	}
 
 	@Override
