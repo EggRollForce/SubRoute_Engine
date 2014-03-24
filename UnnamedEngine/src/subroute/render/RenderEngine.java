@@ -28,6 +28,8 @@ public class RenderEngine {
 	public static FontRenderer fontRenderer;
 	public static RenderBlocks renderBlocks = new RenderBlocks();
 	public static AABB bbox1, bbox2, bbox3,bbox4;
+	public boolean day = false;
+	public boolean midday = false;
 
 	public RenderEngine(){
 		instance = this;
@@ -68,10 +70,32 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glColor4f(0.33f,0.66f,0.82f,1f);
+//			GL11.glColor4f(0.33f,0.66f,0.82f,1f);
+
+			if(time<180){
+				day = true;
+			}else{
+				day = false;
+			}
+
+			if(day == true){
+			GL11.glColor4f(0.75f,0.77f,0.93f,1f);
+			}
+			else{
+				GL11.glColor4f(0.00f,0.00f,0.20f,1f);
+			}
 			GL11.glVertex2f(-1,-1);
 			GL11.glVertex2f(1,-1);
-			GL11.glColor4f(0.44f,0.77f,0.93f,1f);
+			System.out.println();
+
+			if(day == true){
+//			GL11.glColor4f(0.44f,0.77f,0.93f,1f);
+			GL11.glColor4f(0.33f,0.66f,0.82f,1f);
+			}
+			else{
+				GL11.glColor4f(0.00f,0.00f,0.05f,1f);
+			}
+
 			GL11.glVertex2f(1, 1);
 			GL11.glVertex2f(-1, 1);
 			GL11.glEnd();
@@ -154,9 +178,7 @@ public class RenderEngine {
 			GL11.glVertex3d(ent.getXPos()+ent.xVel*(Game.getDelta()/1000d),ent.getYPos()+ent.yVel*(Game.getDelta()/1000d),ent.getZPos()+ent.zVel*(Game.getDelta()/1000d));
 			GL11.glEnd();
 
-
-			AABB bbox =  Camera.getBoundEntity().getBoundingBox();
-			playerBounds = bbox;
+			AABB bbox = Camera.getBoundEntity().getBoundingBox();
 			bbox.renderDebugBox();
 
 			//does not work on negative x side
@@ -164,34 +186,34 @@ public class RenderEngine {
 			//fix negative problems, then send information to entity to respond to collision
 			if((ent.xPos >= 0)&&(ent.zPos >=0)){
 
-			int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos+1));
-			int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos-1));
-			int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos);
-			int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-1),(int)ent.yPos+1, (int)ent.zPos);
+				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos+1));
+				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos-1));
+				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos);
+				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-1),(int)ent.yPos+1, (int)ent.zPos);
 
-			System.out.print(id + " ");
-			System.out.print(id2 + " ");
-			System.out.print(id3+ " ");
-			System.out.println(id4);
+				System.out.print(id + " ");
+				System.out.print(id2 + " ");
+				System.out.print(id3+ " ");
+				System.out.println(id4);
 
-			if((id !=0)){
-				bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos+1));
-				bbox1.renderDebugBox();
-			}
-			if((id2 !=0)){
-				bbox2 = Block.blocks[id2].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos-1));
-				bbox2.renderDebugBox();
-			}
-			if((id3 !=0)){
-				bbox3 = Block.blocks[id3].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos+1),(int)(ent.yPos), (int)(ent.zPos));
-				bbox3.renderDebugBox();
-			}
-			if((id4 !=0)){
-				bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos-1),(int)(ent.yPos), (int)(ent.zPos));
-				bbox4.renderDebugBox();
-			}
+				if((id !=0)){
+					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos+1));
+					bbox1.renderDebugBox();
+				}
+				if((id2 !=0)){
+					bbox2 = Block.blocks[id2].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos-1));
+					bbox2.renderDebugBox();
+				}
+				if((id3 !=0)){
+					bbox3 = Block.blocks[id3].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos+1),(int)(ent.yPos), (int)(ent.zPos));
+					bbox3.renderDebugBox();
+				}
+				if((id4 !=0)){
+					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos-1),(int)(ent.yPos), (int)(ent.zPos));
+					bbox4.renderDebugBox();
+				}
 
-			ent.getBoundingBox();
+
 			}
 
 			if((ent.xPos < 0)&&(ent.zPos <0)){
@@ -223,9 +245,10 @@ public class RenderEngine {
 					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos-2),(int)(ent.yPos), (int)(ent.zPos-1));
 					bbox4.renderDebugBox();
 				}
-				}
+			}
 
 			if((ent.xPos >= 0)&&(ent.zPos < 0)){
+
 				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos));
 				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos-2));
 				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos-1);
@@ -253,7 +276,7 @@ public class RenderEngine {
 					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos-1),(int)(ent.yPos), (int)(ent.zPos-1));
 					bbox4.renderDebugBox();
 				}
-				}
+			}
 
 			if((ent.xPos < 0)&&(ent.zPos >=0)){
 				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos+1));
@@ -282,9 +305,7 @@ public class RenderEngine {
 					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos-2),(int)(ent.yPos), (int)(ent.zPos));
 					bbox4.renderDebugBox();
 				}
-				}
-
-			GL11.glEnd();
+			}
 
 			renderBlocks.renderBlockOutline();
 			GL11.glEnable(GL11.GL_CULL_FACE);
