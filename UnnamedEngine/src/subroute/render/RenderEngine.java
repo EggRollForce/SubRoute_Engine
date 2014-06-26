@@ -86,7 +86,7 @@ public class RenderEngine {
 			}
 			GL11.glVertex2f(-1,-1);
 			GL11.glVertex2f(1,-1);
-			System.out.println();
+//			System.out.println();
 
 			if(day == true){
 //			GL11.glColor4f(0.44f,0.77f,0.93f,1f);
@@ -191,10 +191,10 @@ public class RenderEngine {
 				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos);
 				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-1),(int)ent.yPos+1, (int)ent.zPos);
 
-				System.out.print(id + " ");
-				System.out.print(id2 + " ");
-				System.out.print(id3+ " ");
-				System.out.println(id4);
+//				System.out.print(id + " ");
+//				System.out.print(id2 + " ");
+//				System.out.print(id3+ " ");
+//				System.out.println(id4);
 
 				if((id !=0)){
 					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.floor(ent.zPos+1));
@@ -224,10 +224,10 @@ public class RenderEngine {
 				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos),(int)ent.yPos+1, (int)ent.zPos-1);
 				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-2),(int)ent.yPos+1, (int)ent.zPos-1);
 
-				System.out.print(id + " ");
-				System.out.print(id2 + " ");
-				System.out.print(id3+ " ");
-				System.out.println(id4);
+//				System.out.print(id + " ");
+//				System.out.print(id2 + " ");
+//				System.out.print(id3+ " ");
+//				System.out.println(id4);
 
 				if((id !=0)){
 					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos-1),(int)(ent.yPos), (int)Math.ceil(ent.zPos));
@@ -254,10 +254,10 @@ public class RenderEngine {
 				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos+1),(int)ent.yPos+1, (int)ent.zPos-1);
 				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-1),(int)ent.yPos+1, (int)ent.zPos-1);
 
-				System.out.print(id + " ");
-				System.out.print(id2 + " ");
-				System.out.print(id3+ " ");
-				System.out.println(id4);
+//				System.out.print(id + " ");
+//				System.out.print(id2 + " ");
+//				System.out.print(id3+ " ");
+//				System.out.println(id4);
 
 				if((id !=0)){
 					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos),(int)(ent.yPos), (int)Math.ceil(ent.zPos));
@@ -284,10 +284,10 @@ public class RenderEngine {
 				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos),(int)ent.yPos+1, (int)ent.zPos);
 				int id4 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos-2),(int)ent.yPos+1, (int)ent.zPos);
 
-				System.out.print(id + " ");
-				System.out.print(id2 + " ");
-				System.out.print(id3+ " ");
-				System.out.println(id4);
+//				System.out.print(id + " ");
+//				System.out.print(id2 + " ");
+//				System.out.print(id3+ " ");
+//				System.out.println(id4);
 
 				if((id !=0)){
 					bbox1 = Block.blocks[id].getBoudingBox(WorldStorage.getInstance(),(int)(ent.xPos-1),(int)(ent.yPos), (int)Math.floor(ent.zPos+1));

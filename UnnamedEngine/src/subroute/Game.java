@@ -1,8 +1,5 @@
 package subroute;
 
-
-
-
 import java.io.File;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -129,9 +126,8 @@ public class Game {
 			display = this.getDisplayForSize(scrW, scrH);
 			Display.setDisplayMode(display);
 			Display.setTitle("SubRoute [DEV BUILD] Ver:"+version);
-			Display.setResizable(false);
+			Display.setResizable(true);
 			Display.create();
-			printDisplay(display);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);
