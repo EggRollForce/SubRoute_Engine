@@ -20,16 +20,20 @@ public class Renderer {
 	public Renderer(IRenderable renderable){
 		r = renderable;
 		if(data == null){
-			data = new float[0x100000];
+			data = new float[1310720];
 			fb = BufferUtils.createFloatBuffer(0);
 		}
 	}
 	public void addVertexUV(float x, float y, float z, float u, float v){
 		if(data == null){
-			data = new float[0x100000];
+			data = new float[1310720];
 		}
 		if(verts*8+8>data.length){
-			data = Arrays.copyOf(data, data.length+800);
+			float[] olddat = Arrays.copyOf(data, data.length+800);
+			data = null;
+			data = olddat;
+			olddat = null;
+
 		}
 		float[] temp = new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]};
 		for(int i = 0; i<8; i++){
@@ -59,7 +63,6 @@ public class Renderer {
 	public void reset(){
 		verts = 0;
 		if(fb!=null){
-			fb.flip();
 			fb.clear();
 		}
 	}

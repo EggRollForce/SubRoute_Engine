@@ -38,6 +38,15 @@ public class RenderBlocks {
 		}
 	}
 
+	public int getUsedVBOS(){
+		int r = 0;
+		for(VertexBufferObject vbo : VBOS){
+			if(!(vbo.avalible==vbo.size)){
+				r++;
+			}
+		}
+		return r;
+	}
 	public void render(){
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_LIGHTING);

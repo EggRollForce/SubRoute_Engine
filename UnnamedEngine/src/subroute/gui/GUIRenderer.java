@@ -7,6 +7,7 @@ import org.lwjgl.util.glu.GLU;
 
 import subroute.Game;
 import subroute.entity.Entity;
+import subroute.profiling.Profiler;
 import subroute.render.RenderEngine;
 import subroute.render.camera.Camera;
 
@@ -50,6 +51,12 @@ public class GUIRenderer {
 		RenderEngine.fontRenderer.drawString("VelZ:"+(ent.getZVel()*(Game.getDelta()/1000d))*Game.getFps(), 1, 70, 1f);
 		RenderEngine.fontRenderer.drawString("Delta:"+Game.getDelta(), 1, 90, 1f);
 		RenderEngine.fontRenderer.drawString("Time: "+Game.getTimeSinceStart(), 1, 100, 1f);
+		RenderEngine.fontRenderer.drawString("Used VBOs: "+RenderEngine.renderBlocks.getUsedVBOS(),1,110,1f);
+
+		for(int i = 0; i < Profiler.getSectionNames().size(); i++){
+			String name = (String)Profiler.getSectionNames().toArray()[i];
+			RenderEngine.fontRenderer.drawString("Section: "+name+", Time: "+(Profiler.getSection(name).elapsed/1000L)/1000D, 1, 120+(10*i), 1f);
+		}
 
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();

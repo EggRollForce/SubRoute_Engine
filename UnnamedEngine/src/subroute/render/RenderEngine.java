@@ -16,6 +16,7 @@ import subroute.input.KeyboardReader;
 import subroute.menu.MainMenu;
 import subroute.phys.util.AABB;
 import subroute.player.Player;
+import subroute.profiling.Profiler;
 import subroute.render.camera.Camera;
 import subroute.texture.TextureRegistry;
 import subroute.world.WorldLoader;
@@ -59,7 +60,9 @@ public class RenderEngine {
 		GL11.glPushMatrix();
 
 		if(wldstor!=null){
+			Profiler.startSection("loadRender");
 			this.wldstor.loadNextRenderer();
+			Profiler.stopStartSection("renderSetup");
 			GL11.glMatrixMode(GL11.GL_PROJECTION);
 			GL11.glPushMatrix();
 			GL11.glLoadIdentity();
@@ -99,7 +102,7 @@ public class RenderEngine {
 			GL11.glVertex2f(1, 1);
 			GL11.glVertex2f(-1, 1);
 			GL11.glEnd();
-			GL11.glShadeModel(GL11.GL_FLAT);
+			GL11.glShadeModel(GL11.GL_SMOOTH);
 
 			GL11.glMatrixMode(GL11.GL_PROJECTION);
 			GL11.glPopMatrix();
@@ -174,12 +177,14 @@ public class RenderEngine {
 //			GL11.glDisable(GL11.GL_FOG);
 			GL11.glPointSize(10f);
 			GL11.glBegin(GL11.GL_POINTS);
+			Profiler.stopStartSection("debugRender");
 			Entity ent = Camera.getBoundEntity();
 			GL11.glVertex3d(ent.getXPos()+ent.xVel*(Game.getDelta()/1000d),ent.getYPos()+ent.yVel*(Game.getDelta()/1000d),ent.getZPos()+ent.zVel*(Game.getDelta()/1000d));
 			GL11.glEnd();
 
 			AABB bbox = Camera.getBoundEntity().getBoundingBox();
 			bbox.renderDebugBox();
+			Profiler.stopStartSection("collision");
 
 			//does not work on negative x side
 			//does not work on negative z
@@ -214,9 +219,7 @@ public class RenderEngine {
 				}
 
 
-			}
-
-			if((ent.xPos < 0)&&(ent.zPos <0)){
+			}else if((ent.xPos < 0)&&(ent.zPos <0)){
 
 
 				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos));
@@ -245,9 +248,7 @@ public class RenderEngine {
 					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.ceil(ent.xPos-2),(int)(ent.yPos), (int)(ent.zPos-1));
 					bbox4.renderDebugBox();
 				}
-			}
-
-			if((ent.xPos >= 0)&&(ent.zPos < 0)){
+			}else if((ent.xPos >= 0)&&(ent.zPos < 0)){
 
 				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos));
 				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos,(int)ent.yPos+1, (int)(ent.zPos-2));
@@ -276,9 +277,7 @@ public class RenderEngine {
 					bbox4 = Block.blocks[id4].getBoudingBox(WorldStorage.getInstance(),(int)Math.floor(ent.xPos-1),(int)(ent.yPos), (int)(ent.zPos-1));
 					bbox4.renderDebugBox();
 				}
-			}
-
-			if((ent.xPos < 0)&&(ent.zPos >=0)){
+			}else if((ent.xPos < 0)&&(ent.zPos >=0)){
 				int id = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos+1));
 				int id2 = WorldStorage.getInstance().getBlockIdAt((int)ent.xPos-1,(int)ent.yPos+1, (int)(ent.zPos-1));
 				int id3 = WorldStorage.getInstance().getBlockIdAt((int)(ent.xPos),(int)ent.yPos+1, (int)ent.zPos);
@@ -306,6 +305,7 @@ public class RenderEngine {
 					bbox4.renderDebugBox();
 				}
 			}
+			Profiler.stopStartSection("mainRender");
 
 			renderBlocks.renderBlockOutline();
 			GL11.glEnable(GL11.GL_CULL_FACE);
@@ -319,12 +319,16 @@ public class RenderEngine {
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_FOG);
+			Profiler.stopStartSection("dynamicGen");
 			if(dgen){
 				renderBlocks.checkForSegGen();
 			}
+			Profiler.stopSection();
 		}
+		Profiler.startSection("guiRender");
 		GUIRenderer.renderGUI();
 		GL11.glPopMatrix();
+		Profiler.stopSection();
 
 	}
 

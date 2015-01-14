@@ -1,6 +1,7 @@
 package subroute;
 
 import java.io.File;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;
@@ -15,6 +16,7 @@ import subroute.console.DebugConsole;
 import subroute.event.EventRegistry;
 import subroute.event.tick.EntityTick;
 import subroute.input.Input;
+import subroute.profiling.Profiler;
 import subroute.render.RenderEngine;
 
 
@@ -136,6 +138,7 @@ public class Game {
 		new AudioEngine();
 		new RenderEngine();
 		new Input();
+		new Profiler();
 
 		this.initOpenGL();
 		updateDelta();
