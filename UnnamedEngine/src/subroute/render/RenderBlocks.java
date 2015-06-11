@@ -1,5 +1,7 @@
 package subroute.render;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
@@ -19,7 +21,7 @@ public class RenderBlocks {
 	private static final int MAX_VBOS = 10;
 	private static IntBuffer vbos = BufferUtils.createIntBuffer(MAX_VBOS);
 	public static final double size = 0.25;
-	public static final long bufferSize = (long) (((8590000000L*size)/Float.SIZE)/MAX_VBOS);
+	public static final long bufferSize = 6291456L;
 	private ArrayList<VertexBufferObject> VBOS = new ArrayList<VertexBufferObject>(MAX_VBOS);
 
 	public RenderBlocks(){
@@ -99,26 +101,26 @@ public class RenderBlocks {
 			GL11.glColor4f(0f, 0f, 0f, 0.5f);
 			GL11.glLineWidth(3f);
 			GL11.glBegin(GL11.GL_LINE_LOOP);
-			GL11.glVertex3f(t.x-off, t.y+off, t.z-off);
-			GL11.glVertex3f(t.x-off, t.y-1-off, t.z-off);
-			GL11.glVertex3f(t.x-off, t.y-1-off, t.z+1+off);
-			GL11.glVertex3f(t.x-off, t.y+off, t.z+1+off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z+1+off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z+1+off);
 			GL11.glEnd();
 			GL11.glBegin(GL11.GL_LINE_LOOP);
-			GL11.glVertex3f(t.x+1+off, t.y+off, t.z+1+off);
-			GL11.glVertex3f(t.x+1+off, t.y-1-off, t.z+1+off);
-			GL11.glVertex3f(t.x+1+off, t.y-1-off, t.z-off);
-			GL11.glVertex3f(t.x+1+off, t.y+off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z-off);
 			GL11.glEnd();
 			GL11.glBegin(GL11.GL_LINES);
-			GL11.glVertex3f(t.x-off, t.y+off, t.z-off);
-			GL11.glVertex3f(t.x+1+off, t.y+off, t.z-off);
-			GL11.glVertex3f(t.x-off, t.y-1-off, t.z-off);
-			GL11.glVertex3f(t.x+1+off, t.y-1-off, t.z-off);
-			GL11.glVertex3f(t.x-off, t.y-1-off, t.z+1+off);
-			GL11.glVertex3f(t.x+1+off, t.y-1-off, t.z+1+off);
-			GL11.glVertex3f(t.x-off, t.y+off, t.z+1+off);
-			GL11.glVertex3f(t.x+1+off, t.y+off, t.z+1+off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z-off);
+			GL11.glVertex3f(t.x-off, t.y-off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y-off, t.z+1+off);
+			GL11.glVertex3f(t.x-off, t.y+1+off, t.z+1+off);
+			GL11.glVertex3f(t.x+1+off, t.y+1+off, t.z+1+off);
 			GL11.glEnd();
 			if(Character.isDigit(KeyboardReader.lastChar)){
 				id = Integer.parseInt(""+KeyboardReader.lastChar);
@@ -139,11 +141,15 @@ public class RenderBlocks {
 		private int bufid,verts;
 		private long size,avalible;
 		private boolean marked,init=false;
+		private ByteBuffer bbuf;
+		private FloatBuffer buffer;
 
 		public VertexBufferObject(int id, long size){
 			this.bufid = id;
 			this.size = size;
 			this.avalible = size;
+			this.bbuf = BufferUtils.createByteBuffer((int)(size*Float.SIZE)/8);
+			this.buffer = bbuf.asFloatBuffer();
 		}
 
 		public void addRenderer(Renderer r){
@@ -157,27 +163,36 @@ public class RenderBlocks {
 		public void reupload(){
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.bufid);
 			if(!init){
-				GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer((int)size), GL15.GL_STREAM_DRAW);
+				GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_DYNAMIC_DRAW);
 				GL11.glVertexPointer(3, GL11.GL_FLOAT, 8<<2, 0L);
 			    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 8<<2, 3<<2);
 			    GL11.glNormalPointer(GL11.GL_FLOAT, 8<<2, 5<<2);
 			    init = true;
 			}
 			verts = 0;
-			long offset = 0;
+			int offset = 0;
 			boolean update = false;
-			for(Renderer r : rnders){
-				long stride = (r.getVerts()*8);
-				if(update||(update=r.isUpdated())){
-					if(r.isUpdated()){
-						r.updateRenderable();
+			bbuf = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_READ_WRITE, bbuf);
+			buffer = bbuf.asFloatBuffer();
+			for(int i = 0; i < rnders.size(); i++){
+				Renderer r = rnders.get(i);
+				int stride = (r.getVerts()*8);
+				if(update||(update=r.isMarkedForUpdate())){
+					if(r.getBufferOffset()==-1||update){
+						r.setBufferOffset(offset);
 					}
-					r.setUpdated(false);
-					GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset<<2, r.getData());
+					if(r.isMarkedForUpdate()){
+						r.updateRenderable();
+						buffer.position(r.getBufferOffset());
+						buffer.put(r.getArrayData(), 0, r.getVerts()*8);
+					}
+					r.markForUpdate(false);
 				}
 				offset+=stride;
 				verts+=r.getVerts();
 			}
+			buffer.flip();
+			GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
 			this.avalible = size-(verts*8);
 			this.marked = false;
 		}

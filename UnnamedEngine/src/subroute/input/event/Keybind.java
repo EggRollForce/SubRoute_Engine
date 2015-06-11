@@ -1,4 +1,4 @@
-package subroute.input.keybind;
+package subroute.input.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

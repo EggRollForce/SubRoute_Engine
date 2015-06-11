@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Random;
 
 import subroute.gen.noise.NoiseGeneratorPerlin;
-import subroute.world.segment.Segment;
+import subroute.world.sector.Sector;
 
 public class WorldLoader {
 
@@ -31,7 +31,7 @@ public class WorldLoader {
 	private void initilizeNoiseGens(){
 		this.nGen1 = new NoiseGeneratorPerlin(this.rand,16);
 	}
-	public Segment generateSegment(int x, int y){
+	public Sector generateSegment(int x, int y){
 		double[] ngrid = this.nGen1.generatePerlinNoise(16, 16, 5, 5, x*16, y*16);
 		short[][] hmap = new short[16][16];
 		for(int i = 0; i<16; i++){
@@ -43,7 +43,7 @@ public class WorldLoader {
 				hmap[i][j] = (short)(256+k);
 			}
 		}
-		return new Segment(x,y,hmap);
+		return new Sector(x,y,hmap);
 	}
 
 }

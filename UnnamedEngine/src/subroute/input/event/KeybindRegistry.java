@@ -1,4 +1,4 @@
-package subroute.input.keybind;
+package subroute.input.event;
 
 public class KeybindRegistry {
 

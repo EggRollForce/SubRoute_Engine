@@ -3,7 +3,7 @@ package subroute.world.storage;
 import subroute.render.RenderEngine;
 import subroute.render.Renderer;
 import subroute.world.WorldLoader;
-import subroute.world.segment.Segment;
+import subroute.world.sector.Sector;
 
 
 public class WorldStorage implements IWorldAccess{
@@ -102,12 +102,12 @@ public class WorldStorage implements IWorldAccess{
 		}
 	}
 	private void renderInSegment(int x, int y){
-		Segment seg = segLoad.getSegmentAt(x, y);
+		Sector seg = segLoad.getSegmentAt(x, y);
 		if(seg != null&&seg.getRenderer()==null){
 			Renderer render = new Renderer(seg);
 			render.updateRenderable();
 			RenderEngine.renderBlocks.addRenderer(render);
-			render.setUpdated(true);
+			render.markForUpdate(true);
 //			System.out.println("Sucessfully loaded segment at x:"+(lastx)+" y:"+(lasty));
 		}
 	}
@@ -116,7 +116,7 @@ public class WorldStorage implements IWorldAccess{
 	public int getBlockIdAt(int x, int y, int z) {
 		int sx = (int)Math.floor((x)/16d);
 		int sy = (int)Math.floor((z)/16d);
-		Segment seg = segLoad.getSegmentAt(sx, sy);
+		Sector seg = segLoad.getSegmentAt(sx, sy);
 		if(seg!=null){
 			return seg.getBlockIdAt(x, y, z);
 		}
@@ -132,7 +132,7 @@ public class WorldStorage implements IWorldAccess{
 	public boolean setBlockAt(int x, int y, int z, int id) {
 		int sx = (int)Math.floor((x)/16d);
 		int sy = (int)Math.floor((z)/16d);
-		Segment seg = segLoad.getSegmentAt(sx, sy);
+		Sector seg = segLoad.getSegmentAt(sx, sy);
 		if(seg!=null){
 			boolean success = seg.setBlockAt(x, y, z, id);
 			if(success){
@@ -172,12 +172,12 @@ public class WorldStorage implements IWorldAccess{
 			}
 		}
 		if(segLoad.getSegmentAt(x+cx, y+cy)==null){
-			Segment seg;
+			Sector seg = null;
 			segLoad.addSegment(seg = WorldStorage.loader.generateSegment(x+cx, y+cy).setWorld(this));
 			Renderer render = new Renderer(seg);
 			seg.renderBlocks(render);
 			RenderEngine.renderBlocks.addRenderer(render);
-//			render.setUpdated(true);
+			render.markForUpdate(true);
 		}
 		}
 	}
@@ -188,25 +188,25 @@ public class WorldStorage implements IWorldAccess{
 	}
 
 	public void updateAdjSegments(int x, int y){
-		Segment seg;
+		Sector seg;
 		if((seg=segLoad.getSegmentAt(x+1, y))!=null){
 			if(seg.getRenderer()!=null){
-				seg.getRenderer().setUpdated(true);
+				seg.getRenderer().markForUpdate(true);
 			}
 		}
 		if((seg=segLoad.getSegmentAt(x, y+1))!=null){
 			if(seg.getRenderer()!=null){
-				seg.getRenderer().setUpdated(true);
+				seg.getRenderer().markForUpdate(true);
 			}
 		}
 		if((seg=segLoad.getSegmentAt(x-1, y))!=null){
 			if(seg.getRenderer()!=null){
-				seg.getRenderer().setUpdated(true);
+				seg.getRenderer().markForUpdate(true);
 			}
 		}
 		if((seg=segLoad.getSegmentAt(x, y-1))!=null){
 			if(seg.getRenderer()!=null){
-				seg.getRenderer().setUpdated(true);
+				seg.getRenderer().markForUpdate(true);
 			}
 		}
 	}

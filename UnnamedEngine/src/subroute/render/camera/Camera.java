@@ -48,30 +48,46 @@ public class Camera{
 
 	public static void inputDone(){
 		if(isBound){
-			boundEnt.setVelocity((float)x, (float) (boundEnt.getYVel()+y), (float)z);
+			if(boundEnt.isAffectedByGravity()){
+				boundEnt.setVelocity((float)x, (float)(boundEnt.getYVel()+y), (float)z);
+			}else{
+				boundEnt.setVelocity((float)x, (float)y, (float)z);
+			}
 		}
 	}
 	public static void forward(){
+		resetInput();
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw));
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw));
+		inputDone();
 	}
 	public static void backward(){
+		resetInput();
 		x -= movSpd * (float)Math.sin(Math.toRadians(yaw));
 		z += movSpd * (float)Math.cos(Math.toRadians(yaw));
+		inputDone();
 	}
 	public static void strafeRight(){
+		resetInput();
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw+90));
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw+90));
+		inputDone();
 	}
 	public static void strafeLeft(){
+		resetInput();
 		x += movSpd * (float)Math.sin(Math.toRadians(yaw-90));
 		z -= movSpd * (float)Math.cos(Math.toRadians(yaw-90));
+		inputDone();
 	}
 	public static void up(){
+		resetInput();
 		y += 6.481;
+		inputDone();
 	}
 	public static void down(){
+		resetInput();
 		y -= 6.481;
+		inputDone();
 	}
 	public static void sprintOn(){
 		movSpd = defMovSpd*sprintMod;
@@ -165,7 +181,7 @@ public class Camera{
 			mul+=0.001f;
 			double temp = az-(veiwVec.z*mul);
 			pos[0] = (ax+(veiwVec.x*mul));
-			pos[1] =((veiwVec.y*mul)+ay)+1;
+			pos[1] =((veiwVec.y*mul)+ay);
 			pos[2] = (temp-(Math.signum(temp)!=-1?0:1));
 			if((int)Math.floor(pos[0])!=x||(int)pos[1]!=y||(int)pos[2]!=z||first){
 				first = false;

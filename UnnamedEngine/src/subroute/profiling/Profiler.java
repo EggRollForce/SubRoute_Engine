@@ -8,6 +8,7 @@ public class Profiler {
 	private static HashMap<String,Section> sections = new HashMap<String,Section>();
 	private static Section runningSection = null;
 	private static Profiler instance;
+	private static long loopstart,looptime;
 
 	public Profiler(){
 		if(this.instance==null){
@@ -15,6 +16,12 @@ public class Profiler {
 		}
 	}
 
+	public static void beginLoop(){
+		loopstart = System.nanoTime();
+	}
+	public static void endLoop(){
+		looptime = System.nanoTime()-loopstart;
+	}
 	public static void startSection(String name){
 		if(runningSection==null){
 			if(sections.get(name)==null){
@@ -62,6 +69,10 @@ public class Profiler {
 
 		public Section(String name){
 			this.name = name;
+		}
+
+		public float getPercentage(){
+			return (float) (((double)(elapsed)/((double)looptime))*100f);
 		}
 
 		public void start(){

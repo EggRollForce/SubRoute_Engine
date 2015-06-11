@@ -1,7 +1,7 @@
 package subroute.render;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.Arrays;
 
 import org.lwjgl.BufferUtils;
 
@@ -10,32 +10,28 @@ public class Renderer {
 	private boolean updated = false;
 	private int verts = 0;
 	private int oldVerts = 0;
+	private int bufofst = -1;
 	private int bufid = 0;
 	private float[] normal = {0f,0f,0f};
-	private float[] data;
-	private FloatBuffer fb;
+	private static float[] data = new float[6291456];
+	private static ByteBuffer bb = BufferUtils.createByteBuffer(0);
+	private static FloatBuffer fb = bb.asFloatBuffer();
 	private IRenderable r;
 	private IUpdateable vbo;
+	private float[] temp =  new float[8];
 
 	public Renderer(IRenderable renderable){
 		r = renderable;
-		if(data == null){
-			data = new float[1310720];
-			fb = BufferUtils.createFloatBuffer(0);
-		}
 	}
 	public void addVertexUV(float x, float y, float z, float u, float v){
-		if(data == null){
-			data = new float[1310720];
-		}
-		if(verts*8+8>data.length){
-			float[] olddat = Arrays.copyOf(data, data.length+800);
-			data = null;
-			data = olddat;
-			olddat = null;
-
-		}
-		float[] temp = new float[] {x,y,z,u,v,normal[0],normal[1],normal[2]};
+		temp[0] = x;
+		temp[1] = y;
+		temp[2] = z;
+		temp[3] = u;
+		temp[4] = v;
+		temp[5] = normal[0];
+		temp[6] = normal[1];
+		temp[7] = normal[2];
 		for(int i = 0; i<8; i++){
 			data[verts*8+i] = temp[i];
 		}
@@ -43,18 +39,33 @@ public class Renderer {
 	}
 
 	public void setNormal(float x, float y, float z){
-		this.normal = new float[] {x,y,z};
+		this.normal[0]=x;
+		this.normal[1]=y;
+		this.normal[2]=z;
 	}
 
-	public FloatBuffer getData(){
-		if(data!=null&&verts>oldVerts){
+	public ByteBuffer getData(){
+		fb.clear();
+		if(data!=null&&verts*8>fb.capacity()){
 			oldVerts=verts;
-			fb = (FloatBuffer)BufferUtils.createFloatBuffer(verts*8).put(data,0,verts*8).flip();
+			bb = BufferUtils.createByteBuffer(verts*Float.SIZE);
+			fb = bb.asFloatBuffer();
+			fb.put(data,0,verts*8);
+			fb.flip();
 		}else if(data!=null){
-			fb.put(data, 0, verts*8).flip();
+			fb = bb.asFloatBuffer();
+			fb.put(data, 0, verts*8);
+			fb.flip();
 		}
-		data = null;
-		return fb;
+		System.out.println(verts*8*Float.SIZE/8/1000);
+		return bb;
+	}
+
+	public float[] getArrayData(){
+		if(data!=null){
+			return data;
+		}
+		return null;
 	}
 
 	public int getVerts(){
@@ -66,10 +77,10 @@ public class Renderer {
 			fb.clear();
 		}
 	}
-	public boolean isUpdated(){
+	public boolean isMarkedForUpdate(){
 		return this.updated;
 	}
-	public void setUpdated(boolean updated){
+	public void markForUpdate(boolean updated){
 		if(this.vbo!=null&&updated){
 			vbo.markForUpdate();
 		}
@@ -77,6 +88,12 @@ public class Renderer {
 	}
 	protected void setBufferId(int id){
 		this.bufid = id;
+	}
+	protected int getBufferOffset(){
+		return bufofst;
+	}
+	protected void setBufferOffset(int offset){
+		this.bufofst = offset;
 	}
 	protected int getBufferId(){
 		return this.bufid;

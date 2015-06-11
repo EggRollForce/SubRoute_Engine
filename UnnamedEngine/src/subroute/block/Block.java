@@ -75,8 +75,8 @@ public abstract class Block {
 
 	public abstract Icon getIconForSide(IWorldAccess wld, int x, int y, int z, Side side);
 
-	public AABB getBoudingBox(IWorldAccess wld, int x, int y, int z){
-		return bounding;
+	public AABB getBoundingBox(IWorldAccess wld, int x, int y, int z){
+		return bounding.setPosition(x, y, z);
 	}
 
 	//!!CAUTION!! WET FLOOR

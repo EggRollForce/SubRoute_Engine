@@ -1,35 +1,37 @@
 package subroute.world.storage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import subroute.world.segment.Segment;
+import subroute.world.sector.Sector;
 
 public class SegLoader {
 
-	private ArrayList<Segment> loadedSegs = new ArrayList<Segment>();
-	public SegLoader(){
+	private HashMap<Long,Sector> loadedSegs = new HashMap<Long,Sector>();
 
-	}
-
-	public boolean addSegment(Segment seg){
-		if(!loadedSegs.contains(seg)){
-			loadedSegs.add(seg);
+	public boolean addSegment(Sector seg){
+		if(!isSegmentLoadedAt(seg)){
+			loadedSegs.put(serializePosition(seg.segx,seg.segy),seg);
 			return true;
 		}else{
 			return false;
 		}
 	}
-	public ArrayList<Segment> getLoadedSegments(){
-		return this.loadedSegs;
+	public ArrayList<Sector> getLoadedSegments(){
+		return (ArrayList<Sector>) loadedSegs.values();
 	}
-	public boolean isSegmentLoadedAt(Segment seg){;
-		return loadedSegs.contains(seg);
+	public boolean isSegmentLoadedAt(Sector seg){
+		return this.isSegmentLoadedAt(seg.segx, seg.segy);
 	}
-	public Segment getSegmentAt(int x, int y){
-		for(Segment seg : this.loadedSegs){
-			if(x==seg.segx&&y==seg.segy){
-				return seg;
-			}
+	private long serializePosition(int x, int y){
+		return (x)+(((long)y)<<32);
+	}
+	public boolean isSegmentLoadedAt(int x, int y){
+		return loadedSegs.get(serializePosition(x,y))!=null;
+	}
+	public Sector getSegmentAt(int x, int y){
+		if(isSegmentLoadedAt(x,y)){
+			return loadedSegs.get(serializePosition(x,y));
 		}
 		return null;
 	}

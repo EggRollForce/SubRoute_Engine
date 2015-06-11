@@ -144,6 +144,7 @@ public class Game {
 		updateDelta();
 		//Main game loop that is exited when the display is closed
 		while (!Display.isCloseRequested()) {
+			Profiler.beginLoop();
 			//Update the time between frames
 			updateDelta();
 			//Recreate the veiwport if the window was resized
@@ -162,6 +163,7 @@ public class Game {
 			updateFPS();
 			AudioEngine.instance().loop();
 			Display.update();
+			Profiler.endLoop();
 		}
 		AL.destroy();
 		Display.destroy();
@@ -170,7 +172,7 @@ public class Game {
 		}
 	}
 	public long getTime(){
-		return (Sys.getTime()*1000)/Sys.getTimerResolution();
+		return (Sys.getTime()*1000L)/Sys.getTimerResolution();
 	}
 
 	public int getTimeMinutes(){
