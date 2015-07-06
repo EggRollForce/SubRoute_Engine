@@ -1,16 +1,28 @@
-these notes are to plan out what we are going to do for all aspects
+These notes are to plan out what we are going to do for all aspects
 
 Physics
 IMPORTANT
-- fix and tidy up collisions
+- Fix and tidy up collisions
+- Make worlds save to a file
+- Develop a data format so that worlds do not take up massive space
+
+DATA FORMAT CONSIDERATIONS
+- Fast loading for dynamic objects for pseudo segment-loading
+- Compress blocks of similar materials into bounding volumes for better storage
+- Data structure should be expandable
+- Should be able to reference a segment from another file quickly
 
 
 
-
-
- for later
-- liquid dynamics
-
+FUTURE CONSIDERATION
+- Base Game Mechanics
+- Enemy Design
+- AI Design
+- Production Mechanics
+- Enconomy Mechanics
+- Economy Simulation
+- Liquid Dynamics
+- Fluid Simulation (Encompasses Gasses and Liquids)
 
 Entities
 
